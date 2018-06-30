@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical">
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:baselineAligned="false"
+	    android:gravity="center_vertical"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content">
+	
+	   <ImageView android:id="@+id/icon"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginRight="10dip" 
+	        android:layout_marginEnd="10dip" 
+	        android:src="@drawable/ic_launcher_green"
+	        android:clickable="true"
+		   tools:ignore="ContentDescription" />
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:baselineAligned="false"
+	    android:gravity="center_vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#c6cbd2">
+		    <TextView android:id="@+id/text" android:text="@string/info_title" android:layout_height="wrap_content" android:layout_width="wrap_content" 
+		    	 android:textStyle="bold"/>
+	</LinearLayout>
+    <TextView
+		android:text="@string/info" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:baselineAligned="false"
+	    android:gravity="center_vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#c6cbd2">
+		    <TextView android:id="@+id/text2" android:text="@string/disclaimer_title" android:layout_height="wrap_content" android:layout_width="wrap_content" 
+		    	android:textStyle="bold"/>
+	</LinearLayout>
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:text="@string/disclaimer"/>
+	
+	<TextView
+		android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:autoLink="web"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/hp"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+	<TextView
+		android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:autoLink="web"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/forum"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+		</LinearLayout>
+</ScrollView> 

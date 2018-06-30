@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright 2014 - 2015 Egmont R. (egmontr@gmail.com)
+	
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
+
+<resources tools:ignore="MissingTranslation" xmlns:tools="http://schemas.android.com/tools">
+    <!-- app name and title -->
+    <string name="app_name">EgiGeoZone</string>
+
+    <string name="leer"> </string>
+    
+    <!-- UI -->
+    <string name="geofence">Naam GeoZone</string>
+    <string name="latitude">Breedtegraad</string>
+    <string name="longitude">Lengtegraad</string>
+    <string name="geofenceHint">Naam van de GeoZone invoeren</string>
+    <string name="latitudeHint">Breedtegraad invoeren</string>
+    <string name="longitudeHint">Lengtegraad invoeren</string>
+    <string name="menu_item_clear_geofence">Velden wissen</string>
+
+    <string name="menu_item_get_location">Actuele coördinaten</string>
+
+    <string name="menu_item_info">Informatie</string>
+    <string name="menu_item_help">Help</string>
+    <string name="menu_item_settings">Instellingen</string>
+    <string name="admin">Instellingen</string>
+    <string name="menu_item_log">Laatste Log-bestand tonen</string>
+    <string name="menu_item_send_log">Laatste Log-bestand versturen</string>
+    <string name="menu_item_configuration">Configuratie</string>
+	<string name="menu_item_debug">Log-Level</string>
+    <string name="menu_item_export">Bewaren op:</string>
+    <string name="menu_item_import">Herstellen van:</string>
+    
+    <string name="export_ok_text">Configuratie is opgeslagen.</string>
+    <string name="import_ok_text">Configuratie is succesvol geladen.</string>
+    <string name="settings_tracker">Basisinstellingen locatienotatie</string>
+    <string name="loc_interval">Tijd in minuten tussen updates (polling)</string>
+
+    <string name="prio_low">Laag verbruik batterij (ong. op 10 km nauwkeurig)</string>
+    <string name="prio_balanced">Normaal verbruik batterij (ong. op 100 Meter nauwkeurig)</string>
+    <string name="prio_high">Hoog verbruik batterij (grote nauwkeurigheid)</string>
+    
+    <string name="radius">Radius</string>
+    <string name="certName">Certificaat (PKCS12)</string>
+    <string name="certPasswd">Wachtwoord certificaat</string>
+    <string name="caCertName">Uitgever certificaten (PEM)</string>
+    <string name="urlEntered">URL zone betreden</string>
+    <string name="urlExited">URL zone verlaten</string>
+    <string name="user">Gebruiker</string>
+    <string name="userPasswd">Wachtwoord</string>
+    <string name="fhem_geofancy">"URL Fhem Geofancy"</string>
+    
+    <string name="radiusHint">Radius in meters invoeren</string>
+    <string name="certNameHint">Privé certificaat (PKCS12) invoeren</string>
+    <string name="certPasswdHint">Wachtwoord van het certificaat invoeren</string>
+    <string name="caCertNameHint">Uitgever van het certificaat (PEM) van de server</string>
+    <string name="urlEnteredHint">URL zone betreden invoeren</string>
+    <string name="urlExitedHint">URL zone verlaten invoeren</string>
+    <string name="userHint">Gebruiker basis verificatie</string>
+    <string name="userPasswdHint">Wachtwoord basis verificatie </string>
+    <string name="fhem_geofancyHint">"URL voor Fhem Geofancy module"</string>
+    <string name="timeoutHint">"Standaard instelling is 30"</string>
+    
+    <string name="descCerts">Certificaten zijn op te slaan onder \'intern Geheugen/egigeozone\'</string>
+    <string name="descfhemGeofancy">Adres in Fhem/Geofancy-Style. Bijvoorbeeld: https://rpi.server.de:1999/webhook/geo</string>
+    <string name="descor1">of</string>
+    
+    <!-- Messages -->
+    <string name="add_geofences_result_success">GeoZones toevoegen gelukt</string>
+    <string name="add_geofences_result_failure">GeoZones toevoegen mislukt</string>
+    <string name="add_geofences_already_requested_error">
+        Kan GeoZones niet toevoegen, er staan nog aanvragen open.
+    </string>
+    <string name="connected">Client verbonden</string>
+    <string name="disconnected">Verbinding verbroken</string>
+    <string name="geofence_input_error_missing">Waarde ontbreekt</string>
+    <string name="geofence_input_error_comma">Speciale tekens in de naam niet toegestaan.</string>
+    <string name="geofence_input_error_latitude_invalid">
+        Verkeerde breedtegraad. Waarde tussen -90 en 90 graden.
+    </string>
+    <string name="geofence_input_error_longitude_invalid">
+        Verkeerde lengtegraad. Waarde tussen -180 en 180 graden. 
+    </string>
+    <string name="bt_input_error_radius_invalid">Verkeerde radius. Moet minstens een meter zijn.</string>
+    <string name="geofence_input_error_radius_invalid">
+        Verkeerde radius. Moet meer als 49 meter zijn.
+    </string>
+    <string name="geofence_transition_entered">betreden</string>
+    <string name="geofence_transition_error_detail">"\n        GeoZone overgangsfout, code %1$d bericht %2$s.\n    "</string>
+    <string name="geofence_transition_exited">verlaten</string>
+    <string name="geofence_transition_invalid_type">
+        GeoZone overgangsfout, verkeerd type %1$d in zone %2$s
+    </string>
+    <string name="geofence_transition_notification_text">
+        Aanklikken om bij de App te komen
+    </string>
+    <string name="geofence_transition_notification_title">
+        %1$s: %2$s  
+    </string>
+    <string name="geofence_transition_unknown">Onbekende overgang</string>
+    <string name="no_resolution">Google Play Services: niet bereikbaar</string>
+    <string name="play_services_available">Location Services is beschikbaar</string>
+    <string name="remove_geofences_id_failure">
+        Verwijderen van de GeoZone na ID mislukt 
+    </string>
+    <string name="remove_geofences_already_requested_error">
+        Kan de GeoZone niet verwijderen, er staat nog een aanvraag open.
+    </string>
+    <string name="remove_geofences_id_success">
+        Verwijderen van de GeoZone na ID\'s succesvol
+    </string>
+    <string name="remove_geofences_intent_failure">
+        Verwijderen van alle GeoZones mislukt
+    </string>
+    <string name="remove_geofences_intent_success">
+        Verwijderen van de GeoZones succesvol.
+    </string>
+    <string name="unknown_activity_request_code">
+        Onbekend verzoek code %1$d in onActivityResult gekregen.
+    </string>
+    <!-- string name="unregister_geofences">GeoZonen entfernen</string-->
+
+    <!-- Number patterns -->
+
+    <string name="info_title">Korte beschrijving van deze App</string>
+    <string name="info">Deze app is een Android Geofence Aap, welke bij het betreden of het verlaten van ingestelde geografische zones elke keer een actie in gang kan zetten. Dergelijke acties zijn onder andere het aanroepen van een server, het versturen van een sms of emails. Tegelijkertijd kan een notificatie getoond worden.</string>
+    <string name="disclaimer_title">Disclaimer</string>
+    <string name="disclaimer">De software en de documentatie wordt \"zoals het is\" en zonder enige garantie voor functionaliteit, correctheid of foutloosheid ter beschikking gesteld. Voor enige directe of indirecte schade - in het bijzonder schade aan andere software, schade aan hardware, schade door gebruiksuitval en schade door het niet juist functioneren van de software - kan de auteur niet aansprakelijk gesteld worden. Uitsluitend de gebruiker is voor de gevolgen van het gebruiken van deze software aansprakelijk. Deze software is met de grootste zorgvuldigheid ontwikkeld, echter kunnen fouten nooit uitgesloten worden. Daarom krijgt u geen garantie voor de zekerheid van uw gegevens.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
+
+    <string name="rinfo_title">Beschrijving</string>
+    <string name="rinfo">In het onderwerp en de tekst van de email en in de tekst van de sms kunnen variabelen ingevoegd worden, welke tijdens de runtime vervangen worden.</string>
+    <string name="rdesc_title">Voorbestemde variabelen</string>
+    <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n 1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
+        \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
+        Date = ${date}\nLocal Date = ${localDate}\nUTC location date = ${locationDate}\nLocal location date = ${localLocationDate}\n
+    </string>
+    
+    
+    <string name="map_action">Hier klikken om deze positie over te nemen</string>
+    
+    <string name="action_delete">Bent u zeker dat u wilt verwijderen?</string>
+    <string name="action_yes">Ja</string>
+    <string name="action_no">Nee</string>
+
+    <string name="server_opt_title">Serverinstellingen</string>
+
+    <string name="mail_opt_title">Email-instellingen</string>
+    <string name="mailUser">SMTP gebruiker</string>
+    <string name="mailUserPw">Wachtwoord SMTP gebruiker</string>
+    <string name="mailSmtpHost">SMTP Server</string>
+    <string name="mailSmtpPort">SMTP Port</string>
+    <string name="mailSender">Van</string>
+    <string name="mailEmpf">Aan</string>
+    <string name="mailSubject">Onderwerp</string>
+    <string name="mailText">Inhoud</string>
+    <string name="mailSsl">SSL verbinding</string>
+    <string name="mailStartTls">STARTTLS option</string>
+
+    <string name="mailHintUser">SMTP gebruiker invoeren</string>
+    <string name="mailHintUserPw">Wachtwoord SMTP gebruiker invoeren</string>
+    <string name="mailHintSmtpHost">SMTP Server invoeren</string>
+    <string name="mailHintSmtpPort">SMTP Port (25)</string>
+    <string name="mailHintSender">Adres afzender ingeven</string>
+    <string name="mailHintEmpf">Invoeren, door komma gescheiden</string>
+    <string name="mailHintSubject">Onderwerp invoeren</string>
+    <string name="mailHintText">Tekst invoeren</string>
+    
+    <string name="sms_opt_title">Sms-instellingen</string>
+    <string name="smsTo">Ontvanger</string>
+    <string name="smsText">Inhoud</string>
+    <string name="smsHintTo">Nummer ontvanger invoeren</string>
+    <string name="smsHintText">Tekst invoeren</string>
+    
+    <string name="other_opt_title">Verdere acties</string>
+
+    <string name="other_conditions_title">Voorwaarden</string>
+
+    <string name="timeout">Timeout in seconden</string>
+    <string name="notification">Notificatie (betreden/verlaten zone)</string>
+    <string name="error_notification">Notificatie bij fouten</string>
+    
+    <string name="gcm">GCM-berichten ontvangen</string>
+    <string name="gcm_logging">GCM-berichten opnemen in protocol</string>
+    <string name="menu_item_show_gcm_log">GCM-protocol tonen</string>
+    <string name="gcm_sender_id">GCM-Projekt-Nr</string>
+    <string name="gcm_sender_id_clipboard">API-Client-Key naar klembord gekopieerd</string>
+    <string name="menu_item_delete_gcm_log">GCM-Protokoll-bestand verwijderen</string>
+    
+    <string name="app_settings">Beheer</string>
+    <string name="app_locationTrackerActivity">Instellingen notatie locaties</string>
+    
+    <string name="on">in</string>
+    <string name="off">uit</string>
+    <string name="vibration">vibrate</string>
+    <string name="none">niets doen</string>
+    
+    <string name="moreWlan">WLAN</string>
+    <string name="moreSound">Geluid</string>
+    <string name="moreBluetooth">Bluetooth</string>
+    <string name="moreEnter">Betreden zone</string>
+    <string name="moreExit">Verlaten zone</string>
+    
+    <string name="locationTracker">Locatienotaties</string>
+    <string name="call_locationTrackerSettings">Instellingen notatie locaties</string>
+    <string name="trackEnter">Noteren bij het betredden</string>
+    <string name="trackExit">Noteren bij het verlaten</string>
+
+    <string name="localInterval">Protocolinterval van de locatie in minuten</string>
+    <string name="hintlocalInterval">Standaard instelling is 5 minuten</string>
+    <string name="text_trackToFile">Neem locaties op in bestand</string>
+    <string name="text_trackToMail">Zend de coördinaten naar dit emailprofiel</string>
+    <string name="text_stopAllTrackings">Alle Trackings stoppen</string>
+    <string name="text_serviceState">Service toestand</string>
+    
+    <string name="moreTasker">Naam van Tasker Task</string>
+    
+    <string name="cond_bt_enter">Bluetooth apparaat zone betreden</string>
+    <string name="cond_bt_exit">Bluetooth apparaat zone verlaten</string>
+
+    <string name="cond_weekdays">Dagen van de week, op welke de actie uitvoerd dient te worden</string>
+    
+    <string name="mo">Ma</string>
+    <string name="di">Di</string>
+    <string name="mi">Wo</string>
+    <string name="don">Do</string>
+    <string name="fr">Vr</string>
+    <string name="sa">Za</string>
+    <string name="so">Zo</string>
+    
+    <string name="wlan_on_text">Let op! Bij het deactiveren van de WLAN kan het tot problemen bij het herkennen van de GeoZones komen. Schakel WLAN die verbonden is met Geofencing alleen uit, wanneer u als vervanging GPS gebruikt en deze ook te ontvangen is!</string>
+    
+    <string name="hp_help">Het handboek voor EgiGeoZone vindt u hier:\n <a href="http://www.egigeozone.de/manual/default.html">http://www.egigeozone.de/manual/default.html</a></string>
+    <string name="hp">EgiGeoZone-website:\n <a href="http://www.egigeozone.de">http://www.egigeozone.de</a></string>
+    <string name="forum">EgiGeoZone-forum:\n <a href="http://rpi.spdns.eu/egigeozone/">http://rpi.spdns.eu/egigeozone/</a></string>
+
+    <string name="spinner_local">Register \"egigeozone\"</string>
+    <string name="spinner_extern">GDrive, Dropbox, &#8230;</string>
+    <string name="spinner_titel_exp">Configuratie exporteren</string>
+    <string name="accuracy">Location accuracy: Consider only locations below the specified meters. \nOnly required for special cases. At the beginning, leave the value to 0. If not, it can happen, that no actions are executed! </string>
+    <string name="accuracy_hint">Accuracy in meters</string>
+    <string name="alias">Alias (optioneel)</string>
+    <string name="aliasHint">Alias voor de zone</string>
+    <string name="app_plugins">Geregistreerde plugins</string>
+    <string name="broadcast">Sta informatieoverdracht naar plugins toe</string>
+    <string name="decreaseRadius">Radius verkleinen</string>
+    <string name="deleteProfile">Profiel wissen</string>
+    <string name="descTracking">Tracking-adres, bijvoorbeeld: http://server:port/xyz/track.php?latitude=${latitude}&amp;longitude=${longitude}&amp;date=${date}&amp;device=${androidId}&amp;zone=${zone}</string>
+    <string name="distance">Afstand (hemelsbreed) tot de zone ongeveer</string>
+    <string name="distanceNa">Afstand tot de zone niet beschikbaar</string>
+    <string name="dozePermissionsMessage">"Pas op: Deze melding wordt slechts éénmaal getoond! Klik op het menu ⋮ in het navolgende scherm Batterij-instellingen, en voeg egiGeoZone toe aan de whitelist voor optimalisatie van het batterijverbruik. Laat egiGeozone dus niet optimaliseren, anders kan het zijn dat de app niet naar behoren functioneert. "</string>
+    <string name="dozePermissionsTitle">Batterijoptimalisatie</string>
+    <string name="enter">Zone ingaan</string>
+    <string name="execFor">Uitvoeren bij</string>
+    <string name="exit">Zone uitgaan</string>
+    <string name="geoZones">Geozones</string>
+    <string name="geofence_input_not_greater_zero">"Waarde moet nul of groter zijn. "</string>
+    <string name="geofence_not_available">Er is geen geofence beschikbaar. Activeer Locatie in de Instellingen en probeer het opnieuw. Naar de Locatieinstellingen?</string>
+    <string name="geofence_too_many_geofences">"De app heeft meer dan 100 zones geregistreerd. Wis zones die niet meer nodig zijn. "</string>
+    <string name="geofence_too_many_pending_intents">"De app gebruikt meer dan vijf verschillende PendingIntents. Neem contact op met de ontwikkelaar. "</string>
+    <string name="getApiKey">GCM-API-Client-Key</string>
+    <string name="increaseRadius">Radius vergroten</string>
+    <string name="latitudeOpt">Breedtegraad (optioneel)</string>
+    <string name="longitudeOpt">Lengtegraad (optioneel)</string>
+    <string name="menu_item_plugins">Geregistreerde plugins tonen</string>
+    <string name="menu_item_profiles">Profiel</string>
+    <string name="menu_item_refresh">Actualiseren</string>
+    <string name="menu_item_track">Locatienotities</string>
+    <string name="noApiKey">Geen API-Client-Key beschikbaar! Ajb eerst GCM bij Google registeren, zie het Egigeozone handboek online.</string>
+    <string name="prof_conditions">Profiel met voorwaarden</string>
+    <string name="prof_mail">Emailprofiel</string>
+    <string name="prof_other">Profiel voor verdere acties</string>
+    <string name="prof_server">Serverprofiel</string>
+    <string name="prof_server_fallback">Backup serverprofiel</string>
+    <string name="prof_sms">SMS profiel</string>
+    <string name="profilName">Profielnaam</string>
+    <string name="profile">Hier kun je profielen definiëren, die je aan zones kunt koppelen.</string>
+    <string name="profile_in_use">Profiel is in gebruik, en kun je dus niet verwijderen.</string>
+    <string name="profiles">Hier kun je je profielen beheren, die je aan zones kunt koppelen.</string>
+    <string name="reset_all_geofence_states">Alle zones resetten</string>
+    <string name="satellite">Satelliet</string>
+    <string name="scan">Scannen</string>
+    <string name="scanHint">Scannen en ID\'s overnemen</string>
+    <string name="search">Zoeken</string>
+    <string name="srv_tracking">URL voor tracking</string>
+    <string name="stateReset">De status van alle Geofences resetten</string>
+    <string name="stateResetMsg">De status van alle Geofences op verlaten zetten</string>
+    <string name="stateResetToast">De status van alle Geofences zijn gereset</string>
+    <string name="test_nok_title">Test mislukt</string>
+    <string name="test_ok_text">De test is gelukt</string>
+    <string name="test_ok_title">Test gelukt</string>
+    <string name="text_trackToServer">Zend de coördinaten naar dit serverprofiel</string>
+    <string name="text_tracking_notification">Live tracking actief</string>
+    <string name="titleAlertPermissions">Rechten voor de app instellen</string>
+    <string name="titleExtStorage">Schrijfrecht</string>
+    <string name="titleGCM">GCM-account-rechten</string>
+    <string name="titleLocation">Locatierechten</string>
+    <string name="titlePhone">Toestel-ID-rechten</string>
+    <string name="titleSMS">SMS-rechten</string>
+    <string name="toolTipAlterZone">Zone opslaan!</string>
+    <string name="toolTipRegisterZone">Zone is nog niet gedefiniëerd!</string>
+    <string name="trackingHint">\"URL voor het tracken\"</string>
+    <string name="wait">Even wachten, scan gaande …</string>
+
+</resources>
+

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_geofence"
+            android:checked="true"
+            android:icon="@drawable/locating_geo"
+            android:title="@string/geoZones" />
+    </group>
+
+    <item android:title="@string/admin">
+        <menu>
+            <item
+                android:id="@+id/nav_profiles"
+                android:icon="@drawable/ic_profile_add_black_24dp"
+                android:title="@string/menu_item_profiles" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="@string/menu_item_settings" />
+            <item
+                android:id="@+id/nav_info"
+                android:icon="@drawable/ic_info_outline_black_24dp"
+                android:title="@string/menu_item_info" />
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_help_outline_black_24dp"
+                android:title="@string/menu_item_help" />
+        </menu>
+    </item>
+
+</menu>

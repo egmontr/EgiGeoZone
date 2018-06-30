@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Purple-->
+    <color name="colorPrimary">#8e24aa</color>
+    <color name="colorPrimaryDark">#7b1fa2</color>
+    <color name="colorAccent">#2ecc71</color>
+    <!--Red-->
+    <color name="primary1">#F44336</color>
+    <color name="primary_dark1">#D32F2F</color>
+    <color name="accent1">#FF4081</color>
+    <!--Pink-->
+    <color name="primary2">#E91E63</color>
+    <color name="primary_dark2">#C2185B</color>
+    <color name="accent2">#E040FB</color>
+    <!--Deep Purple-->
+    <color name="primary3">#673AB7</color>
+    <color name="primary_dark3">#512DA8</color>
+    <color name="accent3">#536DFE</color>
+    <!--Indigo-->
+    <color name="primary4">#3F51B5</color>
+    <color name="primary_dark4">#303F9F</color>
+    <color name="accent4">#448AFF</color>
+    <!--Blue-->
+    <color name="primary5">#2196F3</color>
+    <color name="primary_dark5">#1976D2</color>
+    <color name="accent5">#03A9F4</color>
+    <!--Light Blue-->
+    <color name="primary6">#03A9F4</color>
+    <color name="primary_dark6">#0288D1</color>
+    <color name="accent6">#00BCD4</color>
+    <!--Cyan-->
+    <color name="primary7">#00BCD4</color>
+    <color name="primary_dark7">#0097A7</color>
+    <color name="accent7">#009688</color>
+    <!--Teal-->
+    <color name="primary8">#009688</color>
+    <color name="primary_dark8">#00796B</color>
+    <color name="accent8">#4CAF50</color>
+    <!--Green-->
+    <color name="primary9">#4CAF50</color>
+    <color name="primary_dark9">#388E3C</color>
+    <color name="accent9">#8BC34A</color>
+    <!--Light Green-->
+    <color name="primary10">#8BC34A</color>
+    <color name="primary_dark10">#689F38</color>
+    <color name="accent10">#CDDC39</color>
+    <!--Lime-->
+    <color name="primary11">#CDDC39</color>
+    <color name="primary_dark11">#AFB42B</color>
+    <color name="accent11">#FFEB3B</color>
+    <!--Yellow-->
+    <color name="primary12">#FFEB3B</color>
+    <color name="primary_dark12">#FBC02D</color>
+    <color name="accent12">#FFC107</color>
+    <!--Amber-->
+    <color name="primary13">#FFC107</color>
+    <color name="primary_dark13">#FFA000</color>
+    <color name="accent13">#FF9800</color>
+    <!--Orange-->
+    <color name="primary14">#FF9800</color>
+    <color name="primary_dark14">#F57C00</color>
+    <color name="accent14">#FF5722</color>
+    <!--Deep Orange-->
+    <color name="primary15">#FF5722</color>
+    <color name="primary_dark15">#E64A19</color>
+    <color name="accent15">#795548</color>
+    <!--Brown-->
+    <color name="primary16">#795548</color>
+    <color name="primary_dark16">#5D4037</color>
+    <color name="accent16">#9E9E9E</color>
+    <!--Grey-->
+    <color name="primary17">#9E9E9E</color>
+    <color name="primary_dark17">#616161</color>
+    <color name="accent17">#607D8B</color>
+    <!--Blue Grey-->
+    <color name="primary18">#607D8B</color>
+    <color name="primary_dark18">#455A64</color>
+    <color name="accent18">#9E9E9E</color>
+
+</resources>
+

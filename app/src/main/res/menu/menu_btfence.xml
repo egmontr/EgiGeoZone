@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:theapp="http://schemas.android.com/apk/res-auto">
+    <!--item
+        android:id="@+id/menu_test_geofence"
+        android:title="@string/test"
+        theapp:showAsAction="always"
+        android:icon="@drawable/ic_action_test"
+        /-->
+    <item
+        android:id="@+id/menu_scan"
+        android:title="@string/scan"/>
+    <item
+        android:id="@+id/menu_delete_geofence"
+        android:title="@string/deleteProfile"
+        theapp:showAsAction="always"
+        android:icon="@drawable/ic_delete_black_24dp"
+        />
+    <item
+        android:id="@+id/menu_get_location"
+        android:title="@string/menu_item_get_location"/>
+    <item
+        android:id="@+id/menu_item_clear_geofence"
+        android:title="@string/menu_item_clear_geofence"/>
+    <item
+        android:id="@+id/menu_item_help"
+        android:title="@string/menu_item_help"/>
+</menu>

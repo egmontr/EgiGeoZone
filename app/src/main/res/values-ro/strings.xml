@@ -1,0 +1,286 @@
+<!--
+
+  http://muntealb.orgfree.com/Traduceri/dictionar-traducere.htm#I	
+
+  Copyright 2013 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+
+<resources tools:ignore="MissingTranslation" xmlns:tools="http://schemas.android.com/tools">
+    <string name="leer"> </string>
+    
+    <!-- app name and title -->
+    <string name="app_name">EgiGeoZone</string>
+    <!-- UI -->
+    <string name="geofence">Numele zonei</string>
+    <string name="latitude">Latitudine</string>
+    <string name="longitude">Longitudine</string>
+    <string name="geofenceHint">Numele zonei geografice</string>
+    <string name="latitudeHint">Latitudinea</string>
+    <string name="longitudeHint">Longitudinea</string>
+    
+    <string name="menu_item_clear_geofence">Goleşte toate câmpurile</string>
+    <string name="menu_item_get_location">Locația curentă</string>
+    
+    <string name="radius">Radius</string>
+    <string name="certName">Certificat (PKCS12)</string>
+    <string name="certPasswd">Parola</string>
+    <string name="caCertName">Certificat CA (PEM)</string>
+    <string name="urlEntered">URL ieșire din zonă</string>
+    <string name="urlExited">URL intrare în zonă</string>
+    <string name="user">Utilizator</string>
+    <string name="userPasswd">Parola</string>
+    
+    <string name="radiusHint">Introdu radiusul în metri</string>
+    <string name="certNameHint">Introdu certificatul privat (PKCS12)</string>
+    <string name="certPasswdHint">Introdu parola pentru certificat</string>
+    <string name="caCertNameHint">Introdu certificate CA</string>
+    <string name="urlEnteredHint">Introdu URL ieșire din zonă</string>
+    <string name="urlExitedHint">Introdu URL intrare în zonă</string>
+    <string name="userHint">Introdu utilizatorul pentru autentificarea bazică</string>
+    <string name="userPasswdHint">Introdu parola pentru autentificarea bazică</string>
+    <string name="fhem_geofancyHint">"Introdu URL pentru modulul Fhem Geofancy"</string>
+    <string name="timeoutHint">"Predefinit 30 secunde"</string>
+    
+    <string name="menu_item_info">Informații</string>
+    <string name="menu_item_help">Ajutor</string>
+    <string name="menu_item_settings">Setări</string>
+    <string name="admin">Administrație</string>
+    <string name="menu_item_log">Arată jurnalul log</string>
+    <string name="menu_item_send_log">Trimite jurnalul log</string>
+    <string name="menu_item_configuration">Configurația</string>
+	<string name="menu_item_debug">Levelul log </string>
+    <string name="menu_item_export">Export:</string>
+    <string name="menu_item_import">Import:</string>
+    
+    <string name="export_ok_text">Configurația a fost exportată.</string>
+    <string name="import_ok_text">Configurația a fost registrată.</string>
+    <string name="settings_tracker">Setări generale locație</string>
+    <string name="loc_interval">Timp actualizări în minute</string>
+    
+    <string name="profilName">Nume profil</string>
+	<string name="execFor">Execută la</string>
+	<string name="enter">intrare în zonă</string>
+	<string name="exit">ieșirea din zonă</string>
+	
+    <string name="test_ok_text">Testul a fost OK.</string>
+
+    <string name="test_ok_title">Testul este OK</string>
+    <string name="test_nok_title">Testul a eșuat</string>
+    
+    
+    <string name="prio_low">Consum mic de curent (10 km acuratețe)</string>
+    <string name="prio_balanced">Consum balansat de curent (cam 100 metri acuratețe)</string>
+    <string name="prio_high">Consum mare der curent (cea mai mare acuratețe)</string>
+    
+    <string name="app_debug">Levelul log </string>
+    
+    <string name="fhem_geofancy">URL Fhem Geofancy</string>
+    
+    <string name="descCerts">Certificatele se stochează sub \'spaţiu de stocare intern/egigeozone\'</string>
+    <string name="descfhemGeofancy">Exemplu URL Fhem/Geofancy: https://rpi.server.de:1999/webhook/geo</string>
+    <string name="descor1">sau</string>
+    
+    <!-- Messages -->
+    <string name="add_geofences_result_success">
+        Adăugare zonă geo: Succes
+    </string>
+    <string name="add_geofences_result_failure">
+        Adăugare zonă geo: Eșec
+    </string>
+    <string name="add_geofences_already_requested_error">
+        Nu pot adăuga zona geo. Zona precedentă nu a fost adăugată.
+    </string>
+    <string name="connected">Clientul este conectat</string>
+    <string name="disconnected">Clientul este deconectat</string>
+    <string name="geofence_input_error_missing">Lipsește valoarea</string>
+    <string name="geofence_input_error_comma">Virgula nu este permisă în nume.</string>
+    <string name="geofence_input_error_latitude_invalid">
+        Latitudine incorectă. Intervalul este între -90 și 90 grade.
+    </string>
+    <string name="geofence_input_error_longitude_invalid">
+        Longitudine incorectă. Intervalul este între -180 și 180 grade.
+    </string>
+    <string name="bt_input_error_radius_invalid">
+        Radius incorect. Trebuie să fie 1 metru sau mai mult.
+    </string>
+    <string name="geofence_input_error_radius_invalid">
+        Radius incorect. Trebuie să fie 50 metri sau mai mult.
+    </string>
+    <string name="geofence_transition_entered">intrat în</string>
+    <string name="geofence_transition_error_detail">
+        Eroare in tranziţie, cod %1$d mesaj %2$s.
+    </string>
+    <string name="geofence_transition_exited">ieșit din</string>
+    <string name="geofence_transition_invalid_type">
+        Eroare in tranziţie. Tip invalid %1$d în %2$s
+    </string>
+    <string name="geofence_transition_notification_text">
+        Să ajungi la aplicație clichează notificarea 
+    </string>
+    <string name="geofence_transition_notification_title">
+        %1$s zona/zonele %2$s
+    </string>
+    <string name="geofence_transition_unknown">Tranziţie necunoscută</string>
+    <string name="no_resolution">Servicii Google Play: Eroare conectare.</string>
+    <string name="play_services_available">Serviciul locație este disponibil</string>
+    <string name="remove_geofences_id_failure">
+        Înlăturarea zonei geo a eșuat
+    </string>
+    <string name="remove_geofences_already_requested_error">
+        Nu pot să șterg yonele geografice. 
+    </string>
+    <string name="remove_geofences_id_success">
+        Inlăturarea zonei geo a reușit
+    </string>
+    <string name="remove_geofences_intent_failure">
+        Inlăturarea zonelor geo a eșuat
+    </string>
+    <string name="remove_geofences_intent_success">
+        Ștergerea zonelor a reușit.
+    </string>
+    <string name="unknown_activity_request_code">
+        Sa recepționat un cod de acțiune necunoscut %1$d.
+    </string>
+    <!-- string name="unregister_geofences">Remove geofences</string-->
+
+    <!-- Number patterns -->
+
+    <string name="info_title">Descriere scurtă</string>
+    <string name="info">EgiGeoZone is an Android Geofencing app, which uses several sensors on your phone or tablet to detect your location and then to trigger different actions when entering or leaving predefined zones that you can configure. It can trigger many actions directly, or simply display a notification on screen. In other words, the app works in a similar way to apps like Tasker, which allows certain events to initiate an action on your smartphone or even a remote server.</string>
+    <string name="disclaimer_title">Disclaimer - End User License Agreement</string>
+    <string name="disclaimer">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
+    
+    <string name="rinfo_title">Descriere</string>
+    <string name="rinfo">În subiect și în textul de mesaje electronice se pot folosi următoarele variabile. Acestea vor fi înlocuite de program.</string>
+    <string name="rdesc_title">Variabilele</string>
+    <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n 1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
+        \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
+        Date = ${date}\nLocal Date = ${localDate}\nUTC location date = ${locationDate}\nLocal location date = ${localLocationDate}\n
+    </string>
+
+    <string-array name="debug_array">
+        <item>verbose</item>
+        <item>debug</item>
+        <item>info</item>
+        <item>warn</item>
+        <item>error</item>
+        <item>assert</item>
+    </string-array>
+    
+    <string name="map_action">Clichează aici ca să preiei pozitia geografică</string>
+    <string name="action_delete">Sigur vrei să ștergi?</string>
+    <string name="action_yes">Da</string>
+    <string name="action_no">Nu</string>
+    <string name="action_ok">OK</string>
+
+    <string name="server_opt_title">Opțiuni server</string>
+
+    <string name="mail_opt_title">Opțiuni e-mail</string>
+    <string name="mailUser">Utilizator SMTP</string>
+    <string name="mailUserPw">Parola SMTP</string>
+    <string name="mailSmtpHost">Serverul SMTP</string>
+    <string name="mailSmtpPort">Portul SMTP</string>
+    <string name="mailSender">De la</string>
+    <string name="mailEmpf">Către</string>
+    <string name="mailSubject">Subiect</string>
+    <string name="mailText">Mesaj</string>
+    <string name="mailSsl">Conecțiune SSL</string>
+    <string name="mailStartTls">Opțiune STARTTLS</string>
+
+    <string name="mailHintUser">Introduce urtilizator SMTP</string>
+    <string name="mailHintUserPw">Introduce parola utilizator SMTP</string>
+    <string name="mailHintSmtpHost">Introduce server SMTP</string>
+    <string name="mailHintSmtpPort">Introduce portul SMTP (25)</string>
+    <string name="mailHintSender">Introduce adresa e-mail expeditor</string>
+    <string name="mailHintEmpf">Adresele receptorilor separați prin virgulă</string>
+    <string name="mailHintSubject">Introduce subiectul</string>
+    <string name="mailHintText">Introduce mesajul</string>
+    
+    <string name="sms_opt_title">Opțiuni SMS</string>
+    <string name="smsTo">Receptor SMS</string>
+    <string name="smsText">Mesaj</string>
+    <string name="smsHintTo">Introduce numărul</string>
+    <string name="smsHintText">Introduce mesajul</string>
+
+    <string name="other_opt_title">Alte acțiuni</string>
+
+    <string name="other_conditions_title">Condiții</string>
+
+    <string name="timeout">Timeout în secunde</string>
+    <string name="notification">Notificare (intrare/ieșire zonă)</string>
+    <string name="error_notification">Notificare eroare</string>
+    <string name="gcm">Primește notificări GCM</string>
+    <string name="gcm_logging">Salvează notificări GCM</string>
+    <string name="menu_item_show_gcm_log">Arată log GCM</string>
+    <string name="gcm_sender_id">Numărul de proiect GCM</string>
+    <string name="gcm_sender_id_clipboard">Cheia API a clientului a fost copiată în cliplanşetă</string>
+    <string name="menu_item_delete_gcm_log">Șterge fila log GCM</string>
+
+    <string name="app_settings">Setări</string>
+    <string name="app_locationTrackerActivity">Setări location tracker</string>
+    
+    <string name="test">Test</string>
+
+    <string name="on">activat</string>
+    <string name="off">deactivat</string>
+    <string name="vibration">vibrate</string>
+    <string name="none">nimic</string>
+
+    <string name="moreWlan">Wi-Fi</string>
+    <string name="moreSound">Sunet</string>
+    <string name="moreBluetooth">Bluetooth</string>
+    <string name="moreEnter">Intrare în zonă</string>
+    <string name="moreExit">Ieșire din zonă</string>
+    
+    <string name="locationTracker">Location tracker</string>
+    <string name="call_locationTrackerSettings">Setări location tracker</string>
+    <string name="trackEnter">Track on enter</string>
+    <string name="trackExit">Track on exit</string>
+
+    <string name="localInterval">Interval in minutes to log location</string>
+    <string name="hintlocalInterval">Standard este 5 minute</string>
+    <string name="text_trackToFile">Scrie locațiile în filă</string>
+    <string name="text_trackToMail">Trimite coordinatele pe adresa de email configurată la zonă</string>
+    <string name="text_stopAllTrackings">Oprește toate trackingurile</string>
+    <string name="text_serviceState">Starea serviciului</string>
+    
+    <string name="moreTasker">Numele taskului din Tasker app</string>
+    
+    <string name="cond_bt_enter">Dispozitiv Bluetooth intrare în zonă</string>
+    <string name="cond_bt_exit">Dispozitiv Bluetooth ieșire din zonă</string>
+
+    <string name="cond_weekdays">Zilele săptămîni in care evenimentul să pornească</string>
+    
+    <string name="mo">Lun</string>
+    <string name="di">Mar</string>
+    <string name="mi">Mie</string>
+    <string name="don">Joi</string>
+    <string name="fr">Vin</string>
+    <string name="sa">Sâm</string>
+    <string name="so">Dum</string>
+    
+    <string name="wlan_on_text">Atentiune! Dacă deactivați Wi-Fi nu mai funcționează corect recunoașterea zonei!</string>
+    
+    <string name="hp_help">Manualul în limba engleză poate fi citit aici:\n <a href="http://www.egigeozone.de/manual/default_en.html">http://www.egigeozone.de/manual/default_en.html</a></string>
+    <string name="hp">EgiGeoZone website:\n <a href="http://www.egigeozone.de">http://www.egigeozone.de</a></string>
+    <string name="forum">Forumul EgiGeoZone:\n <a href="http://rpi.spdns.eu/egigeozone/">http://rpi.spdns.eu/egigeozone/</a></string>
+
+    <string name="spinner_local">Dosar \"egigeozone\"</string>
+    <string name="spinner_extern">GDrive, Dropbox, &#8230;</string>
+    <string name="spinner_titel_exp">Export configurație</string>
+    <string name="accuracy">Location accuracy: Consider only locations below the specified meters. \nOnly required for special cases. At the beginning, leave the value to 0. If not, it can happen, that no actions are executed! </string>
+    <string name="accuracy_hint">Accuracy in meters</string>
+
+</resources>

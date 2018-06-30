@@ -1,0 +1,334 @@
+<resources>
+
+    <!--https://www.materialpalette.com/amber/light-green-->
+
+    <!-- Base application theme. -->
+    <!-- Customize your theme here. -->
+    <!-- Theme 0 Purple -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="StyledDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Theme 1 Red -->
+    <style name="AppTheme1" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary1</item>
+        <item name="colorPrimaryDark">@color/primary_dark1</item>
+        <item name="colorAccent">@color/accent1</item>
+    </style>
+
+    <style name="StyledDialog1" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary1</item>
+        <item name="colorPrimaryDark">@color/primary_dark1</item>
+        <item name="colorAccent">@color/accent1</item>
+    </style>
+    <style name="AppTheme1.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+    <!--<style name="AppTheme2.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+    <!--<style name="AppTheme2.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+
+    <!-- Theme 2 Pink-->
+    <style name="AppTheme2" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary2</item>
+        <item name="colorPrimaryDark">@color/primary_dark2</item>
+        <item name="colorAccent">@color/accent2</item>
+    </style>
+
+    <style name="StyledDialog2" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary2</item>
+        <item name="colorPrimaryDark">@color/primary_dark2</item>
+        <item name="colorAccent">@color/accent2</item>
+    </style>
+    <style name="AppTheme2.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 3 Deep Purple -->
+    <style name="AppTheme3" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary3</item>
+        <item name="colorPrimaryDark">@color/primary_dark3</item>
+        <item name="colorAccent">@color/accent3</item>
+    </style>
+
+    <style name="StyledDialog3" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary3</item>
+        <item name="colorPrimaryDark">@color/primary_dark3</item>
+        <item name="colorAccent">@color/accent3</item>
+    </style>
+    <style name="AppTheme3.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 4 Indigo -->
+    <style name="AppTheme4" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary4</item>
+        <item name="colorPrimaryDark">@color/primary_dark4</item>
+        <item name="colorAccent">@color/accent4</item>
+    </style>
+
+    <style name="StyledDialog4" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary4</item>
+        <item name="colorPrimaryDark">@color/primary_dark4</item>
+        <item name="colorAccent">@color/accent4</item>
+    </style>
+    <style name="AppTheme4.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 5 Blue -->
+    <style name="AppTheme5" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary5</item>
+        <item name="colorPrimaryDark">@color/primary_dark5</item>
+        <item name="colorAccent">@color/accent5</item>
+    </style>
+
+    <style name="StyledDialog5" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary5</item>
+        <item name="colorPrimaryDark">@color/primary_dark5</item>
+        <item name="colorAccent">@color/accent5</item>
+    </style>
+    <style name="AppTheme5.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 6 Light Blue -->
+    <style name="AppTheme6" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary6</item>
+        <item name="colorPrimaryDark">@color/primary_dark6</item>
+        <item name="colorAccent">@color/accent6</item>
+    </style>
+
+    <style name="StyledDialog6" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary6</item>
+        <item name="colorPrimaryDark">@color/primary_dark6</item>
+        <item name="colorAccent">@color/accent6</item>
+    </style>
+    <style name="AppTheme6.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 7 Cyan -->
+    <style name="AppTheme7" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary7</item>
+        <item name="colorPrimaryDark">@color/primary_dark7</item>
+        <item name="colorAccent">@color/accent7</item>
+    </style>
+
+    <style name="StyledDialog7" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary7</item>
+        <item name="colorPrimaryDark">@color/primary_dark7</item>
+        <item name="colorAccent">@color/accent7</item>
+    </style>
+    <style name="AppTheme7.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 8 Teal -->
+    <style name="AppTheme8" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary8</item>
+        <item name="colorPrimaryDark">@color/primary_dark8</item>
+        <item name="colorAccent">@color/accent8</item>
+    </style>
+
+    <style name="StyledDialog8" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary8</item>
+        <item name="colorPrimaryDark">@color/primary_dark8</item>
+        <item name="colorAccent">@color/accent8</item>
+    </style>
+    <style name="AppTheme8.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 9 Green -->
+    <style name="AppTheme9" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary9</item>
+        <item name="colorPrimaryDark">@color/primary_dark9</item>
+        <item name="colorAccent">@color/accent9</item>
+    </style>
+
+    <style name="StyledDialog9" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary9</item>
+        <item name="colorPrimaryDark">@color/primary_dark9</item>
+        <item name="colorAccent">@color/accent9</item>
+    </style>
+    <style name="AppTheme9.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 10 Light Green -->
+    <style name="AppTheme10" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary10</item>
+        <item name="colorPrimaryDark">@color/primary_dark10</item>
+        <item name="colorAccent">@color/accent10</item>
+    </style>
+
+    <style name="StyledDialog10" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary10</item>
+        <item name="colorPrimaryDark">@color/primary_dark10</item>
+        <item name="colorAccent">@color/accent10</item>
+    </style>
+    <style name="AppTheme10.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 11 Lime -->
+    <style name="AppTheme11" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary11</item>
+        <item name="colorPrimaryDark">@color/primary_dark11</item>
+        <item name="colorAccent">@color/accent11</item>
+    </style>
+
+    <style name="StyledDialog11" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary11</item>
+        <item name="colorPrimaryDark">@color/primary_dark11</item>
+        <item name="colorAccent">@color/accent11</item>
+    </style>
+    <style name="AppTheme11.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 12 Yellow -->
+    <style name="AppTheme12" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary12</item>
+        <item name="colorPrimaryDark">@color/primary_dark12</item>
+        <item name="colorAccent">@color/accent12</item>
+    </style>
+
+    <style name="StyledDialog12" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary12</item>
+        <item name="colorPrimaryDark">@color/primary_dark12</item>
+        <item name="colorAccent">@color/accent12</item>
+    </style>
+    <style name="AppTheme12.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 13 Amber -->
+    <style name="AppTheme13" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary13</item>
+        <item name="colorPrimaryDark">@color/primary_dark13</item>
+        <item name="colorAccent">@color/accent13</item>
+    </style>
+
+    <style name="StyledDialog13" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary13</item>
+        <item name="colorPrimaryDark">@color/primary_dark13</item>
+        <item name="colorAccent">@color/accent13</item>
+    </style>
+    <style name="AppTheme13.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 14 Orange -->
+    <style name="AppTheme14" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary14</item>
+        <item name="colorPrimaryDark">@color/primary_dark14</item>
+        <item name="colorAccent">@color/accent14</item>
+    </style>
+
+    <style name="StyledDialog14" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary14</item>
+        <item name="colorPrimaryDark">@color/primary_dark14</item>
+        <item name="colorAccent">@color/accent14</item>
+    </style>
+    <style name="AppTheme14.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 15 Deep Orange -->
+    <style name="AppTheme15" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary15</item>
+        <item name="colorPrimaryDark">@color/primary_dark15</item>
+        <item name="colorAccent">@color/accent15</item>
+    </style>
+
+    <style name="StyledDialog15" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary15</item>
+        <item name="colorPrimaryDark">@color/primary_dark15</item>
+        <item name="colorAccent">@color/accent15</item>
+    </style>
+    <style name="AppTheme15.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 16 Brown -->
+    <style name="AppTheme16" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary16</item>
+        <item name="colorPrimaryDark">@color/primary_dark16</item>
+        <item name="colorAccent">@color/accent16</item>
+    </style>
+
+    <style name="StyledDialog16" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary16</item>
+        <item name="colorPrimaryDark">@color/primary_dark16</item>
+        <item name="colorAccent">@color/accent16</item>
+    </style>
+    <style name="AppTheme16.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 17 Grey -->
+    <style name="AppTheme17" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary17</item>
+        <item name="colorPrimaryDark">@color/primary_dark17</item>
+        <item name="colorAccent">@color/accent17</item>
+    </style>
+
+    <style name="StyledDialog17" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary17</item>
+        <item name="colorPrimaryDark">@color/primary_dark17</item>
+        <item name="colorAccent">@color/accent17</item>
+    </style>
+    <style name="AppTheme17.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Theme 18 Blue Grey -->
+    <style name="AppTheme18" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary18</item>
+        <item name="colorPrimaryDark">@color/primary_dark18</item>
+        <item name="colorAccent">@color/accent18</item>
+    </style>
+
+    <style name="StyledDialog18" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/primary18</item>
+        <item name="colorPrimaryDark">@color/primary_dark18</item>
+        <item name="colorAccent">@color/accent18</item>
+    </style>
+    <style name="AppTheme18.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+</resources>

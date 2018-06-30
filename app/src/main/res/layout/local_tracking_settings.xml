@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<!--http://stackoverflow.com/questions/27765887/how-to-add-a-rounded-rectangular-toggle-switch-in-android-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    >
+	<LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" 
+	    android:scrollbars="vertical"
+	    >
+	
+	    <TextView
+	        android:id="@+id/location_tracking_settings"
+	        android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginStart="5dp"
+	        android:textSize="20sp"
+	        android:textStyle="bold"
+			/>
+	
+	    <View
+	        android:layout_width="fill_parent"
+	        android:layout_height="1dp"
+	        android:layout_marginBottom="5dp"
+	        android:layout_marginTop="5dp"
+	        android:background="#B8B894" />
+
+		<LinearLayout
+			android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="vertical"
+            android:background="#F0EEF0" >
+			<TextView
+				android:text="@string/locationTracker"
+				android:layout_height="20dp"
+				android:textStyle="normal"
+				android:layout_width="wrap_content" />
+
+
+					<android.support.v7.widget.SwitchCompat
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="@string/trackEnter"
+						android:id="@+id/enterTracking"
+						/>
+
+					<android.support.v7.widget.SwitchCompat
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:text="@string/trackExit"
+						android:id="@+id/exitTracking"
+
+						/>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="10dp" />
+
+
+			<TextView
+				android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/localInterval" />
+
+            <EditText
+                android:id="@+id/valuelocalInterval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hintlocalInterval"
+                android:inputType="number" />
+            
+            <Space
+            	android:layout_width="match_parent"
+            	android:layout_height="10dp" />
+
+            <CheckBox
+	            android:id="@+id/value_trackToFile"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/text_trackToFile" 
+	        />
+            
+
+            <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+			<LinearLayout
+				android:id="@+id/linearLayout3"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="#F0EEF0"
+				android:layout_marginTop="2dp"
+				android:orientation="vertical"
+				>
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/text_trackToMail"
+					android:textColor="?attr/colorAccent"
+					android:textStyle="normal" />
+
+				<Spinner
+					android:id="@+id/spinner_tracking_mail_profile"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					/>
+
+			</LinearLayout>
+			<LinearLayout
+				android:id="@+id/linearLayout4"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="#F0EEF0"
+				android:layout_marginTop="2dp"
+				android:orientation="vertical"
+				>
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="@string/text_trackToServer"
+					android:textColor="?attr/colorAccent"
+					android:textStyle="normal" />
+
+				<Spinner
+					android:id="@+id/spinner_tracking_server_profile"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					/>
+
+			</LinearLayout>
+		</LinearLayout>
+	</LinearLayout>
+</ScrollView>

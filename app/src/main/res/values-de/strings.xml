@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	Copyright 2014 - 2015 Egmont R. (egmontr@gmail.com)
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
+
+<resources tools:ignore="MissingTranslation" xmlns:tools="http://schemas.android.com/tools">
+    <!-- app name and title -->
+    <string name="app_name">EgiGeoZone</string>
+
+    <string name="leer"> </string>
+
+    <!-- UI -->
+    <string name="geofence">GeoZonen Name</string>
+    <string name="latitude">Breitengrad</string>
+    <string name="longitude">Längengrad</string>
+    <string name="latitudeOpt">Breitengrad (optional)</string>
+    <string name="longitudeOpt">Längengrad (optional)</string>
+    <string name="geofenceHint">Name der GeoZone eingeben</string>
+    <string name="latitudeHint">Breitengrad eingeben</string>
+    <string name="longitudeHint">Längengrad eingeben</string>
+    <string name="alias">Alias (optional)</string>
+    <string name="aliasHint">Aliasname für Zone</string>
+
+
+    <string name="menu_item_clear_geofence">Felder löschen</string>
+
+    <string name="menu_item_get_location">Aktuelle Koordinaten</string>
+    <string name="menu_item_accuracy">Standortgenauigkeit</string>
+
+    <string name="menu_item_refresh">Aktualisieren</string>
+    <string name="menu_item_privacy">Datenschutzerklärung</string>
+    <string name="menu_item_all_geozones">Alle Geozonen anzeigen</string>
+    <string name="menu_item_info">Info</string>
+    <string name="menu_item_tech_info">Technische Info</string>
+    <string name="menu_item_help">Hilfe</string>
+    <string name="menu_item_settings">Einstellungen</string>
+    <string name="admin">Verwaltung</string>
+    <string name="menu_item_profiles">Profile</string>
+    <string name="menu_item_log">Letzte Log-Datei anzeigen</string>
+    <string name="menu_item_send_log">Letzte Log-Datei senden</string>
+    <string name="menu_item_configuration">Konfiguration</string>
+    <string name="menu_item_debug">Log-Level</string>
+    <string name="menu_item_export">Sichern auf:</string>
+    <string name="menu_item_import">Wiederherstellen von:</string>
+    <string name="menu_item_plugins">Registrierte Plugins anzeigen</string>
+    <string name="menu_item_track">Standortaufzeichnungen</string>
+
+    <string name="export_ok_text">Konfiguration wurde gesichert.</string>
+    <string name="import_ok_text">Konfiguration registriert.</string>
+    <string name="settings_tracker">Grundeinstellungen Standortaufzeichnung</string>
+    <string name="loc_interval">Zeit in Minuten zwischen den Aktualisierungen</string>
+
+    <string name="profilName">Profilname</string>
+    <string name="execFor">Ausführen beim</string>
+    <string name="enter">Betreten der Zone</string>
+    <string name="exit">Verlassen der Zone</string>
+
+
+    <string name="test_ok_text">Der Test war erfolgreich.</string>
+    <string name="test_ok_text_more">Der Test war erfolgreich. Prüfe die getätigten Einstellungen.</string>
+
+    <string name="test_ok_title">Test erfolgreich</string>
+    <string name="test_nok_title">Test nicht erfolgreich</string>
+
+    <string name="prio_low">Wenig Akku-Verbrauch (ca. 10 Km Genauigkeit)</string>
+    <string name="prio_balanced">Ausgewogener Akku-Verbrauch (ca. 100 Meter Genauigkeit)</string>
+    <string name="prio_high">Großer Akku-Verbrauch (hohe Genaugkeit)</string>
+
+    <string name="app_plugins">Registrierte Plugins</string>
+
+    <string name="radius">Radius</string>
+    <string name="certName">Zertifikat (PKCS12)</string>
+    <string name="certPasswd">Passwort Zertifikat</string>
+    <string name="caCertName">Aussteller Zertifikate (PEM)</string>
+    <string name="urlEntered">URL Zone betreten</string>
+    <string name="urlExited">URL Zone verlassen</string>
+    <string name="user">Benutzer</string>
+    <string name="userPasswd">Passwort</string>
+    <string name="fhem_geofancy">"URL Fhem Geofancy"</string>
+    <string name="srv_tracking">URL für Tracking</string>
+
+    <string name="radiusHint">Radius in Meter eingeben</string>
+    <string name="certNameHint">Privates Zertifikat(PKCS12) eingeben</string>
+    <string name="certPasswdHint">Passwort des Zertifikats eingeben</string>
+    <string name="caCertNameHint">Aussteller Zertifikate(PEM) des Servers</string>
+    <string name="urlEnteredHint">URL Zone betreten eingeben</string>
+    <string name="urlExitedHint">URL Zone verlassen eingeben</string>
+    <string name="userHint">Benutzer Basic Authentication</string>
+    <string name="userPasswdHint">Passwort Basic Authentication</string>
+    <string name="fhem_geofancyHint">"URL für Fhem Geofancy Modul"</string>
+    <string name="trackingHint">"URL für das Tracking"</string>
+    <string name="timeoutHint">"Voreinstellung ist 30"</string>
+
+    <string name="descCerts">Zertifikate sind unter \'interner Speicher/egigeozone\' abzulegen</string>
+    <string name="descfhemGeofancy">Adresse im Fhem/Geofancy-Style. Beispiel: https://rpi.server.de:1999/webhook/geo</string>
+    <string name="descTracking">Adresse für das Tracking. Beispiel: http://server:port/xyz/track.php?latitude=${latitude}&amp;longitude=${longitude}&amp;date=${date}&amp;device=${androidId}&amp;zone=${zone}</string>
+    <string name="descor1">oder</string>
+
+    <!-- Messages -->
+    <string name="geofence_not_available">Geofence steht nicht zur Verfügung. Bitte in den Einstellungen den Standort aktivieren und es neu versuchen. Standorteinstellungen aufrufen?</string>
+    <string name="geofence_too_many_geofences">Die App hat mehr als 100 Zonen registriert. Bitte nicht benötigte Zonen löschen.</string>
+    <string name="geofence_too_many_pending_intents">Die App benutzt mehr als fünf verschiedene PendingIntents. Bitte Entwickler kontaktieren.</string>
+
+    <string name="add_geofences_result_success">
+        GeoZonen hinzufügen: Erfolgreich
+    </string>
+    <string name="add_geofences_result_failure">
+        GeoZonen hinzufügen: Fehlgeschlagen
+    </string>
+    <string name="add_geofences_already_requested_error">
+        Kann GeoZonen nicht hinzufügen, da noch Anfragen ausstehen.
+    </string>
+    <string name="connected">Client connected</string>
+    <string name="disconnected">Client disconnected</string>
+    <string name="geofence_input_error_missing">Wert fehlt</string>
+    <string name="geofence_input_not_greater_zero">Wert muss größer oder gleich Null sein</string>
+    <string name="geofence_input_error_comma">Sonderzeichen im Namen nicht erlaubt.</string>
+    <string name="geofence_input_error_latitude_invalid">
+        Falscher Breitengrad. Werte zwischen -90 und 90 Grad.
+    </string>
+    <string name="geofence_input_error_longitude_invalid">
+        Falscher Längengrad. Werte zwischen -180 und 180 Grad.
+    </string>
+    <string name="bt_input_error_radius_invalid">
+        Falscher Radius. Muss mindestens einen Meter betragen.
+    </string>
+    <string name="geofence_input_error_radius_invalid">
+        Falscher Radius. Muss mindestens 50 Meter betragen.
+    </string>
+    <string name="geofence_transition_entered">betreten</string>
+    <string name="geofence_transition_error_detail">
+        GeoZonen Transition-Fehler, Code %1$d Nachricht %2$s.
+    </string>
+    <string name="geofence_transition_exited">verlassen</string>
+    <string name="geofence_transition_invalid_type">
+        GeoZonen Transition-Fehler, fehlerhafter Typ %1$d in Zone %2$s
+    </string>
+    <string name="geofence_transition_notification_text">
+        Anklicken um zur App zu gelangen
+    </string>
+    <string name="geofence_transition_notification_title">
+        %1$s: %2$s
+    </string>
+    <string name="geofence_transition_unknown">Unbekannte Transition</string>
+    <string name="no_resolution">Google Play Services: nicht erreichbar</string>
+    <string name="play_services_available">Location Services ist verfügbar</string>
+    <string name="remove_geofences_id_failure">
+        Entfernen der GeoZonen nach ID fehlerhaft
+    </string>
+    <string name="remove_geofences_already_requested_error">
+        Kann nicht GeoZonen nicht entfernen, da noch eine Anfrage aussteht.
+    </string>
+    <string name="remove_geofences_id_success">
+        Entfernen der GeoZonen nach IDs erfolgreich
+    </string>
+    <string name="remove_geofences_intent_failure">
+        Entfernen aller GeoZonen fehlerhaft
+    </string>
+    <string name="remove_geofences_intent_success">
+        Entfernen der GeoZonen erfolgreich.
+    </string>
+    <string name="unknown_activity_request_code">
+        Unbekannten Request Code %1$d in onActivityResult erhalten.
+    </string>
+
+    <string name="info_title">Kurzbeschreibung dieser App</string>
+    <string name="info">Diese App ist eine Android Geofence App, welche beim Eintreten oder Verlassen vorgegebener geografischer Zonen jeweils eine Aktion auslösen kann. Solche Aktionen sind Serveraufrufe, SMS versenden, Emails versenden, u.a. Desgleichen kann eine Benachrichtigung angezeigt werden.</string>
+    <string name="disclaimer_title">Haftungsausschluss</string>
+    <string name="disclaimer">Die Software und Ihre Dokumentation wird \"wie sie ist\" und ohne jede Gewährleistung für Funktion, Korrektheit oder Fehlerfreiheit zur Verfügung gestellt. Für jedweden direkten oder indirekten Schaden - insbesondere Schaden an anderer Software, Schaden an Hardware, Schaden durch Nutzungsausfall und Schaden durch Funktionsuntüchtigkeit der Software, kann der Autor nicht haftbar gemacht werden. Ausschließlich der Benutzer haftet für die Folgen der Benutzung dieser Software. Diese Software wurde mit größter Sorgfalt entwickelt, jedoch können Fehler niemals ausgeschlossen werden. Es kann daher keine Gewähr für die Sicherheit Ihrer Daten übernommen werden.\n\nEin paar wenige Icons sind made by Freepik von www.flaticon.com</string>
+
+    <string name="privacy_short">Über die EgiGeoZone App werden keine personenbezogenen Daten der Nutzer erfasst und auch nicht an Dritte übermittelt. Auch werden über die App keinerlei Statistiken erhoben.</string>
+    <string name="privacy_title">Beschreibung der benötigten Android Berechtigungen</string>
+    <string name="privacy_contact_title">Im Web</string>
+    <string name="privacy_web">Datenschutzerklärung im Web</string>
+    <string name="privacy_hp">Dieser Text auf der Webseite:\n <a href="https://www.egigeozone.de/privacy/default.html">https://www.egigeozone.de/privacy/default.html</a></string>
+    <string name="privacy_mail">Kontakt:\n <a href="egmontr@gmail.com">egmontr@gmail.com</a></string>
+
+    <string name="usage">Verwendung:</string>
+    <string name="pt_1">Anrufe:</string>
+    <string name="put_1">Diese Berechtigung erlaubt der App, unter anderem die Telefonnummer und Geräte-ID festzustellen.</string>
+    <string name="p_1">Wird zum Ermitteln der Geräte-ID benötigt. Diese wird dann an FHEM oder anderen benutzten Servern gesendet um dann dort den Benutzer zu identifizieren.</string>
+
+    <string name="pt_2">Ihre Nachrichten:</string>
+    <string name="put_2">SMS senden.</string>
+    <string name="p_2">Ermöglicht der App das Senden von SMS-Nachrichten. Hierfür können Gebühren anfallen.</string>
+
+    <string name="pt_3">Ihr Standort:</string>
+    <string name="put_3">Ermöglicht der App, den Standort zu ermitteln.</string>
+    <string name="p_3">Feststellen des Standortes und des Betretens/Verlassens einer Geozone (Grundfunktionalität der App)</string>
+
+    <string name="pt_4">Speicher:</string>
+    <string name="put_4">Ermöglicht der App, auf die SD-Karte zu lesen und schreiben.</string>
+    <string name="p_4">Lesen der Zertifikate. Lesen und schreiben der Export/Import-Datei. Schreiben, lesen und löschen verschiedener Log-Dateien.</string>
+
+    <string name="pt_5">Ihre Konten:</string>
+    <string name="put_5">Konten auf dem Gerät abrufen.</string>
+    <string name="p_5">Exportieren und Importieren der Konfiguration auf z.B. Dropbox, Google Drive, OneDrive u.a..</string>
+
+    <string name="pt_6">WLAN-Verbindungsinformationen:</string>
+    <string name="put_6">WLAN-Verbindungen abrufen.</string>
+    <string name="p_6">Wird für die Ermittlung des Standortes benötigt und zum Start und Stopp von Wlan verwendet.</string>
+
+    <string name="put_7">Daten aus dem Internet abrufen:</string>
+    <string name="p_7">Es werden verschiedene Daten zum Darstellen der Karte, Suche in der Karte, für das GCM, u.a, benötigt.</string>
+
+    <string name="put_8">Google-Servicekonfiguration lesen:</string>
+    <string name="p_8">Für die Verwendeung der Google Dienste, wie Geofence-Dienst, GCM und Google Maps.</string>
+
+    <string name="put_10">Netzwerkverbindungen abrufen:</string>
+    <string name="p_10">Um zu prüfen, ob Internet wieder verfügbar ist. Somit kann man gepufferte Serveranfragen wiederholen.</string>
+
+    <string name="put_11">Beim Start ausführen:</string>
+    <string name="p_11">Beim Start (Boot) werden die Zonen dem Google Geofence Dienst neu übergeben, da dieser sich diese nicht merkt.</string>
+
+    <string name="put_12">WLAN-Verbindungen herstellen und trennen:</string>
+    <string name="p_12">Starten und stoppen von Wlan bei "Weitere Aktionen".</string>
+
+    <string name="put_13">Vibrationsalarm steuern:</string>
+    <string name="p_13">Starten und stoppen von Vibration bei "Weitere Aktionen".</string>
+
+    <string name="put_14">Ruhezustand deaktivieren:</string>
+    <string name="p_14">Das Gerät wir nur kurz geweckt, damit Aktionen im Hintergrund gestartet werden können.</string>
+
+
+    <string name="rinfo_title">Beschreibung</string>
+    <string name="rinfo">Im Betreff und Text der EMail, im Text der SMS und in der Server-URL können Variablen eingefügt werden, welche zur Laufzeit ersetzt werden.</string>
+    <string name="rdesc_title">Vordefinierte Variablen</string>
+    <string name="rdesc">GeoZone = ${zone}\nBetreten/Verlassen = ${transition}\n 1 für Betreten und 0 für Verlassen = ${transitionType}\nBreitengrad = ${latitude}\nLängengrad = ${longitude}
+        \nGemeldetere Breitengrad = ${realLatitude}\nGemeldeter Längengrad = ${realLongitude}\nStandortgenauigkeit = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
+        Datum = ${date}\nLokales Datum = ${localDate}\nUTC-Datum des gemeldeten Standortes = ${locationDate}\nLokales Datum des gemeldeten Standortes = ${localLocationDate}\n
+    </string>
+
+
+    <string name="map_action">Hier klicken um diese Position zu übernehmen</string>
+
+    <string name="action_delete">Sicher löschen?</string>
+    <string name="action_yes">Ja</string>
+    <string name="action_no">Nein</string>
+
+    <string name="profile">Hier können verschiedene Profile konfiguriert werden, welche dann den Zonen und anderen Aufgaben zugeordnet werden können. Mit \'+ \' Profil erfassen.</string>
+    <string name="profiles">Hier können die verschiedenen Profile bearbeitet werden. Diese kann man dann den Zonen zuordnen.</string>
+    <string name="profile_in_use">Profil ist in Gebrauch und kann deshalb nicht gelöscht werden!</string>
+
+    <string name="server_opt_title">Servereinstellungen</string>
+    <string name="prof_server">Serverprofile</string>
+    <string name="prof_server_fallback">Ausfallserverprofil</string>
+
+    <string name="mail_opt_title">Emaileinstellungen</string>
+    <string name="prof_mail">Emailprofile</string>
+    <string name="mailUser">SMTP Benutzer</string>
+    <string name="mailUserPw">Passwort SMTP Benutzer</string>
+    <string name="mailSmtpHost">SMTP Server</string>
+    <string name="mailSmtpPort">SMTP Port</string>
+    <string name="mailSender">Von</string>
+    <string name="mailEmpf">An</string>
+    <string name="mailSubject">Betreff</string>
+    <string name="mailText">Inhalt</string>
+    <string name="mailSsl">SSL Verbindung</string>
+    <string name="mailStartTls">STARTTLS-Option</string>
+
+    <string name="mailHintUser">SMTP Benutzer eingeben</string>
+    <string name="mailHintUserPw">Passwort SMTP Benutzer eingeben</string>
+    <string name="mailHintSmtpHost">SMTP Server eingeben</string>
+    <string name="mailHintSmtpPort">SMTP Port (25)</string>
+    <string name="mailHintSender">Absenderadresse eingeben</string>
+    <string name="mailHintEmpf">Komma getrennt eingeben</string>
+    <string name="mailHintSubject">Betreff eingeben</string>
+    <string name="mailHintText">Nachricht eingeben</string>
+
+    <string name="sms_opt_title">SMS-Einstellungen</string>
+    <string name="prof_sms">SMS-Profile</string>
+    <string name="smsTo">Empfänger</string>
+    <string name="smsText">Inhalt</string>
+    <string name="smsHintTo">Empfänger-Nummer eingeben</string>
+    <string name="smsHintText">Nachricht eingeben</string>
+
+    <string name="other_opt_title">Weitere Aktionen</string>
+    <string name="prof_other">Profile für weitere Aktionen</string>
+
+    <string name="other_conditions_title">Bedingungen</string>
+    <string name="prof_conditions">Profile für Bedingungen</string>
+
+    <string name="timeout">Timeout in Sekunden</string>
+    <string name="notification">Benachrichtigung (betreten/verlassen Zone)</string>
+    <string name="error_notification">Benachrichtigung bei Fehlern</string>
+    <string name="sticky_notification">Dauerhafte Benachrichtigung</string>
+    <string name="broadcast">Übermittlung an Plugins erlauben</string>
+
+    <string name="gcm">GCM-Nachrichten empfangen</string>
+    <string name="gcm_logging">GCM-Benachrichtigungen protokollieren</string>
+    <string name="menu_item_show_gcm_log">GCM-Protokoll anzeigen</string>
+    <string name="gcm_sender_id">GCM-Projektnummer</string>
+    <string name="gcm_sender_id_clipboard">API-Client-Key nach Zwischenablage kopiert</string>
+    <string name="menu_item_delete_gcm_log">GCM-Protokoll-Datei löschen</string>
+    <string name="getApiKey">GCM-API-Client-Key</string>
+    <string name="noApiKey">Kein API-Client-Key vorhanden! Bitte zuerst für Google GCM registrieren. Für Details siehe Handbuch.</string>
+
+    <string name="app_settings">Verwaltung</string>
+    <string name="app_locationTrackerActivity">Einstellungen Standortaufzeichnungen</string>
+
+    <string name="app_accuracy">Standortgenauigkeit</string>
+
+    <string name="on">ein</string>
+    <string name="off">aus</string>
+    <string name="vibration">vibrieren</string>
+    <string name="none">nichts tun</string>
+
+    <string name="moreWlan">WLAN</string>
+    <string name="moreSound">Ton</string>
+    <string name="moreMM">Multimedia Ton</string>
+    <string name="moreBluetooth">Bluetooth</string>
+    <string name="moreEnter">Betreten Zone</string>
+    <string name="moreExit">Verlassen Zone</string>
+
+    <string name="locationTracker">Standortaufzeichnungen</string>
+    <string name="call_locationTrackerSettings">Standortaufzeichnungen starten/stoppen</string>
+    <string name="trackEnter">Start beim Betreten der Zone</string>
+    <string name="trackExit">Start beim Verlassen der Zone</string>
+
+    <string name="localInterval">Protokollintervall des Standortes in Minuten</string>
+    <string name="hintlocalInterval">Voreinstellung ist 5 Minuten</string>
+    <string name="text_trackToFile">Schreibe Standorte in Datei</string>
+    <string name="text_trackToMail">Sende Koordinaten zu diesem E-Mail-Profil</string>
+    <string name="text_trackToServer">Sende Koordinaten zu diesem Serverprofil</string>
+    <string name="text_stopAllTrackings">Standortaufzeichnungen anhalten</string>
+    <string name="text_serviceState">Dienstzustand</string>
+    <string name="text_tracking_notification">Live Tracking ist aktiv</string>
+    <string name="text_running_notification">EgiGeoZone ist aktiv</string>
+
+    <string name="moreTasker">Name der Tasker Task</string>
+
+    <string name="cond_bt_enter">Bluetooth Gerät Zone betreten</string>
+    <string name="cond_bt_exit">Bluetooth Gerät Zone verlassen</string>
+
+    <string name="cond_weekdays">Wochentage an welchen die Aktion ausgeführt werden soll</string>
+
+    <string name="mo">Mo</string>
+    <string name="di">Di</string>
+    <string name="mi">Mi</string>
+    <string name="don">Do</string>
+    <string name="fr">Fr</string>
+    <string name="sa">Sa</string>
+    <string name="so">So</string>
+
+    <string name="wlan_on_text">Achtung! Beim Deaktivieren von WLAN kann es zu Behinderungen in der Erkennung der GeoZonen kommen. Schalten Sie WLAN in Verbindung mit Geofencing nur aus, wenn Sie als Ersatz GPS verwenden und dieser auch emfangbar ist!</string>
+
+    <string name="hp_help">Das Handbuch für EgiGeoZone befindet sich hier:\n <a href="http://www.egigeozone.de/manual/default.html">http://www.egigeozone.de/manual/default.html</a></string>
+    <string name="hp">EgiGeoZone-Webseite:\n <a href="http://www.egigeozone.de">http://www.egigeozone.de</a></string>
+    <string name="forum">EgiGeoZone-Forum:\n <a href="http://rpi.spdns.eu/egigeozone/">http://rpi.spdns.eu/egigeozone/</a></string>
+
+    <string name="spinner_local">Verzeichnis \"egigeozone\"</string>
+    <string name="spinner_extern">GDrive, Dropbox, &#8230;</string>
+    <string name="spinner_titel_exp">Konfiguration exportieren</string>
+    <string name="accuracy">Standortgenauigkeit: Es werden nur gelieferte Standorte kleiner den angegebenen Metern berücksichtigt. \nDiese wird nur für spezielle Fälle benötigt. Am Anfang den Wert bitte auf 0 lassen. Wenn nicht, kann es sein, dass keine Aktionen durchgeführt werden! </string>
+    <string name="accuracy_hint">Genauigkeit in Metern</string>
+
+    <string name="beacon">BeaconZonen Name</string>
+    <string name="beacon_ident1">Beacon Bezeichner 1</string>
+    <string name="beacon_ident2">Beacon Bezeichner 2</string>
+    <string name="beacon_ident3">Beacon Bezeichner 3</string>
+    <string name="beaconHint">Name der Beacon Zone</string>
+    <string name="scanHint">Scannen und IDs übernehmen</string>
+    <string name="scan">Scannen</string>
+    <string name="wait">Bitte warten. Scan läuft…</string>
+
+    <string name="beaconscanHelp_title">Um was geht es beim Beacon Scan</string>
+    <string name="beaconscanHelpText">Beim Starten von \"Beacon Scan\" wird ein Scannen nach BLE-Geräten (Bluetooth Low Energy) gestartet. Diese Geräte werden auch noch Beacons genannt. Durch das Starten können BeaconZonen angelegt werden. Diesen BeaconZonen können über die Profile Aktionen zugerdnet werden, welche beim Betreten oder Verlassen der BeaconZone aufgerufen werden. Im Prinzip wie bei den GeoZonen.</string>
+    <string name="beaconsScanOn">Stopp Beaconscanner</string>
+    <string name="beaconsScanOff">Start Beaconscanner</string>
+
+    <string name="bluetoothNotEnabled">Bluetooth nicht aktiv</string>
+    <string name="bluetoothWillBeEnabled">Bluetooth wird aktiviert.</string>
+    <string name="bluetoothLENotAvailable">Bluetooth LE nicht verfügbar</string>
+    <string name="bluetoothLeNotSupported">Ihr Gerät unterstützt nicht Bluetooth LE.</string>
+    <string name="BtScanNotEnabledSettings">Beaconscanner nicht aktiv. Bitte unter Verwaltung den Beaconscanner starten.</string>
+    <string name="BtScanNotEnabled">Beaconscanner nicht aktiv</string>
+
+    <string name="checkLocation">Ab Android 6 ist für die Funktionalität der GeoZonen die Standortberechtigung eine Grundvoraussetzung. Deshalb sollten Sie im nächsten Dialog diese Berechtigung zulassen und danach gegebenenfalls die Aktion erneut durchführen.</string>
+    <string name="descAskLocation">Ab Android 6 ist für die Funktionalität der GeoZonen die Standortberechtigung eine Grundvoraussetzung. Sie haben diese abgelehnt. Deshalb werden Sie nochmals gebeten diese Berechtigung anzunehmen. Danach gegebenenfalls die Aktion erneut durchführen.</string>
+    <string name="titleLocation">Standortberechtigung</string>
+
+    <string name="checkExtStorage">Diese App schreibt eine Log-Datei. Desgleichen können Sie die Konfiguration exportieren und wieder importieren. Ab Android 6 ist für das Schreiben von Dateien eine einmalige Genehmigung Voraussetzung. Deshalb sollten Sie im nächsten Dialog diese Berechtigung zulassen und danach gegebenenfalls die Aktion erneut durchführen.</string>
+    <string name="descAskExtStorage">Diese App schreibt eine Log-Datei. Desgleichen können Sie die Konfiguration exportieren und wieder importieren. Ab Android 6 ist für das Schreiben von Dateien eine einmalige Genehmigung Voraussetzung. Sie haben diese abgelehnt. Deshalb werden Sie nochmals gebeten diese Berechtigung anzunehmen. Danach gegebenenfalls die Aktion erneut durchführen.</string>
+    <string name="titleExtStorage">Schreibberechtigung</string>
+
+    <string name="checkGCM">Wenn Sie GCM-Pushnachrichten verwenden wollen, müssen Sie ab Android 6 den Zugriff auf die Konten (Kontakte) freischalten. Deshalb sollten Sie im nächsten Dialog diese Berechtigung zulassen.</string>
+    <string name="descAskGCM">Ab Android 6 ist für die Verwendung der GCM-Pushnachrichten eine einmalige Genehmigung für den Zugriff auf die Konten (Kontakte) eine Grundvoraussetzung. Sie haben diese abgelehnt. Deshalb werden Sie keine Pushnachrichten empfangen können.</string>
+    <string name="titleGCM">GCM-Konten-Berechtigung</string>
+
+    <string name="checkSMS">Ab Android 6 ist für das Versenden von SMS eine einmalige Genehmigung Voraussetzung. Deshalb sollten Sie im nächsten Dialog diese Berechtigung zulassen.</string>
+    <string name="descAskSMS">Ab Android 6 ist für das Versenden von SMS eine einmalige Genehmigung Voraussetzung. Sie haben diese abgelehnt und werden deshalb keine SMS versenden können.</string>
+    <string name="titleSMS">SMS-Berechtigung</string>
+
+    <string name="checkPhone">Die Serverprofile können die Geräte-ID an den angegebenen Server senden. Deshalb ist ab Android 6 ist für das Abgreifen der Geräte-ID eine einmalige Genehmigung Voraussetzung. Deshalb sollten Sie im nächsten Dialog diese Berechtigung zulassen.</string>
+    <string name="descAskPhone">Die Serverprofile können die Geräte-ID an den angegebenen Server senden. Deshalb ist ab Android 6 ist für das Abgreifen der Geräte-ID eine einmalige Genehmigung Voraussetzung. Sie haben diese abgelehnt. Deshalb werden Sie nochmals gebeten diese Berechtigung anzunehmen.</string>
+    <string name="titlePhone">Geräte-ID-Berechtigung</string>
+
+    <string name="titleMain">Bitte folgende Grundberechtigungen für die Appzulassen: Geräte-ID-Berechtigung (Telefon), Standortberechtigung (Standort) und Schreibberechtigung (Speicher)</string>
+
+    <string name="descAskAll">Ab Android 6 sind für die Funktionalität der App folgende Berechtigungen nötig:
+            \n\n
+        Schreibberechtigung (Speicher): Diese App schreibt eine Log-Datei. Desgleichen können Sie die Konfiguration exportieren und wieder importieren.\n\n
+        Standortberechtigung (Standort): Ist für die Funktionalität der GeoZonen eine Grundvoraussetzung.\n\n
+        Geräte-ID-Berechtigung (Telefon): Die Serverprofile können die Geräte-ID an den angegebenen Server senden.
+            \n\n
+        Sie haben aber mindestens eine davon abgelehnt und werden deshalb die App nicht verwenden können. Sie haben dennoch die Möglichkeit, diese Berechtigungen in den Geräteeinstellungen zu setzen. (Einstellungen \u279d Apps \u279d EgiGeoZone \u279d Berechtigungen)
+</string>
+
+    <string name="alertPermissions">
+        Folgende Grundberechtigungen werden für eine korrekte Funktionsweise der App benötigt:\n\n
+        Schreibberechtigung (Speicher): Diese App schreibt eine Log-Datei. Desgleichen können Sie die Konfiguration exportieren und wieder importieren.\n\n
+        Standortberechtigung (Standort): Ist für die Funktionalität der GeoZonen eine Grundvoraussetzung.\n\n
+        Geräte-ID-Berechtigung (Telefon): Die Serverprofile können die Geräte-ID an den angegebenen Server senden.
+    </string>
+    <string name="titleAlertPermissions">Grundberechtigungen für App</string>
+
+    <string name="search">Suchen</string>
+    <string name="satellite">Satellit</string>
+    <string name="increaseRadius">Radius vergrößern</string>
+    <string name="decreaseRadius">Radius verkleinern</string>
+    <string name="deleteProfile">Profil löschen</string>
+
+    <string name="toolTipRegisterZone">Bitte Zone anlegen!</string>
+    <string name="toolTipAlterZone">Bitte Zone speichern!</string>
+    <string name="toolTipTrackingSettings">Es ist eine Tracking URL im Serverprofil gesetzt. Bitte die Einstellungen für die Standortaufzeichnung überprüfen!</string>
+
+    <string name="stateResetMsg">Den Status aller Geofences auf rot/verlassen zurücksetzen</string>
+    <string name="stateReset">Den Status aller Geofences zurücksetzen</string>
+    <string name="stateResetToast">Der Status aller Geofences wurde zurückgesetzt</string>
+
+    <string name="geoZones">GeoZonen</string>
+    <string name="btZones">BluetoothZonen</string>
+    <string name="reset_all_geofence_states">Status aller Zonen zurücksetzen</string>
+
+    <string name="distance">Entfernung (Luftlinie) zur Zone ungefähr </string>
+    <string name="distanceLess">Entfernung (Luftlinie) zur Zone kleiner 50m</string>
+    <string name="distanceNa">Entfernung zur Zone nicht verfügbar</string>
+
+    <string name="colors">Farben</string>
+    <string name="colorsRestart">Achtung: Speichern bewirkt einen Neustart der App!</string>
+
+    <string name="dozePermissionsTitle">Akku Leistungsoptimierung</string>
+    <string name="dozePermissionsMessage">
+        Achtung: Diese Aufforderung kommt nur einmal!\n\n
+        Im nachfolgenden Dialog Akku-Einstellungen, klicken Sie auf das Menü \u22ee und fügen Sie die EgiGeoZone App zu der Akku-Leistungsoptimierung-Whitelist (nicht optimieren) hinzu. Andernfalls kann es sein, dass die App nicht richtig funktioniert.
+    </string>
+
+    <string name="doNotDisturbPermissionsTitle">\"Nicht stören\" Berechtigung</string>
+    <string name="doNotDisturbPermissionsMessage">
+        Damit die App das Gerät auf lautlos stellen dürfen soll, geben Sie bitte im nächsten Dialog der App die \"Nicht stören\"-Berechtigung.
+    </string>
+    <string name="ignoreFalseReports">Falschmeldungen ignorieren</string>
+
+    <string name="version">Version</string>
+    <string name="device_name">Gerätename</string>
+    <string name="device_brand">Gerätemarke</string>
+    <string name="android_version">Androidversion</string>
+    <string name="android_uuid_almost_used_for_server_calls">Android-UUID (meistens für Serveraufrufe genutzt)</string>
+    <string name="device_uuid_used_for_server_calls_if_android_uuid_not_available">Geräte-UUID (wird für Serveraufrufe benutzt, wenn die Android-UUID nicht ermittelbar ist)</string>
+    <string name="gcm_api_key">GCM API Key</string>
+</resources>
+

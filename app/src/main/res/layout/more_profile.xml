@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright 2013 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  -->
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".MainEgiGeoZone">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimaryDark"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        tools:context=".MainEgiGeoZone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:scrollbars="vertical">
+
+            <TextView
+                android:id="@+id/label_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profilName"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/value_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:inputType="text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="#B8B894" />
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/box"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/moreEnter"
+                        android:textColor="?attr/colorPrimary" />
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/moreExit"
+                        android:textColor="?attr/colorPrimary" />
+                </TableRow>
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/box"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_height="20dp"
+                        android:text="@string/moreTasker"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow>
+
+                    <EditText
+                        android:id="@+id/value_tasker_enter_id"
+                        android:layout_width="0dip"
+                        android:layout_weight="1"
+                        android:inputType="text" />
+
+                    <EditText
+                        android:id="@+id/value_tasker_exit_id"
+                        android:layout_width="0dip"
+                        android:layout_weight="1"
+                        android:inputType="text" />
+
+                </TableRow>
+            </TableLayout>
+
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="140dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/box"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_height="20dp"
+                        android:text="@string/moreWlan"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupWlanB"
+                        android:layout_width="0dip"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonWlanBOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonWlanBOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonWlanBNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupWlanV"
+                        android:layout_width="0dip"
+                        android:layout_column="0"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonWlanVOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonWlanVOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonWlanVNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+                </TableRow>
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="170dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/box"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_height="20dp"
+                        android:text="@string/moreSound"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupSoundB"
+                        android:layout_width="0dip"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundBOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundBOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundBVib"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/vibration" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundBNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupSoundV"
+                        android:layout_width="0dip"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundVOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundVOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundVVib"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/vibration" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonSoundVNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+                </TableRow>
+            </TableLayout>
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="170dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/box"
+                android:stretchColumns="1">
+
+                <TableRow>
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_height="20dp"
+                        android:text="@string/moreMM"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow>
+                    <RadioGroup
+                        android:id="@+id/radioGroupMmB"
+                        android:layout_width="0dip"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonMmBOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonMmBOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonMmBNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupMmV"
+                        android:layout_width="0dip"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonMmVOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonMmVOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonMmVNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+                </TableRow>
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="140dp"
+                android:layout_margin="2dp"
+                android:background="@drawable/box"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_height="20dp"
+                        android:text="@string/moreBluetooth"
+                        android:textStyle="bold" />
+                </TableRow>
+
+                <TableRow>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupBluetoothB"
+                        android:layout_width="0dip"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonBluetoothBOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonBluetoothBOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonBluetoothBNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupBluetoothV"
+                        android:layout_width="0dip"
+                        android:layout_weight="1">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonBluetoothVOn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/on" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonBluetoothVOff"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/off" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonBluetoothVNone"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/none" />
+                    </RadioGroup>
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+</android.support.design.widget.CoordinatorLayout>

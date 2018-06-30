@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:orientation="vertical"
+        android:weightSum="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F0EEF0"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#F0EEF0"
+                android:orientation="horizontal">
+
+                <RadioGroup
+                    android:id="@+id/radioGroupGeofenceType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioButton
+                        android:id="@+id/radioButtonGoogle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/google" />
+
+                    <RadioButton
+                        android:id="@+id/radioButtonPathSense"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/pathsense" />
+                </RadioGroup>
+
+                <CheckBox
+                    android:id="@+id/value_false_positives"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/ignoreFalseReports" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="6dp"
+                android:orientation="vertical"
+                android:background="?attr/colorAccent"
+                />
+
+            <CheckBox
+                android:id="@+id/value_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/notification" />
+
+            <CheckBox
+                android:id="@+id/value_error_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/error_notification" />
+
+            <CheckBox
+                android:id="@+id/value_sticky_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/sticky_notification" />
+
+            <CheckBox
+                android:id="@+id/value_broadcast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/broadcast" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical"
+            android:background="?attr/colorAccent"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:orientation="horizontal"
+            android:background="#F0EEF0"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="18sp"
+                android:text="@string/gcm_sender_id"
+                android:gravity="center_vertical" />
+
+            <EditText
+                android:id="@+id/value_sender_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text"
+                android:gravity="center_vertical" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F0EEF0" >
+
+            <CheckBox
+                android:id="@+id/value_gcm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="true"
+                android:text="@string/gcm" />
+
+            <CheckBox
+                android:id="@+id/value_gcm_logging"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:checked="true"
+                android:text="@string/gcm_logging" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_visibility_black_24dp"
+                android:drawableEnd="@drawable/ic_visibility_black_24dp"
+                android:onClick="showGcmApiKey"
+                android:text="@string/getApiKey"
+                android:drawablePadding="10dp"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:orientation="vertical"
+                android:background="?attr/colorAccent"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="#F0EEF0" >
+
+                <Button
+                    android:id="@+id/button_show_gcm_log"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/ic_assignment_black_24dp"
+                    android:drawableEnd="@drawable/ic_assignment_black_24dp"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/menu_item_show_gcm_log" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#F0EEF0" >
+
+            <Button
+                android:id="@+id/button_log"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_description_black_24dp"
+                android:drawableEnd="@drawable/ic_description_black_24dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/menu_item_log" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#F0EEF0" >
+
+            <Button
+                android:id="@+id/button_debug"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_bug_report_black_24dp"
+                android:drawableEnd="@drawable/ic_bug_report_black_24dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/menu_item_debug" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#F0EEF0" >
+
+            <Button
+                android:id="@+id/button_send_log"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_send_black_24dp"
+                android:drawableEnd="@drawable/ic_send_black_24dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/menu_item_send_log" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#F0EEF0" >
+
+            <Button
+                android:id="@+id/button_plugin"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/puzzle"
+                android:drawableEnd="@drawable/puzzle"
+                android:gravity="start|center_vertical"
+                android:text="@string/menu_item_plugins" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#F0EEF0" >
+
+            <Button
+                android:id="@+id/button_tracking"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_my_location_black_24dp"
+                android:drawableEnd="@drawable/ic_my_location_black_24dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/menu_item_track" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#F0EEF0" >
+
+            <Button
+                android:id="@+id/button_themes"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableRight="@drawable/ic_color_lens_black_24dp"
+                android:drawableEnd="@drawable/ic_color_lens_black_24dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/colors" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:orientation="vertical"
+            android:background="?attr/colorAccent"
+            />
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="?attr/colorPrimary"
+                android:text="@string/menu_item_configuration" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:background="#F0EEF0" >
+
+            <Spinner
+                android:id="@+id/spinner_export"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#F0EEF0" >
+
+            <Spinner
+                android:id="@+id/spinner_import"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:orientation="vertical"
+            android:background="?attr/colorAccent"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_undo_black_24dp"
+            android:drawableEnd="@drawable/ic_undo_black_24dp"
+            android:drawablePadding="10dp"
+            android:onClick="resetGeofenceStatus"
+            android:text="@string/reset_all_geofence_states"
+            />
+
+    </LinearLayout>
+</ScrollView>

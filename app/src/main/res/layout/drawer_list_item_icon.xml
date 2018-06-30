@@ -1,0 +1,58 @@
+<!--
+  Copyright 2013 The Android Open Source Project
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  --><!-- android:background="#33AEAEFF"--><!--android:textColor="#AEAEFF"-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/drawer_item_icon"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:layout_gravity="center_vertical"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/drawer_item_zone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="34dp"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:textColor="#2770b9" />
+        <!--android:minHeight="?android:attr/listPreferredItemHeightSmall"-->
+        <TextView
+            android:id="@+id/drawer_item_zone_dist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingEnd="10sp"
+            android:paddingLeft="20sp"
+            android:paddingRight="10sp"
+            android:paddingStart="20sp"
+            android:textColor="#2AA0b9"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>
