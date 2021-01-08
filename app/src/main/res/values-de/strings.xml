@@ -180,7 +180,12 @@
     <string name="disclaimer_title">Haftungsausschluss</string>
     <string name="disclaimer">Die Software und Ihre Dokumentation wird \"wie sie ist\" und ohne jede Gewährleistung für Funktion, Korrektheit oder Fehlerfreiheit zur Verfügung gestellt. Für jedweden direkten oder indirekten Schaden - insbesondere Schaden an anderer Software, Schaden an Hardware, Schaden durch Nutzungsausfall und Schaden durch Funktionsuntüchtigkeit der Software, kann der Autor nicht haftbar gemacht werden. Ausschließlich der Benutzer haftet für die Folgen der Benutzung dieser Software. Diese Software wurde mit größter Sorgfalt entwickelt, jedoch können Fehler niemals ausgeschlossen werden. Es kann daher keine Gewähr für die Sicherheit Ihrer Daten übernommen werden.\n\nEin paar wenige Icons sind made by Freepik von www.flaticon.com</string>
 
-    <string name="privacy_short">Über die EgiGeoZone App werden keine personenbezogenen Daten der Nutzer erfasst und auch nicht an Dritte übermittelt. Auch werden über die App keinerlei Statistiken erhoben.</string>
+    <string name="sms_info_title">SMS senden von Google verboten</string>
+    <string name="sms_info">Google hat mir mitgeteilt, dass ab dem 9. Januar 2019 kein Senden von SMS im Hintergrund mehr erlaubt ist. Falls die Funktion nicht unterbunden wird, wird die App geblockt. Eine Anfrage auf eine Sondergenehmigung wurde abgelehnt.</string>
+    <string name="info_1">Siehe here:\n <a href="https://android-developers.googleblog.com/2018/10/providing-safe-and-secure-experience.html">https://android-developers.googleblog.com/2018/10/providing-safe-and-secure-experience.html</a></string>
+    <string name="info_2">Und hier:\n <a href="https://play.google.com/about/privacy-security-deception/permissions/">https://play.google.com/about/privacy-security-deception/permissions/</a></string>
+
+    <string name="privacy_short">Über die EgiGeoZoneBT App werden keine personenbezogenen Daten der Nutzer erfasst und auch nicht an Dritte übermittelt. Auch werden über die App keinerlei Statistiken erhoben.</string>
     <string name="privacy_title">Beschreibung der benötigten Android Berechtigungen</string>
     <string name="privacy_contact_title">Im Web</string>
     <string name="privacy_web">Datenschutzerklärung im Web</string>

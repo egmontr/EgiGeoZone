@@ -585,9 +585,6 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
                         // If the request was to add geofences
                         if (Constants.REQUEST_TYPE.ADD == mRequestType) {
 
-                            // Toggle the request flag and send a new request
-                            mGeofenceRequester.setInProgressFlag(false);
-
                             // Restart the process of adding the current geofences
                             if (mCurrentGeofences.size() > 0) {
                                 mGeofenceRequester.addGeofences(mCurrentGeofences);

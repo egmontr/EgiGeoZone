@@ -16,26 +16,23 @@
 
 package de.egi.geofence.geozone.geofence;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
+import com.google.android.gms.location.GeofencingClient;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import org.apache.log4j.Logger;
 
@@ -44,7 +41,6 @@ import java.util.List;
 
 import de.egi.geofence.geozone.R;
 import de.egi.geofence.geozone.utils.Constants;
-import de.egi.geofence.geozone.utils.NotificationUtil;
 
 /**
  * Class for connecting to Location Services and requesting geofences.
@@ -57,25 +53,20 @@ import de.egi.geofence.geozone.utils.NotificationUtil;
  * automatically.
  *
  */
-public class GeofenceRequester implements ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+
+// @@https://github.com/googlesamples/android-play-location/tree/master/Geofencing/app/src/main/java/com/google/android/gms/location/sample/geofencing
+
+public class GeofenceRequester implements OnCompleteListener<Void> {
 
     // Storage for a reference to the calling client
     private final Context context;
 
+    private GeofencingClient mGeofencingClient;
+
     // Stores the PendingIntent used to send geofence transitions back to the app
     private PendingIntent mGeofencePendingIntent;
 
-    // Stores the current list of geofences
-    private ArrayList<Geofence> mCurrentGeofences;
-
-    // Stores the current instantiation of the location client
-    private GoogleApiClient mLocationClient;
 	private final Logger log = Logger.getLogger(GeofenceRequester.class);
-    /*
-     * Flag that indicates whether an add or remove request is underway. Check this
-     * flag before attempting to start a new request.
-     */
-    private boolean mInProgress;
 
     public GeofenceRequester(Context activityContext) {
         // Save the context
@@ -83,20 +74,8 @@ public class GeofenceRequester implements ConnectionCallbacks, GoogleApiClient.O
 
         // Initialize the globals to null
         mGeofencePendingIntent = null;
-        mLocationClient = null;
-        mInProgress = false;
-    }
 
-    /**
-     * Set the "in progress" flag from a caller. This allows callers to re-set a
-     * request that failed but was later fixed.
-     *
-     * @param flag Turn the in progress flag on or off.
-     */
-    public void setInProgressFlag(boolean flag) {
-        log.debug("setInProgressFlag");
-    // Set the "In Progress" flag.
-        mInProgress = flag;
+        mGeofencingClient = LocationServices.getGeofencingClient(context);
     }
 
     /**
@@ -120,96 +99,41 @@ public class GeofenceRequester implements ConnectionCallbacks, GoogleApiClient.O
          * Save the geofences so that they can be sent to Location Services once the
          * connection is available.
          */
-        mCurrentGeofences = (ArrayList<Geofence>) geofences;
-
-        // If a request is not already in progress
-        if (!mInProgress) {
-            log.info("addGeofence: not in progress");
-            // Toggle the flag and continue
-            mInProgress = true;
-
-            // Request a connection to Location Services
-            requestConnection();
-
-        // If a request is in progress
-        } else {
-            log.error("addGeofence: in progress. Stop the request");
-            // Throw an exception and stop the request
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    /**
-     * Request a connection to Location Services. This call returns immediately,
-     * but the request is not complete until onConnected() or onConnectionFailure() is called.
-     */
-    private void requestConnection() {
-        log.debug("requestConnection");
-        getLocationClient().connect();
-    }
-
-    /**
-     * Get the current location client, or create a new one if necessary.
-     *
-     * @return A LocationClient object
-     */
-    private GoogleApiClient getLocationClient() {
-        if (mLocationClient == null) {
-            mLocationClient = new GoogleApiClient.Builder(context)
-            .addApi(LocationServices.API)         
-            .addConnectionCallbacks(this)
-            .addOnConnectionFailedListener(this)
-            .build(); 
-        }
-        return mLocationClient;
-
-    }
-    /**
-     * Once the connection is available, send a request to add the Geofences
-     */
-    private void continueAddGeofences() {
-        log.debug("continueAddGeofences");
-        // Get a PendingIntent that Location Services issues when a geofence transition occurs
-        mGeofencePendingIntent = createRequestPendingIntent();
-        // Send a request to add the current geofences
-        PendingResult<Status> result;
-        try{
-//            GeofencingRequest geofencingRequest = new GeofencingRequest.Builder().addGeofence(mCurrentGeofences).setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER).build();
-            GeofencingRequest geofencingRequest = new GeofencingRequest.Builder().addGeofences(mCurrentGeofences).build();
-            result = LocationServices.GeofencingApi.addGeofences(mLocationClient, geofencingRequest, mGeofencePendingIntent);
-        }catch(SecurityException se){
-            String message = "SecurityException: " + se.getLocalizedMessage();
-            Log.e(Constants.APPTAG, message);
-            log.error(message);
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-            NotificationUtil.showError(context, "SecurityException", se.getLocalizedMessage() + " - Set App permissions! (see also log file)");
+        // Stores the current list of geofences
+        ArrayList<Geofence> mCurrentGeofences = (ArrayList<Geofence>) geofences;
+        GeofencingRequest gr = getGeofencingRequest(mCurrentGeofences);
+        mGeofencePendingIntent = getRequestPendingIntent();
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            log.debug("addGeofence: No Permission access fine location");
             return;
         }
-        result.setResultCallback(this);
+        mGeofencingClient.addGeofences(gr, mGeofencePendingIntent).addOnCompleteListener(this);
     }
 
     /**
-     * Get a location client and disconnect from Location Services
+     * Builds and returns a GeofencingRequest. Specifies the list of geofences to be monitored.
+     * Also specifies how the geofence notifications are initially triggered.
      */
-    private void requestDisconnection() {
-        log.debug("requestDisconnection");
-        // A request is no longer in progress
-        mInProgress = false;
-        getLocationClient().disconnect();
-    }
+    private GeofencingRequest getGeofencingRequest(ArrayList<Geofence> mCurrentGeofences) {
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
 
-    /*
-     * Called by Location Services once the location client is connected.
-     *
-     * Continue by adding the requested geofences.
-     */
-    @Override
-    public void onConnected(Bundle arg0) {
-        // If debugging, log the connection
-        Log.d(Constants.APPTAG, context.getString(R.string.connected));
-        log.debug("onConnected");
-        // Continue adding the geofences
-        continueAddGeofences();
+        // The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
+        // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
+        // is already inside that geofence.
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+
+        // Add the geofences to be monitored by geofencing service.
+        builder.addGeofences(mCurrentGeofences);
+
+        // Return a GeofencingRequest.
+        return builder.build();
     }
 
     /**
@@ -229,8 +153,7 @@ public class GeofenceRequester implements ConnectionCallbacks, GoogleApiClient.O
         // If no PendingIntent exists
         } else {
             // Create an Intent pointing to the IntentService
-//            Intent intent = new Intent(context, ReceiveTransitionsIntentService.class);
-        	Intent intent = new Intent("de.egi.geofence.geozone.ACTION_RECEIVE_GEOFENCE");
+        	Intent intent = new Intent(context, GeofenceReceiverService.class);
             /*
              * Return a PendingIntent to start the IntentService.
              * Always create a PendingIntent sent to Location Services
@@ -238,13 +161,8 @@ public class GeofenceRequester implements ConnectionCallbacks, GoogleApiClient.O
              * again updates the original. Otherwise, Location Services
              * can't match the PendingIntent to requests made with it.
              */
-//            return PendingIntent.getService(
-//                    context,
-//                    0,
-//                    intent,
-//                    PendingIntent.FLAG_UPDATE_CURRENT);
         	
-        	return PendingIntent.getBroadcast(
+        	return PendingIntent.getService(
                     context,
                     0,
                     intent,
@@ -253,65 +171,31 @@ public class GeofenceRequester implements ConnectionCallbacks, GoogleApiClient.O
         }
     }
 
-    /*
-     * Implementation of OnConnectionFailedListener.onConnectionFailed
-     * If a connection or disconnection request fails, report the error
-     * connectionResult is passed in from Location Services
+    /**
+     * @param task the resulting Task, containing either a result or error.
      */
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        log.debug("onConnectionFailed");
-        // Turn off the request flag
-        mInProgress = false;
-        /*
-         * Google Play services can resolve some errors it detects.
-         * If the error has a resolution, try sending an Intent to
-         * start a Google Play services activity that can resolve
-         * error.
-         */
-        if (!connectionResult.hasResolution()) {
-
-            Intent errorBroadcastIntent = new Intent(Constants.ACTION_CONNECTION_ERROR);
-            errorBroadcastIntent.addCategory(Constants.CATEGORY_LOCATION_SERVICES)
-                                .putExtra(Constants.EXTRA_CONNECTION_ERROR_CODE,
-                                        connectionResult.getErrorCode());
-            LocalBroadcastManager.getInstance(context).sendBroadcast(errorBroadcastIntent);
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-    	Toast.makeText(context, "GoogleApiClient Connection Suspended", Toast.LENGTH_SHORT).show();
-    }
-
-	@Override
-	public void onResult(@NonNull Status status) {
-        log.debug("onResult");
-        String statusMessage;
-        switch (status.getStatusCode()){
-            case 1000:
-                statusMessage = context.getString(R.string.geofence_not_available) + " (" + GeofenceStatusCodes.getStatusCodeString(1000) + ")";
-                break;
-            case 1001:
-                statusMessage = context.getString(R.string.geofence_too_many_geofences) + " (" + GeofenceStatusCodes.getStatusCodeString(1001) + ")";
-                break;
-            case 1002:
-                statusMessage = context.getString(R.string.geofence_too_many_pending_intents)  + " (" + GeofenceStatusCodes.getStatusCodeString(1002) + ")";
-                break;
-            default:
-                statusMessage = CommonStatusCodes.getStatusCodeString(status.getStatusCode())  + " (" + GeofenceStatusCodes.getStatusCodeString(status.getStatusCode()) + ")";
-        }
+    public void onComplete(@NonNull Task<Void> task) {
 		String toastMessage;
-		if (status.isSuccess()) {
-            toastMessage = context.getString(R.string.add_geofences_result_success) + " StatusCode: " + status.getStatusCode() + " StatusMessage: " + statusMessage;
+        String statusMessage = "";
+        if (task.isSuccessful()) {
+            toastMessage = context.getString(R.string.add_geofences_result_success);
             Log.d(Constants.APPTAG, toastMessage);
-
 		} else {
-            toastMessage = context.getString(R.string.add_geofences_result_failure) + " StatusCode: " + status.getStatusCode() + " StatusMessage: " + statusMessage;
+            // Get the status code for the error and log it using a user-friendly message.
+            if (task.getException().getMessage().contains("1000:")){
+                statusMessage = "(1000) " + context.getString(R.string.geofence_not_available) + " (" + GeofenceStatusCodes.getStatusCodeString(1000) + ")";
+            }
+            if (task.getException().getMessage().contains("1001:")){
+                statusMessage = "(1001 )" + context.getString(R.string.geofence_too_many_geofences) + " (" + GeofenceStatusCodes.getStatusCodeString(1001) + ")";
+            }
+            if (task.getException().getMessage().contains("1002:")){
+                statusMessage = "(1002) " + context.getString(R.string.geofence_too_many_pending_intents)  + " (" + GeofenceStatusCodes.getStatusCodeString(1002) + ")";
+            }
+            toastMessage = context.getString(R.string.add_geofences_result_failure) + " StatusMessage: " + statusMessage;
             Log.e(Constants.APPTAG, toastMessage);
             log.error(toastMessage);
         }
 		Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
-		requestDisconnection();
 	}
 }

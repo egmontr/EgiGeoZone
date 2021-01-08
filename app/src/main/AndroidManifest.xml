@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.egi.geofence.geozone"
-    android:versionCode="2770"
-    android:versionName="2.7.7">
-
-    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="26" />
+    android:versionCode="2800"
+    android:versionName="2.8.0">
 
     <uses-permission  android:name="de.egi.geofence.geozone.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
@@ -25,7 +23,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -146,15 +143,8 @@
                 android:value=".utils.Themes"/>
         </activity>
 
-        <receiver android:name="de.egi.geofence.geozone.geofence.GeofenceReceiver" android:exported="false">
-            <intent-filter >
-                <action android:name="de.egi.geofence.geozone.ACTION_RECEIVE_GEOFENCE"/>
-            </intent-filter>
-        </receiver>
-
         <service
-            android:name="de.egi.geofence.geozone.geofence.GeofenceReceiverService" android:exported="false">
-        </service>
+            android:name="de.egi.geofence.geozone.geofence.GeofenceReceiverService" android:exported="true" />
 
         <receiver android:name="de.egi.geofence.geozone.StartupReceiver" android:enabled="true" android:exported="false"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
@@ -167,7 +157,7 @@
 
         <receiver android:name="de.egi.geofence.geozone.geofence.PathsenseGeofenceEventReceiver" />
         <service
-            android:name="de.egi.geofence.geozone.geofence.PathsenseGeofenceEventReceiverService" android:exported="false">
+            android:name="de.egi.geofence.geozone.geofence.PathsenseGeofenceEventReceiverService" android:exported="true" android:permission="android.permission.BIND_JOB_SERVICE">
         </service>
 
         <!--

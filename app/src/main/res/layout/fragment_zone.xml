@@ -226,48 +226,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/linearLayout1"
-            android:background="#F0EEF0"
-            android:layout_marginTop="2dp"
-            android:orientation="horizontal"
-            >
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            >
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/prof_sms"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="normal" />
-
-            <Spinner
-                android:id="@+id/spinner_sms_profile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
-        </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/add_sms"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_add_black_24dp"
-                android:onClick="onAddSmsClicked"
-                tools:ignore="ContentDescription" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/linearLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -275,7 +233,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_below="@+id/linearLayout2"
+            android:layout_below="@+id/linearLayout1"
             android:background="#F0EEF0"
             android:layout_marginTop="2dp"
             android:orientation="horizontal"

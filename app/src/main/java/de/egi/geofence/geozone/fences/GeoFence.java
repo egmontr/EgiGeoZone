@@ -48,7 +48,6 @@ import de.egi.geofence.geozone.db.DbMailHelper;
 import de.egi.geofence.geozone.db.DbMoreHelper;
 import de.egi.geofence.geozone.db.DbRequirementsHelper;
 import de.egi.geofence.geozone.db.DbServerHelper;
-import de.egi.geofence.geozone.db.DbSmsHelper;
 import de.egi.geofence.geozone.db.DbZoneHelper;
 import de.egi.geofence.geozone.db.MoreEntity;
 import de.egi.geofence.geozone.db.RequirementsEntity;
@@ -60,7 +59,6 @@ import de.egi.geofence.geozone.profile.MailProfile;
 import de.egi.geofence.geozone.profile.MoreProfile;
 import de.egi.geofence.geozone.profile.RequirementsProfile;
 import de.egi.geofence.geozone.profile.ServerProfile;
-import de.egi.geofence.geozone.profile.SmsProfile;
 import de.egi.geofence.geozone.tracker.TrackingLocalSettings;
 import de.egi.geofence.geozone.utils.Constants;
 import de.egi.geofence.geozone.utils.Utils;
@@ -85,13 +83,11 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
     List<String> listNone;
 
     Spinner spinner_server;
-    Spinner spinner_sms;
     Spinner spinner_mail;
     Spinner spinner_more;
     Spinner spinner_requ;
 
     List<String> listSrvAll;
-    List<String> listSmsAll;
     List<String> listMailAll;
     List<String> listMoreAll;
     List<String> listRequAll;
@@ -135,9 +131,6 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         // Set servers
         fillSpinnerServer();
         spinner_server.setOnItemSelectedListener(this);
-
-        // Set SMSs
-        fillSpinnerSMS();
 
         // Set mails
         filleSpinnerMail();
@@ -196,10 +189,6 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
             if (ze.getId_more_actions() != null) {
                 int ind_mo = listMoreAll.indexOf(ze.getId_more_actions()) < 0 ? 0 : listMoreAll.indexOf(ze.getId_more_actions());
                 spinner_more.setSelection(ind_mo, true);
-            }
-            if (ze.getId_sms() != null) {
-                int ind_sm = listSmsAll.indexOf(ze.getId_sms()) < 0 ? 0 : listSmsAll.indexOf(ze.getId_sms());
-                spinner_sms.setSelection(ind_sm, true);
             }
             if (ze.getId_server() != null) {
                 int ind_se = listSrvAll.indexOf(ze.getId_server()) < 0 ? 0 : listSrvAll.indexOf(ze.getId_server());
@@ -266,31 +255,6 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         spinner_mail.setAdapter(adapterMail);
     }
 
-    private void fillSpinnerSMS() {
-        DbSmsHelper datasourceSms = new DbSmsHelper(this);
-
-        Cursor cursorSms = datasourceSms.getCursorAllSms();
-        spinner_sms = (Spinner) findViewById(R.id.spinner_sms_profile);
-        List<String> listSms = new ArrayList<>();
-        while (cursorSms.moveToNext()) {
-            listSms.add(cursorSms.getString(1));
-        }
-        Collections.sort(listSms, new Comparator<String>() {
-            @Override
-            public int compare(String s1, String s2) {
-                return s1.compareToIgnoreCase(s2);
-            }
-        });
-        cursorSms.close();
-
-        listSmsAll = new ArrayList<>();
-        listSmsAll.addAll(listNone);
-        listSmsAll.addAll(listSms);
-
-        ArrayAdapter<String> adapterSms = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listSmsAll);
-        adapterSms.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_sms.setAdapter(adapterSms);
-    }
 
     private void fillSpinnerServer() {
         DbServerHelper datasourceServer = new DbServerHelper(this);
@@ -357,7 +321,6 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         EditText mAlias = (EditText) findViewById(R.id.value_alias);
 
         Spinner mSpinner_server = (Spinner) findViewById(R.id.spinner_server_profile);
-        Spinner mSpinner_sms = (Spinner) findViewById(R.id.spinner_sms_profile);
         Spinner mSpinner_mail = (Spinner) findViewById(R.id.spinner_mail_profile);
         Spinner mSpinner_more = (Spinner) findViewById(R.id.spinner_more_profile);
         Spinner mSpinner_requ = (Spinner) findViewById(R.id.spinner_requirements_profile);
@@ -375,13 +338,11 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         String mailProfile = (String) mSpinner_mail.getSelectedItem();
         String moreProfile = (String) mSpinner_more.getSelectedItem();
         String requProfile = (String) mSpinner_requ.getSelectedItem();
-        String smsProfile = (String) mSpinner_sms.getSelectedItem();
         String serverProfile = (String) mSpinner_server.getSelectedItem();
 
         ze.setId_email(mailProfile.equals("none") ? null : mailProfile);
         ze.setId_more_actions(moreProfile.equals("none") ? null : moreProfile);
         ze.setId_requirements(requProfile.equals("none") ? null : requProfile);
-        ze.setId_sms(smsProfile.equals("none") ? null : smsProfile);
         ze.setId_server(serverProfile.equals("none") ? null : serverProfile);
 
         // Set tracker settings
@@ -545,7 +506,6 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
                 ((EditText) findViewById(R.id.value_radius)).setText(Constants.EMPTY_STRING);
                 ((EditText) findViewById(R.id.value_alias)).setText(Constants.EMPTY_STRING);
                 ((Spinner) findViewById(R.id.spinner_server_profile)).setSelection(0, true);
-                ((Spinner) findViewById(R.id.spinner_sms_profile)).setSelection(0, true);
                 ((Spinner) findViewById(R.id.spinner_mail_profile)).setSelection(0, true);
                 ((Spinner) findViewById(R.id.spinner_more_profile)).setSelection(0, true);
                 ((Spinner) findViewById(R.id.spinner_requirements_profile)).setSelection(0, true);
@@ -617,17 +577,6 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         Intent i = new Intent(this, ServerProfile.class);
         i.putExtra("action", "new");
         startActivityForResult(i, 4811);
-    }
-
-    /**
-     * Add SMS
-     */
-    @SuppressWarnings("UnusedParameters")
-    public void onAddSmsClicked(View view) {
-        log.debug("onAddSmsClicked");
-        Intent i = new Intent(this, SmsProfile.class);
-        i.putExtra("action", "new");
-        startActivityForResult(i, 4812);
     }
 
     /**
@@ -745,9 +694,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
                 fillSpinnerServer();
 
                 break;
-            // Add SMS
             case 4812:
-                fillSpinnerSMS();
                 break;
             // Add Mail
             case 4813:

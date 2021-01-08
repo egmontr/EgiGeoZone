@@ -211,7 +211,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 						// Return
 						if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 							currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_ENTER));
-							mGeofenceRequester.setInProgressFlag(false);
 							mGeofenceRequester.addGeofences(currentGeofence);
 						}else{
 							SimpleGeofence simpleGeofence = new SimpleGeofence(ze.getName(), ze.getLatitude(), ze.getLongitude(),
@@ -228,7 +227,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 						// Continue
 						if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 							currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_ENTER));
-							mGeofenceRequester.setInProgressFlag(false);
 							mGeofenceRequester.addGeofences(currentGeofence);
 						}else{
 							SimpleGeofence simpleGeofence = new SimpleGeofence(ze.getName(), ze.getLatitude(), ze.getLongitude(),
@@ -244,7 +242,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 						// Return
 						if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 							currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_EXIT));
-							mGeofenceRequester.setInProgressFlag(false);
 							mGeofenceRequester.addGeofences(currentGeofence);
 						}else{
 							SimpleGeofence simpleGeofence = new SimpleGeofence(ze.getName(), ze.getLatitude(), ze.getLongitude(),
@@ -260,7 +257,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 						// Continue
 						if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 							currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_EXIT));
-							mGeofenceRequester.setInProgressFlag(false);
 							mGeofenceRequester.addGeofences(currentGeofence);
 						}else{
 							SimpleGeofence simpleGeofence = new SimpleGeofence(ze.getName(), ze.getLatitude(), ze.getLongitude(),
@@ -291,7 +287,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 							if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 								List<Geofence> currentGeofence = new ArrayList<>();
 								currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_ENTER));
-								mGeofenceRequester.setInProgressFlag(false);
 								mGeofenceRequester.addGeofences(currentGeofence);
 							}
 							// Post a notification
@@ -304,7 +299,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 							if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 								List<Geofence> currentGeofence = new ArrayList<>();
 								currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_ENTER));
-								mGeofenceRequester.setInProgressFlag(false);
 								mGeofenceRequester.addGeofences(currentGeofence);
 							}
 						}
@@ -317,7 +311,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 							if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 								List<Geofence> currentGeofence = new ArrayList<>();
 								currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_EXIT));
-								mGeofenceRequester.setInProgressFlag(false);
 								mGeofenceRequester.addGeofences(currentGeofence);
 							}
 							NotificationUtil.showError(context, "Exit " + ze.getName() + " : False positives", origin + ": " + (radius - distanceMeters) + " difference");
@@ -329,7 +322,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 							if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
 								List<Geofence> currentGeofence = new ArrayList<>();
 								currentGeofence.add(getGeofence(ze, Geofence.GEOFENCE_TRANSITION_EXIT));
-								mGeofenceRequester.setInProgressFlag(false);
 								mGeofenceRequester.addGeofences(currentGeofence);
 							}
 						}
@@ -441,17 +433,9 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 							ze.getMailEntity().getSmtp_port(), ze.getMailEntity().getFrom(), ze.getMailEntity().getTo(), ze.getMailEntity().isSsl(), ze.getMailEntity().isStarttls(), false);
 				}
 			}
+
 			if (ze.getSmsEntity() != null){
-				log.info("Send sms...");
-				if ((transition == Geofence.GEOFENCE_TRANSITION_ENTER && ze.getSmsEntity().isEnter()) ||
-						(transition == Geofence.GEOFENCE_TRANSITION_EXIT && ze.getSmsEntity().isExit())){
-
-					String textReplace = Utils.replaceAll(context, ze.getSmsEntity().getText(), ze.getName(), ze.getAlias(), transition, ze.getRadius(),
-							ze.getLatitude(), ze.getLongitude(), realLat, realLng, locationDate, localLocationDate, location_accuracy);
-					String text = textReplace.length() > 155 ? textReplace.substring(0,155) : textReplace;
-
-					doSendSms(context, ze.getName(), ze.getSmsEntity().getNumber(), text, false);
-				}
+				log.error(context.getString(R.string.info_1));
 			}
 
 			if (ze.getMoreEntity() != null){

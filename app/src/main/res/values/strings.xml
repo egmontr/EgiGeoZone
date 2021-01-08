@@ -183,6 +183,11 @@
     <string name="disclaimer_title">Disclaimer - End User License Agreement</string>
     <string name="disclaimer">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
 
+    <string name="sms_info_title">Sending SMS prohibited by Google</string>
+    <string name="sms_info">Google has informed me that starting January 9, 2019, SMS sending will no longer be allowed in the background. If the feature is not disabled, the app will be blocked. A request for a special permit was rejected.</string>
+    <string name="info_1">See here:\n <a href="https://android-developers.googleblog.com/2018/10/providing-safe-and-secure-experience.html">https://android-developers.googleblog.com/2018/10/providing-safe-and-secure-experience.html</a></string>
+    <string name="info_2">And here:\n <a href="https://play.google.com/about/privacy-security-deception/permissions/">https://play.google.com/about/privacy-security-deception/permissions/</a></string>
+
     <string name="privacy_short">The EgiGeoZone app does not collect any personal data from the users or do pass them to third parties. Also, the app does not generate any statistics</string>
     <string name="privacy_title">Description of the required Android permissions</string>
     <string name="privacy_contact_title">On the web</string>

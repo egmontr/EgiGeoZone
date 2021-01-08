@@ -1,7 +1,9 @@
 package de.egi.geofence.geozone.geofence;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.JobIntentService;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
@@ -19,16 +21,19 @@ import de.egi.geofence.geozone.utils.Utils;
  * Created by egmont on 05.10.2016.
  */
 
-public class PathsenseGeofenceEventReceiverService extends IntentService {
+public class PathsenseGeofenceEventReceiverService extends JobIntentService {
     private final Logger log = Logger.getLogger(PathsenseGeofenceEventReceiverService.class);
+    private static final int JOB_ID = 573;
 
-
-    public PathsenseGeofenceEventReceiverService() {
-        super("PathsenseGeofenceEventReceiverService");
+    /**
+     * Convenience method for enqueuing work in to this service.
+     */
+    public static void enqueueWork(Context context, Intent intent) {
+        enqueueWork(context, PathsenseGeofenceEventReceiverService.class, JOB_ID, intent);
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleWork(Intent intent) {
         int transition = 0;
         try {
             PathsenseGeofenceEvent geofenceEvent = PathsenseGeofenceEvent.fromIntent(intent);
@@ -76,9 +81,7 @@ public class PathsenseGeofenceEventReceiverService extends IntentService {
 
             }
         }finally {
-            // Release the wake lock provided by the WakefulBroadcastReceiver.
-            log.debug("Release the wake lock");
-            PathsenseGeofenceEventReceiver.completeWakefulIntent(intent);
+
         }
     }
     /**
