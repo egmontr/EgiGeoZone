@@ -1,4 +1,4 @@
-This is the source code for **EgiGeoZone** in its last published version 2.7.7.
+This is the source code for **EgiGeoZone** in its last published version 2.8.0.
 
 I have developed this app as a hobby and therefore ask for leniency regarding the code.
 I'm not an expert in Android.
