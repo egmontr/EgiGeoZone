@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_item_scroll_bottom_gcm_log">Scroll to bottom log file</string>
+</resources>
