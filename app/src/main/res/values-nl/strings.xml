@@ -36,8 +36,8 @@
     <string name="menu_item_help">Help</string>
     <string name="menu_item_settings">Instellingen</string>
     <string name="admin">Instellingen</string>
-    <string name="menu_item_log">Laatste Log-bestand tonen</string>
-    <string name="menu_item_send_log">Laatste Log-bestand versturen</string>
+    <string name="menu_item_log">Log-bestand tonen</string>
+    <string name="menu_item_send_log">Log-bestand versturen</string>
     <string name="menu_item_configuration">Configuratie</string>
 	<string name="menu_item_debug">Log-Level</string>
     <string name="menu_item_export">Bewaren op:</string>
@@ -83,8 +83,6 @@
     <string name="add_geofences_already_requested_error">
         Kan GeoZones niet toevoegen, er staan nog aanvragen open.
     </string>
-    <string name="connected">Client verbonden</string>
-    <string name="disconnected">Verbinding verbroken</string>
     <string name="geofence_input_error_missing">Waarde ontbreekt</string>
     <string name="geofence_input_error_comma">Speciale tekens in de naam niet toegestaan.</string>
     <string name="geofence_input_error_latitude_invalid">
@@ -93,7 +91,6 @@
     <string name="geofence_input_error_longitude_invalid">
         Verkeerde lengtegraad. Waarde tussen -180 en 180 graden. 
     </string>
-    <string name="bt_input_error_radius_invalid">Verkeerde radius. Moet minstens een meter zijn.</string>
     <string name="geofence_input_error_radius_invalid">
         Verkeerde radius. Moet meer als 49 meter zijn.
     </string>
@@ -140,7 +137,7 @@
     <string name="disclaimer">De software en de documentatie wordt \"zoals het is\" en zonder enige garantie voor functionaliteit, correctheid of foutloosheid ter beschikking gesteld. Voor enige directe of indirecte schade - in het bijzonder schade aan andere software, schade aan hardware, schade door gebruiksuitval en schade door het niet juist functioneren van de software - kan de auteur niet aansprakelijk gesteld worden. Uitsluitend de gebruiker is voor de gevolgen van het gebruiken van deze software aansprakelijk. Deze software is met de grootste zorgvuldigheid ontwikkeld, echter kunnen fouten nooit uitgesloten worden. Daarom krijgt u geen garantie voor de zekerheid van uw gegevens.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
 
     <string name="rinfo_title">Beschrijving</string>
-    <string name="rinfo">In het onderwerp en de tekst van de email en in de tekst van de sms kunnen variabelen ingevoegd worden, welke tijdens de runtime vervangen worden.</string>
+    <string name="rinfo">In het onderwerp en de tekst van de email kunnen variabelen ingevoegd worden, welke tijdens de runtime vervangen worden.</string>
     <string name="rdesc_title">Voorbestemde variabelen</string>
     <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n 1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
         \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
@@ -177,12 +174,6 @@
     <string name="mailHintSubject">Onderwerp invoeren</string>
     <string name="mailHintText">Tekst invoeren</string>
     
-    <string name="sms_opt_title">Sms-instellingen</string>
-    <string name="smsTo">Ontvanger</string>
-    <string name="smsText">Inhoud</string>
-    <string name="smsHintTo">Nummer ontvanger invoeren</string>
-    <string name="smsHintText">Tekst invoeren</string>
-    
     <string name="other_opt_title">Verdere acties</string>
 
     <string name="other_conditions_title">Voorwaarden</string>
@@ -194,9 +185,9 @@
     <string name="gcm">GCM-berichten ontvangen</string>
     <string name="gcm_logging">GCM-berichten opnemen in protocol</string>
     <string name="menu_item_show_gcm_log">GCM-protocol tonen</string>
-    <string name="gcm_sender_id">GCM-Projekt-Nr</string>
+    <string name="gcm_sender_id">GCM</string>
     <string name="gcm_sender_id_clipboard">API-Client-Key naar klembord gekopieerd</string>
-    <string name="menu_item_delete_gcm_log">GCM-Protokoll-bestand verwijderen</string>
+    <string name="menu_item_delete_gcm_log">Protokoll-bestand verwijderen</string>
     
     <string name="app_settings">Beheer</string>
     <string name="app_locationTrackerActivity">Instellingen notatie locaties</string>
@@ -206,9 +197,9 @@
     <string name="vibration">vibrate</string>
     <string name="none">niets doen</string>
     
-    <string name="moreWlan">WLAN</string>
+    <string name="moreWlan">Wifi (For Android smaller or equal Version 9)</string>
     <string name="moreSound">Geluid</string>
-    <string name="moreBluetooth">Bluetooth</string>
+    <string name="moreBluetooth">Bluetooth (For Android smaller Version 12)</string>
     <string name="moreEnter">Betreden zone</string>
     <string name="moreExit">Verlaten zone</string>
     
@@ -243,7 +234,7 @@
     
     <string name="hp_help">Het handboek voor EgiGeoZone vindt u hier:\n <a href="http://www.egigeozone.de/manual/default.html">http://www.egigeozone.de/manual/default.html</a></string>
     <string name="hp">EgiGeoZone-website:\n <a href="http://www.egigeozone.de">http://www.egigeozone.de</a></string>
-    <string name="forum">EgiGeoZone-forum:\n <a href="http://rpi.spdns.eu/egigeozone/">http://rpi.spdns.eu/egigeozone/</a></string>
+    <string name="forum">EgiGeoZone-forum:\n <a href="https://www.egigeozone.de/forum">https://www.egigeozone.de/forum</a></string>
 
     <string name="spinner_local">Register \"egigeozone\"</string>
     <string name="spinner_extern">GDrive, Dropbox, &#8230;</string>
@@ -259,20 +250,15 @@
     <string name="descTracking">Tracking-adres, bijvoorbeeld: http://server:port/xyz/track.php?latitude=${latitude}&amp;longitude=${longitude}&amp;date=${date}&amp;device=${androidId}&amp;zone=${zone}</string>
     <string name="distance">Afstand (hemelsbreed) tot de zone ongeveer</string>
     <string name="distanceNa">Afstand tot de zone niet beschikbaar</string>
-    <string name="dozePermissionsMessage">"Pas op: Deze melding wordt slechts éénmaal getoond! Klik op het menu ⋮ in het navolgende scherm Batterij-instellingen, en voeg egiGeoZone toe aan de whitelist voor optimalisatie van het batterijverbruik. Laat egiGeozone dus niet optimaliseren, anders kan het zijn dat de app niet naar behoren functioneert. "</string>
-    <string name="dozePermissionsTitle">Batterijoptimalisatie</string>
     <string name="enter">Zone ingaan</string>
     <string name="execFor">Uitvoeren bij</string>
     <string name="exit">Zone uitgaan</string>
     <string name="geoZones">Geozones</string>
-    <string name="geofence_input_not_greater_zero">"Waarde moet nul of groter zijn. "</string>
     <string name="geofence_not_available">Er is geen geofence beschikbaar. Activeer Locatie in de Instellingen en probeer het opnieuw. Naar de Locatieinstellingen?</string>
     <string name="geofence_too_many_geofences">"De app heeft meer dan 100 zones geregistreerd. Wis zones die niet meer nodig zijn. "</string>
     <string name="geofence_too_many_pending_intents">"De app gebruikt meer dan vijf verschillende PendingIntents. Neem contact op met de ontwikkelaar. "</string>
     <string name="getApiKey">GCM-API-Client-Key</string>
     <string name="increaseRadius">Radius vergroten</string>
-    <string name="latitudeOpt">Breedtegraad (optioneel)</string>
-    <string name="longitudeOpt">Lengtegraad (optioneel)</string>
     <string name="menu_item_plugins">Geregistreerde plugins tonen</string>
     <string name="menu_item_profiles">Profiel</string>
     <string name="menu_item_refresh">Actualiseren</string>
@@ -283,15 +269,12 @@
     <string name="prof_other">Profiel voor verdere acties</string>
     <string name="prof_server">Serverprofiel</string>
     <string name="prof_server_fallback">Backup serverprofiel</string>
-    <string name="prof_sms">SMS profiel</string>
     <string name="profilName">Profielnaam</string>
     <string name="profile">Hier kun je profielen definiëren, die je aan zones kunt koppelen.</string>
     <string name="profile_in_use">Profiel is in gebruik, en kun je dus niet verwijderen.</string>
     <string name="profiles">Hier kun je je profielen beheren, die je aan zones kunt koppelen.</string>
     <string name="reset_all_geofence_states">Alle zones resetten</string>
     <string name="satellite">Satelliet</string>
-    <string name="scan">Scannen</string>
-    <string name="scanHint">Scannen en ID\'s overnemen</string>
     <string name="search">Zoeken</string>
     <string name="srv_tracking">URL voor tracking</string>
     <string name="stateReset">De status van alle Geofences resetten</string>
@@ -303,15 +286,11 @@
     <string name="text_trackToServer">Zend de coördinaten naar dit serverprofiel</string>
     <string name="text_tracking_notification">Live tracking actief</string>
     <string name="titleAlertPermissions">Rechten voor de app instellen</string>
-    <string name="titleExtStorage">Schrijfrecht</string>
-    <string name="titleGCM">GCM-account-rechten</string>
-    <string name="titleLocation">Locatierechten</string>
-    <string name="titlePhone">Toestel-ID-rechten</string>
-    <string name="titleSMS">SMS-rechten</string>
     <string name="toolTipAlterZone">Zone opslaan!</string>
     <string name="toolTipRegisterZone">Zone is nog niet gedefiniëerd!</string>
     <string name="trackingHint">\"URL voor het tracken\"</string>
-    <string name="wait">Even wachten, scan gaande …</string>
+    <string name="menu_item_scroll_bottom_gcm_log">Scroll to bottom log file</string>
+    <string name="menu_item_scroll_top_gcm_log">Scroll to top log file</string>
 
 </resources>
 

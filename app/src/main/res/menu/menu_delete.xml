@@ -15,10 +15,35 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:theapp="http://schemas.android.com/apk/res-auto">
-    <item
-	    android:id="@+id/menu_delete_gcm_log"
-	    android:title="@string/menu_item_delete_gcm_log"
-	    theapp:showAsAction="always"
-	    android:icon="@drawable/ic_delete_black_24dp"
-	/>
+	<item
+		android:id="@+id/menu_send_log"
+		android:title="@string/menu_item_send_log"
+		theapp:showAsAction="ifRoom"
+		android:icon="@drawable/baseline_send_24"
+		/>
+	<item
+		android:id="@+id/menu_export_log"
+		android:title="@string/menu_item_export_file"
+		theapp:showAsAction="ifRoom"
+		android:icon="@drawable/baseline_arrow_circle_down_24"
+		/>
+	<item
+		android:id="@+id/menu_delete_gcm_log"
+		android:title="@string/menu_item_delete_gcm_log"
+		theapp:showAsAction="ifRoom"
+		android:icon="@drawable/ic_delete_black_24dp"
+		/>
+	<item
+		android:id="@+id/menu_scroll_buttom_up"
+		android:title="@string/menu_item_scroll_bottom_gcm_log"
+		theapp:showAsAction="ifRoom"
+		android:icon="@android:drawable/arrow_up_float"
+		/>
+	<item
+		android:id="@+id/menu_scroll_buttom_down"
+		android:title="@string/menu_item_scroll_top_gcm_log"
+		theapp:showAsAction="ifRoom"
+		android:icon="@android:drawable/arrow_down_float"
+		/>
+
 </menu>

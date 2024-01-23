@@ -18,44 +18,57 @@ package de.egi.geofence.geozone;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
+
+import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import de.egi.geofence.geozone.utils.Utils;
 
-@SuppressWarnings("deprecation")
 public class GcmLog extends AppCompatActivity {
-
-	@SuppressLint("SetTextI18n")
+	public NestedScrollView scrollView;
+	private final Logger log = Logger.getLogger(GcmLog.class);
+	@SuppressLint({"SetTextI18n"})
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Utils.onActivityCreateSetTheme(this);
 		setContentView(R.layout.egilog);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
 
-		TextView log = ((TextView) this.findViewById(R.id.value_log));
-		File file = new File(Environment.getExternalStorageDirectory()
+		TextView log = this.findViewById(R.id.value_log);
+		scrollView = this.findViewById(R.id.value_scroll);
+
+		File file = new File(getApplicationContext().getFilesDir()
 				+ File.separator + "egigeozone" + File.separator
 				+ "gcmnotifications.txt");
-		BufferedReader r = null;
-		try {
-			r = new BufferedReader(new FileReader(file));
+
+		try (BufferedReader r = new BufferedReader(new FileReader(file))) {
 			StringBuilder total = new StringBuilder();
 			String line;
 			while ((line = r.readLine()) != null) {
@@ -64,15 +77,9 @@ public class GcmLog extends AppCompatActivity {
 			}
 			log.setText(total.toString());
 		} catch (FileNotFoundException e) {
-			log.setText("No file to display.");
+			log.setText("No file to display: \n\n" + e + "\n\n Try to delete old GCM file");
 		} catch (IOException e) {
-			log.setText("Can not open file.");
-		} finally {
-			try {
-				assert r != null;
-				r.close();
-			} catch (Exception ignored) {
-			}
+			log.setText("Can not open file: \" + e.toString()");
 		}
 	}
 
@@ -87,29 +94,72 @@ public class GcmLog extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 //        log.info("onOptionsItemSelected");
         // Handle action buttons
-        switch(item.getItemId()) {
-        case R.id.menu_delete_gcm_log:
-//            log.info("onOptionsItemSelected: menu_item_clear_geofence");
-            AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
+		if (item.getItemId() == R.id.menu_delete_gcm_log) {//            log.info("onOptionsItemSelected: menu_item_clear_geofence");
+			AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
 //            AlertDialog.Builder ab = new AlertDialog.Builder(this, R.style.StyledDialog2);
-		    ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, gcmDialogClickListener).setNegativeButton(R.string.action_no, gcmDialogClickListener).show();
-            return true;
-        // Pass through any other request
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
+			ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, gcmDialogClickListener).setNegativeButton(R.string.action_no, gcmDialogClickListener).show();
+			return true;
+		}else if(item.getItemId() == R.id.menu_export_log) {
+			Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			intent.setType("text/*");
+			intent.putExtra(Intent.EXTRA_TITLE, "gcmnotifications.txt");
+			activityResultLaunchWriteExportFile.launch(intent);
+			return true;
+		} else if(item.getItemId() == R.id.menu_scroll_buttom_down) {
+			scrollView.smoothScrollTo(0, 0);
+			return true;
+		} else if (item.getItemId() == R.id.menu_scroll_buttom_up) {
+			scrollView.smoothScrollTo(0, scrollView.getChildAt(0).getHeight());
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
-	
-    private final DialogInterface.OnClickListener gcmDialogClickListener = new DialogInterface.OnClickListener() {
+	ActivityResultLauncher<Intent> activityResultLaunchWriteExportFile = registerForActivityResult(
+			new ActivityResultContracts.StartActivityForResult(),
+			new ActivityResultCallback<ActivityResult>() {
+				@Override
+				public void onActivityResult(ActivityResult result) {
+					// Load private certificate and copy it to apps private space
+					if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+
+						try (InputStream is = new FileInputStream(getFilesDir() + File.separator + "egigeozone" + File.separator + "gcmnotifications.txt"); OutputStream os = getContentResolver().openOutputStream(result.getData().getData())) {
+							// InputStream constructor takes File, String (path), or FileDescriptor
+							// data.getData() holds the URI of the path selected by the picker
+
+							byte[] buffer = new byte[1024];
+							int length;
+							while ((length = is.read(buffer)) > 0) {
+								os.write(buffer, 0, length);
+							}
+						} catch (IOException e) {
+							log.error("Could not write Export file. Result: " + e.getMessage());
+						}
+						Toast.makeText(getApplicationContext(), R.string.export_ok_text, Toast.LENGTH_LONG).show();
+
+						// Datei wurde gespeichert. Nur Dialog ausgeben
+//						AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(getApplicationContext());
+//						ab.setMessage(R.string.export_ok_text).setPositiveButton(R.string.action_ok, dialogClickListener).setTitle("Export").setIcon(R.drawable.ic_file_upload_black_24dp).show();
+					}else{
+						log.error("Could not write Export file. Result: " + result.getResultCode());
+						Toast.makeText(getApplicationContext(), "Could not write Export file. Result: " + result.getResultCode(), Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+
+
+
+
+	private final DialogInterface.OnClickListener gcmDialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             switch (which){
             case DialogInterface.BUTTON_POSITIVE:
                 //Do your Yes progress
-            	File file = new File(Environment.getExternalStorageDirectory()
+            	File file = new File(getApplicationContext().getFilesDir()
         				+ File.separator + "egigeozone" + File.separator
-        				+ "gcmnotifications.txt");
+						+ "gcmnotifications.txt");
         		try {
         			if (file.exists()) file.delete();
         			finish();
@@ -123,10 +173,4 @@ public class GcmLog extends AppCompatActivity {
             }
         }
     };
-
-//	@Override
-//	public void onClick(View v) {
-//	    AlertDialog.Builder ab = new AlertDialog.Builder(this);
-//	    ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, gcmDialogClickListener).setNegativeButton(R.string.action_no, gcmDialogClickListener).show();
-//	}
 }

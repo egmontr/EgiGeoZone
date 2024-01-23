@@ -17,14 +17,17 @@
 package de.egi.geofence.geozone.geofence;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
@@ -61,7 +64,7 @@ public class GeofenceRequester implements OnCompleteListener<Void> {
     // Storage for a reference to the calling client
     private final Context context;
 
-    private GeofencingClient mGeofencingClient;
+    private final GeofencingClient mGeofencingClient;
 
     // Stores the PendingIntent used to send geofence transitions back to the app
     private PendingIntent mGeofencePendingIntent;
@@ -143,6 +146,7 @@ public class GeofenceRequester implements OnCompleteListener<Void> {
      *
      * @return A PendingIntent for the IntentService that handles geofence transitions.
      */
+    @SuppressLint("UnspecifiedImmutableFlag")
     private PendingIntent createRequestPendingIntent() {
         log.debug("createRequestPendingIntent");
         // If the PendingIntent already exists
@@ -161,13 +165,13 @@ public class GeofenceRequester implements OnCompleteListener<Void> {
              * again updates the original. Otherwise, Location Services
              * can't match the PendingIntent to requests made with it.
              */
-        	
-        	return PendingIntent.getService(
-                    context,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-        	
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                return PendingIntent.getService(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_MUTABLE);
+            }else {
+                return PendingIntent.getService(context,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            }
+
         }
     }
 
@@ -183,19 +187,29 @@ public class GeofenceRequester implements OnCompleteListener<Void> {
             Log.d(Constants.APPTAG, toastMessage);
 		} else {
             // Get the status code for the error and log it using a user-friendly message.
-            if (task.getException().getMessage().contains("1000:")){
-                statusMessage = "(1000) " + context.getString(R.string.geofence_not_available) + " (" + GeofenceStatusCodes.getStatusCodeString(1000) + ")";
-            }
-            if (task.getException().getMessage().contains("1001:")){
-                statusMessage = "(1001 )" + context.getString(R.string.geofence_too_many_geofences) + " (" + GeofenceStatusCodes.getStatusCodeString(1001) + ")";
-            }
-            if (task.getException().getMessage().contains("1002:")){
-                statusMessage = "(1002) " + context.getString(R.string.geofence_too_many_pending_intents)  + " (" + GeofenceStatusCodes.getStatusCodeString(1002) + ")";
+            if (task.getException() != null) {
+                if (task.getException().getMessage() != null) {
+                    if (task.getException().getMessage().contains("1000:")) {
+                        statusMessage = "(1000) " + context.getString(R.string.geofence_not_available) + " (" + GeofenceStatusCodes.getStatusCodeString(1000) + ")";
+                    }
+                    if (task.getException().getMessage().contains("1001:")) {
+                        statusMessage = "(1001 )" + context.getString(R.string.geofence_too_many_geofences) + " (" + GeofenceStatusCodes.getStatusCodeString(1001) + ")";
+                    }
+                    if (task.getException().getMessage().contains("1002:")) {
+                        statusMessage = "(1002) " + context.getString(R.string.geofence_too_many_pending_intents) + " (" + GeofenceStatusCodes.getStatusCodeString(1002) + ")";
+                    }
+                    if (task.getException().getMessage().contains("1004:")) {
+                        statusMessage = "(1004) " + context.getString(R.string.geofence_insufficient_location_permission) + " (" + GeofenceStatusCodes.getStatusCodeString(1004) + ")";
+                    }
+                    if (task.getException().getMessage().contains("1005:")) {
+                        statusMessage = "(1005) " + context.getString(R.string.geofence_request_too_frequent) + " (" + GeofenceStatusCodes.getStatusCodeString(1005) + ")";
+                    }
+                }
             }
             toastMessage = context.getString(R.string.add_geofences_result_failure) + " StatusMessage: " + statusMessage;
             Log.e(Constants.APPTAG, toastMessage);
             log.error(toastMessage);
         }
-		Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show();
 	}
 }

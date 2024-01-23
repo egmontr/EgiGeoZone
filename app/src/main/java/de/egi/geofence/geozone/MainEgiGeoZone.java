@@ -1,33 +1,21 @@
 package de.egi.geofence.geozone;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.PowerManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
+import android.os.Process;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,11 +25,29 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -85,24 +91,23 @@ import de.mindpipe.android.logging.log4j.LogConfigurator;
 // Icon made by Freepik from www.flaticon.com
 public class MainEgiGeoZone extends RuntimePermissionsActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener {
 
-    private GoogleApiClient mLocationClient;
-    private final String TAG = "MainEgiGeoZone";
     private Location locationMerk = null;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     // Dangerous permissions and permission groups.
     // http://developer.android.com/guide/topics/security/permissions.html
-    public static final int REQUEST_LOCATION = 1;
-    public static final int REQUEST_WRITE_EXTERNAL_STORAGE = 2;
-    public static final int REQUEST_PHONE_STATE = 3;
-    public static final int REQUEST_BLUETOOTH = 4; // Location
-    public static final int REQUEST_SMS = 5;
-    public static final int REQUEST_GET_ACCOUNTS = 6;
+//    public static final int REQUEST_LOCATION = 1;
+//    public static final int REQUEST_WRITE_EXTERNAL_STORAGE = 2;
+//    public static final int REQUEST_PHONE_STATE = 3;
+//    public static final int REQUEST_BLUETOOTH = 4; // Location
+//    public static final int REQUEST_SMS = 5;
+//    public static final int REQUEST_GET_ACCOUNTS = 6;
 
 //    Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //    Manifest.permission.READ_PHONE_STATE,
@@ -150,9 +155,34 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
 
             if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
                 //Device is now connected
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                }
                 GlobalSingleton.getInstance().getBtDevicesConnected().add(device.getName());
             } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
                 //Device has disconnected
+                //Device is now connected
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                }
                 GlobalSingleton.getInstance().getBtDevicesConnected().remove(device.getName());
             }else if (Constants.ACTION_STATUS_CHANGED.equals(action)) {
                 // Status einer Zone hat sich geändert
@@ -170,7 +200,7 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
 
         setContentView(R.layout.activity_main_nav);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Utils.changeBackGroundToolbar(this, toolbar);
@@ -181,16 +211,33 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
             actionBar.setHomeButtonEnabled(true);
         }
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (!checkAllNeededPermissions()){
-            requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
+
+
+        if (notAllNeededPermissionsGranted()){
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestAppPermission(Manifest.permission.READ_EXTERNAL_STORAGE, R.string.alert2040Read, 2040);
+                }
+            }
+
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestAppPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.alert2060Write, 2060);
+                }
+            }
+
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
+            }
         }else{
             init();
         }
     }
 
+//    @SuppressLint("BatteryLife")
     protected void init() {
         dbGlobalsHelper = new DbGlobalsHelper(this);
         dbZoneHelper = new DbZoneHelper(this);
@@ -200,7 +247,11 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         }
         log = Logger.getLogger(MainEgiGeoZone.class);
         if (logConfigurator.getFileName().equalsIgnoreCase("android-log4j.log")){
-            logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "egigeozone" + File.separator + "egigeozone.log");
+
+//            logConfigurator.setFileName(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + File.separator + "egigeozone" + File.separator + "egigeozone.log");
+
+            logConfigurator.setFileName(this.getFilesDir() + File.separator + "egigeozone" + File.separator + "egigeozone.log");
+
             logConfigurator.setUseFileAppender(true);
             logConfigurator.setRootLevel(Level.toLevel(level));
             // Set log level of a specific logger
@@ -211,75 +262,62 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
                 Log.i("", "Logger set!");
             } catch (Exception e) {
                 // Nichts tun. Manchmal kann auf den Speicher nicht zugegriffen werden.
+                Log.e("", e.getMessage());
+                Log.e("", String.valueOf(Process.myUid()));
             }
         }
 
         log.debug("onCreate");
 
-        // Akku-Optimierung ausschalten, da sonst kein Netzwerkbetrieb möglich wäre
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            String packageName = getPackageName();
-//            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-//            //noinspection StatementWithEmptyBody
-//            if (pm.isIgnoringBatteryOptimizations(packageName)) {
-//                // Nichts tun
-//            }
-//            else {
-//                SharedPrefsUtil sharedPrefsUtil = new SharedPrefsUtil(this);
-//                String dozePermission = sharedPrefsUtil.getPref("dozePermission");
-//
-//                if (dozePermission == null || dozePermission.equals("")) {
-//                    // Display UI and ask the user to put app to the battery optimization whitelist.
-//                    AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//                    alertDialogBuilder.setMessage(getString(R.string.dozePermissionsMessage));
-//                    alertDialogBuilder.setTitle(getString(R.string.dozePermissionsTitle));
-//
-//                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface arg0, int arg1) {
-//                            Intent intentBatteryUsage = new Intent(Intent.ACTION_POWER_USAGE_SUMMARY);
-//                            startActivity(intentBatteryUsage);
-//                        }
-//                    });
-//                    AlertDialog alertDialog = alertDialogBuilder.create();
-//                    alertDialog.show();
-//                    sharedPrefsUtil.setPref("dozePermission", "true");
-//                }
-//            }
-//        }
-
-        // Akku-Optimierung ausschalten, da sonst kein Netzwerkbetrieb möglich wäre
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            String packageName = getPackageName();
-            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            Intent intent = new Intent();
-            try {
-                //noinspection StatementWithEmptyBody
-                if (pm.isIgnoringBatteryOptimizations(packageName)) {
-                    // Nichts tun
-                } else {
-                    intent.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                    intent.setData(Uri.parse("package:" + packageName));
-                    startActivity(intent);
-                }
-            }catch(Exception e){
-                // Ignore
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.POST_NOTIFICATIONS, R.string.alert2050Notification, 2050);
             }
         }
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Geofences
-                Intent ig = new Intent(MainEgiGeoZone.this, GeoFence.class);
-                ig.putExtra("action", "new");
-                startActivityForResult(ig, 4730);
+        // Bildschirm ist grau??!!
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.READ_EXTERNAL_STORAGE, R.string.alert2040Read, 2040);
             }
+        }
+
+        // Akku-Optimierung ausschalten, da sonst kein Netzwerkbetrieb möglich wäre
+        String packageName = getPackageName();
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        Intent intent = new Intent();
+        try {
+            //noinspection StatementWithEmptyBody
+            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+                // Nichts tun
+            } else {
+                intent.setAction(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                startActivity(intent);
+            }
+        }catch(Exception e){
+            // Ignore
+        }
+
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                requestAppPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION, R.string.alert2030BgLocation, 2030);
+            }
+        }
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(view -> {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
+            }
+
+            // Geofences
+            Intent ig = new Intent(MainEgiGeoZone.this, GeoFence.class);
+            ig.putExtra("action", "new");
+            activityResultLaunch.launch(ig); // 4730
         });
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout = findViewById(R.id.swiperefresh);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
@@ -289,7 +327,7 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
             NotificationUtil.sendPermanentNotification(getApplicationContext(), R.drawable.locating_geo, getString(R.string.text_running_notification), 7676);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -313,7 +351,7 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
 
         GlobalSingleton.getInstance().setGeofenceRemover(mGeofenceRemover);
 
-        list = (ListView) findViewById (R.id.list);
+        list = findViewById (R.id.list);
         list.setOnItemClickListener(this);
 
         IntentFilter filter1 = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
@@ -321,24 +359,17 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         IntentFilter filter3 = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         IntentFilter statusFilter = new IntentFilter(Constants.ACTION_STATUS_CHANGED);
 
-        this.registerReceiver(mReceiver, filter1);
-        this.registerReceiver(mReceiver, filter2);
-        this.registerReceiver(mReceiver, filter3);
-        this.registerReceiver(mReceiver, statusFilter);
-
-//        // Check device for Play Services APK. If check succeeds, proceed with GCM registration.
-//        if (servicesConnected()) {
-//            if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_GCM))){
-//                String regid = GcmRegistrationIntentService.getRegistrationId(this);
-//                if (regid.isEmpty()) {
-//                    // Start IntentService to register this application with GCM.
-//                    Intent intent = new Intent(this, GcmRegistrationIntentService.class);
-//                    startService(intent);
-//                }
-//            }
-//        } else {
-//            Log.i(TAG, "No valid Google Play Services APK found.");
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            this.registerReceiver(mReceiver, filter1, RECEIVER_EXPORTED);
+            this.registerReceiver(mReceiver, filter2, RECEIVER_EXPORTED);
+            this.registerReceiver(mReceiver, filter3, RECEIVER_EXPORTED);
+            this.registerReceiver(mReceiver, statusFilter, RECEIVER_EXPORTED);
+        }else {
+            this.registerReceiver(mReceiver, filter1);
+            this.registerReceiver(mReceiver, filter2);
+            this.registerReceiver(mReceiver, filter3);
+            this.registerReceiver(mReceiver, statusFilter);
+        }
 
         refreshFences();
         if (!mCurrentGeofences.isEmpty()){
@@ -351,7 +382,7 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -372,107 +403,111 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        switch(item.getItemId()) {
-            case R.id.action_settings:
-                if (!checkAllNeededPermissions()){
-                    requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
+        int itemId = item.getItemId();
+        if (itemId == R.id.action_settings) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
+                return true;
+            }
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    requestAppPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, R.string.alert2060Write, 2060);
                     return true;
                 }
-                log.debug("onOptionsItemSelected: menu_settings");
-                Intent i5 = new Intent(this, Settings.class);
-                startActivityForResult(i5, 5004);
+            }
+            log.debug("onOptionsItemSelected: menu_settings");
+            Intent i5 = new Intent(this, Settings.class);
+            activityResultLaunch.launch(i5); // 5004
+            return true;
+        } else if (itemId == R.id.action_help) {
+            Intent i2 = new Intent(this, Help.class);
+            startActivity(i2);
+            return true;
+        } else if (itemId == R.id.action_profiles) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
                 return true;
-            case R.id.action_help:
-                Intent i2 = new Intent(this, Help.class);
-                startActivity(i2);
+            }
+            log.debug("onOptionsItemSelected: menu_profiles");
+            Intent i3 = new Intent(this, Profiles.class);
+            activityResultLaunch.launch(i3); // 5005
+            return true;
+        } else if (itemId == R.id.action_tech_info) {
+            Intent i4 = new Intent(this, TechInfo.class);
+            startActivity(i4);
+            return true;
+        } else if (itemId == R.id.action_info) {
+            Intent i5a = new Intent(this, Info.class);
+            activityResultLaunch.launch(i5a); // 6000
+            return true;
+        } else if (itemId == R.id.action_privacy) {
+            Intent i6 = new Intent(this, Privacy.class);
+            activityResultLaunch.launch(i6); // 6001
+            return true;
+        } else if (itemId == R.id.action_map_all) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
+              return true;
+            }
+            log.debug("onOptionsItemSelected: menu_item_map_all");
+            Intent i7 = new Intent(this, KarteAll.class);
+            activityResultLaunch.launch(i7); // 6002
+            return true;
+        } else if (itemId == R.id.action_refresh) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
                 return true;
-            case R.id.action_profiles:
-                if (!checkAllNeededPermissions()){
-                    requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
-                    return true;
-                }
-                log.debug("onOptionsItemSelected: menu_profiles");
-                Intent i3 = new Intent(this, Profiles.class);
-                startActivityForResult(i3, 5005);
-                return true;
-            case R.id.action_tech_info:
-                Intent i4 = new Intent(this, TechInfo.class);
-                startActivity(i4);
-                return true;
-            case R.id.action_info:
-                Intent i5a = new Intent(this, Info.class);
-                startActivityForResult(i5a, 6000);
-                return true;
-            case R.id.action_privacy:
-                Intent i6 = new Intent(this, Privacy.class);
-                startActivityForResult(i6, 6001);
-                return true;
-            case R.id.action_map_all:
-                if (!checkAllNeededPermissions()){
-                    requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
-                    return true;
-                }
-                log.debug("onOptionsItemSelected: menu_item_map_all");
-                Intent i7 = new Intent(this, KarteAll.class);
-                startActivityForResult(i7, 6002);
-                return true;
-            case R.id.action_refresh:
-                if (!checkAllNeededPermissions()){
-                    requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
-                    return true;
-                }
-                log.debug("onOptionsItemSelected: menu_item_refresh");
-                mSwipeRefreshLayout.setRefreshing(true);
-                fillListGeofences();
-                mSwipeRefreshLayout.setRefreshing(false);
-                return true;
+            }
+            log.debug("onOptionsItemSelected: menu_item_refresh");
+            mSwipeRefreshLayout.setRefreshing(true);
+            fillListGeofences();
+            mSwipeRefreshLayout.setRefreshing(false);
+            return true;
             // Pass through any other request
-            default:
-                return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         item.setChecked(true);
         if (id == R.id.nav_geofence) {
-            if (!checkAllNeededPermissions()){
-                requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
                 return true;
             }
             ((TextView) findViewById(R.id.fences)).setText(R.string.geoZones);
             fillListGeofences();
         } else if (id == R.id.nav_profiles) {
-            if (!checkAllNeededPermissions()){
-                requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
                 return true;
             }
             log.debug("onNavigationItemSelected: menu_item_profile");
             Intent i2 = new Intent(this, Profiles.class);
-            startActivityForResult(i2, 5005);
+            activityResultLaunch.launch(i2); // 5005
 
         } else if (id == R.id.nav_settings) {
-            if (!checkAllNeededPermissions()){
-                requestAppPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE}, R.string.alertPermissions, 2000);
-                return true;
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.ACCESS_FINE_LOCATION, R.string.alert2010Location, 2010);
+              return true;
             }
             log.debug("onNavigationItemSelected: menu_item_settings");
             Intent i = new Intent(this, Settings.class);
-            startActivityForResult(i, 5004);
+            activityResultLaunch.launch(i); // 5004
 
         } else if (id == R.id.nav_info) {
             Intent i3 = new Intent(this, Info.class);
-            startActivityForResult(i3, 6000);
+            activityResultLaunch.launch(i3); // 6000
 
         } else if (id == R.id.nav_help) {
             Intent i3 = new Intent(this, Help.class);
             startActivity(i3);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
             return true;
     }
@@ -481,12 +516,47 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         if (!super.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) return;
 
         locationMerk = null;
-        mLocationClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
-        mLocationClient.connect();
+        FusedLocationProviderClient mLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        ((TextView) findViewById(R.id.fences)).setText(R.string.geoZones);
-        refreshFences();
-        setGeofenceList2Drawer();
+        // If Google Play Services is available
+        if (servicesConnected()) {
+            // Get the current location
+            final Location[] currentLocation = {null};
+            try{
+                mLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                        .addOnSuccessListener(location -> {
+                            if (location != null) {
+                                currentLocation[0] = location;
+                                if (log != null) log.debug("onConnected - location: " + (Double.valueOf(currentLocation[0].getLatitude()).toString()) + "##" + (Double.valueOf(currentLocation[0].getLongitude()).toString()));
+                                locationMerk = currentLocation[0];
+                                ((TextView) findViewById(R.id.fences)).setText(R.string.geoZones);
+                                refreshFences();
+                                setGeofenceList2Drawer();
+                            }else{
+                                Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                ((TextView) findViewById(R.id.fences)).setText(R.string.geoZones);
+                                refreshFences();
+                                setGeofenceList2Drawer();
+                                log.error("Could not determine location.");
+                            }
+                        });
+            }catch(SecurityException se){
+                // Display UI and wait for user interaction
+                androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+                alertDialogBuilder.setMessage(getString(R.string.alertPermissions));
+                alertDialogBuilder.setTitle(getString(R.string.titleAlertPermissions));
+
+                alertDialogBuilder.setPositiveButton("OK", (arg0, arg1) -> {
+                });
+                androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+        }
     }
 
 
@@ -501,8 +571,8 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
                 try {
                     ZoneEntity zoneEntity = dbZoneHelper.getCursorZoneByName(geofence.getRequestId());
                     Location locationZone = new Location("locationZone");
-                    locationZone.setLatitude(Double.valueOf(zoneEntity.getLatitude()));
-                    locationZone.setLongitude(Double.valueOf(zoneEntity.getLongitude()));
+                    locationZone.setLatitude(Double.parseDouble(zoneEntity.getLatitude()));
+                    locationZone.setLongitude(Double.parseDouble(zoneEntity.getLongitude()));
 
                     float distanceMeters = locationMerk.distanceTo(locationZone);
                     if (distanceMeters < 50) {
@@ -551,7 +621,13 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
 
 
     private List<SimpleGeofence> refreshFences() {
-        mCurrentGeofences.clear();
+        if (mCurrentGeofences != null){
+            mCurrentGeofences.clear();
+        }else{
+            // Instantiate the current List of geofences
+            mCurrentGeofences = new ArrayList<>();
+        }
+
         List<SimpleGeofence> geofences = geofenceStore.getGeofences();
         for (SimpleGeofence simpleGeofence : geofences)
         {
@@ -570,176 +646,171 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
             Intent is = new Intent(this, GeoFence.class);
             is.putExtra("action", "update");
             is.putExtra("zone", zone);
-            startActivityForResult(is, 4730);
+            activityResultLaunch.launch(is); // 4730
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        switch (requestCode) {
-            // If the request code matches the code sent in onConnectionFailed
-            case Constants.CONNECTION_FAILURE_RESOLUTION_REQUEST :
-                switch (resultCode) {
-                    // If Google Play services resolved the problem
-                    case Activity.RESULT_OK:
-
-                        // If the request was to add geofences
-                        if (Constants.REQUEST_TYPE.ADD == mRequestType) {
-
-                            // Restart the process of adding the current geofences
-                            if (mCurrentGeofences.size() > 0) {
-                                mGeofenceRequester.addGeofences(mCurrentGeofences);
+    ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    // Geofence hinzufügen und starte die Überwachung
+                    if (result.getResultCode() == 4730) {
+                        String action = null;
+                        if (result.getData() != null) {
+                            action = result.getData().getStringExtra("action");
+                        }
+                        if (action != null && action.equalsIgnoreCase("delete")) {
+                            String zoneToDelete = result.getData().getStringExtra("zoneToDelete");
+                            if (zoneToDelete == null || zoneToDelete.equalsIgnoreCase("")) {
+                                return;
                             }
-                            // If the request was to remove geofences
-                        } else if (Constants.REQUEST_TYPE.REMOVE == mRequestType ){
+                            deleteNow(zoneToDelete);
+                            // Display Liste mit Zonen
+                            refreshFences();
+                            setGeofenceList2Drawer();
+                        } else {
+                            String zoneToAdd = result.getData().getStringExtra("zoneToAdd");
+                            if (zoneToAdd == null || zoneToAdd.equalsIgnoreCase("")) {
+                                return;
+                            }
 
-                            // Toggle the removal flag and send a new removal request
-                            mGeofenceRemover.setInProgressFlag(false);
+                            // Display Liste mit Zonen
+                            List<SimpleGeofence> geofences = refreshFences();
+                            setGeofenceList2Drawer();
+                            // Start the request. Fail if there's already a request in progress
+                            try {
+                                // Try to add geofences
+                                mRequestType = Constants.REQUEST_TYPE.ADD;
 
-                            // If the removal was by Intent
-                            if (Constants.REMOVE_TYPE.INTENT == mRemoveType) {
+                                // Old style, without trying to repair
+                                if (mCurrentGeofences.size() > 0) {
+                                    if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+                                        if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
+                                            mGeofenceRequester.addGeofences(mCurrentGeofences);
+                                        } else {
+                                            for (SimpleGeofence simpleGeofence : geofences) {
+                                                mPathsenseGeofence.addGeofence(simpleGeofence);
+                                            }
+                                        }
+                                    } else {
+                                        ZoneEntity ze = dbZoneHelper.getCursorZoneByName(zoneToAdd);
+                                        if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
+                                            Geofence geof = new Geofence.Builder().setRequestId(zoneToAdd)
+                                                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                                                    .setCircularRegion(Double.parseDouble(ze.getLatitude()), Double.parseDouble(ze.getLongitude()), ze.getRadius())
+                                                    .setExpirationDuration(Geofence.NEVER_EXPIRE)
+                                                    .build();
 
-                                // Restart the removal of all geofences for the PendingIntent
-                                mGeofenceRemover.removeGeofencesByIntent(
-                                        mGeofenceRequester.getRequestPendingIntent());
+                                            List<Geofence> currentGeofence = new ArrayList<>();
+                                            currentGeofence.add(geof);
 
-                                // If the removal was by a List of geofence IDs
-                            } else {
-
-                                // Restart the removal of the geofence list
-                                mGeofenceRemover.removeGeofencesById(mGeofenceIdsToRemove);
+                                            mGeofenceRequester.addGeofences(currentGeofence);
+                                        } else {
+                                            SimpleGeofence simpleGeofence = new SimpleGeofence(zoneToAdd, ze.getLatitude(), ze.getLongitude(),
+                                                    Integer.toString(ze.getRadius()), null, Geofence.NEVER_EXPIRE, Geofence.GEOFENCE_TRANSITION_ENTER, true, null);
+                                            mPathsenseGeofence.addGeofence(simpleGeofence);
+                                        }
+                                    }
+                                }
+                            } catch (UnsupportedOperationException e) {
+                                // Notify user that previous request hasn't finished.
+                                Toast.makeText(MainEgiGeoZone.this, R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
+                                log.error("Error registering Geofence", e);
+                                showError("Error registering Geofence", e.toString());
                             }
                         }
-                        break;
-
-                    // If any other result was returned by Google Play services
-                    default:
-                        // Report that Google Play services was unable to resolve the problem.
-                        Log.d(Constants.APPTAG, getString(R.string.no_resolution));
-                        log.info("onActivityResult: " + getString(R.string.no_resolution));
-                }
-                // Geofence hinzufügen und starte die Überwachung
-            case 4730 :
-                if (resultCode == RESULT_OK) {
-                    String action = null;
-                    if (intent != null) {
-                        action = intent.getStringExtra("action");
-                    }
-                    if (action.equalsIgnoreCase("delete")) {
-                        String zoneToDelete = intent.getStringExtra("zoneToDelete");
-                        if (zoneToDelete == null || zoneToDelete.equalsIgnoreCase("")){
-                            return;
-                        }
-                        deleteNow(zoneToDelete);
-                        // Display Liste mit Zonen
-                        refreshFences();
-                        setGeofenceList2Drawer();
-                    } else {
-                        String zoneToAdd = intent.getStringExtra("zoneToAdd");
-                        if (zoneToAdd == null || zoneToAdd.equalsIgnoreCase("")){
-                            return;
-                        }
-
-                        // Display Liste mit Zonen
-                        List<SimpleGeofence> geofences = refreshFences();
-                        setGeofenceList2Drawer();
-                        // Start the request. Fail if there's already a request in progress
-                        try {
-                            // Try to add geofences
+                        // Settings
+                    }else if(result.getResultCode() == 5004) {
+                        // Nur wenn Import war, dann durchlaufen
+                        boolean imp = result.getData() != null && result.getData().getBooleanExtra("import", false);
+                        if (imp) {
+                            // Drawer neu setzen
+                            List<SimpleGeofence> geofences = refreshFences();
                             mRequestType = Constants.REQUEST_TYPE.ADD;
-
-                            // Old style, without trying to repair
-                            if (mCurrentGeofences.size() > 0) {
-                                if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+                            // Start the request. Fail if there's already a request in progress
+                            try {
+                                // Try to add geofences
+                                if (mCurrentGeofences.size() > 0) {
                                     if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
+                                        if (!servicesConnected()) {
+                                            return;
+                                        }
                                         mGeofenceRequester.addGeofences(mCurrentGeofences);
                                     } else {
                                         for (SimpleGeofence simpleGeofence : geofences) {
                                             mPathsenseGeofence.addGeofence(simpleGeofence);
                                         }
                                     }
-                                } else {
-                                    ZoneEntity ze = dbZoneHelper.getCursorZoneByName(zoneToAdd);
-                                    if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
-                                        Geofence geof = new Geofence.Builder().setRequestId(zoneToAdd)
-                                                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                                                .setCircularRegion(Double.valueOf(ze.getLatitude()), Double.valueOf(ze.getLongitude()), ze.getRadius())
-                                                .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                                                .build();
-
-                                        List<Geofence> currentGeofence = new ArrayList<>();
-                                        currentGeofence.add(geof);
-
-                                        mGeofenceRequester.addGeofences(currentGeofence);
-                                    } else {
-                                        SimpleGeofence simpleGeofence = new SimpleGeofence(zoneToAdd, ze.getLatitude(), ze.getLongitude(),
-                                                Integer.toString(ze.getRadius()), null, Geofence.NEVER_EXPIRE, Geofence.GEOFENCE_TRANSITION_ENTER, true, null);
-                                        mPathsenseGeofence.addGeofence(simpleGeofence);
-                                    }
                                 }
+                            } catch (UnsupportedOperationException e) {
+                                // Notify user that previous request hasn't finished.
+                                Toast.makeText(MainEgiGeoZone.this, R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
+                                log.error("Import: Error registering Geofence", e);
+                                showError("Import: Error registering Geofence", e.toString());
                             }
-                        } catch (UnsupportedOperationException e) {
-                            // Notify user that previous request hasn't finished.
-                            Toast.makeText(this, R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
-                            log.error("Error registering Geofence", e);
-                            showError("Error registering Geofence", e.toString());
+                            //
+                            // Settings wieder aufrufen, da Aktion Import war
+                            log.debug("onOptionsItemSelected: menu_settings");
+                            Intent i5 = new Intent(MainEgiGeoZone.this, Settings.class);
+                            Bundle b = new Bundle();
+                            b.putBoolean("import", true);
+                            i5.putExtras(b);
+                            activityResultLaunch.launch(i5); // 5004
                         }
                     }
+                    refreshFences();
+                    setGeofenceList2Drawer();
                 }
-                break;
-            // Settings
-            case 5004 :
-                if (resultCode == RESULT_OK) {
-                    // Nur wenn Import war, dann durchlaufen
-                    boolean imp = intent.getBooleanExtra("import", false);
-                    if (imp){
-                        // Drawer neu setzen
-                        List<SimpleGeofence> geofences = refreshFences();
-                        mRequestType = Constants.REQUEST_TYPE.ADD;
-                        // Start the request. Fail if there's already a request in progress
-                        try {
-                            // Try to add geofences
-                            if (mCurrentGeofences.size() > 0) {
-                                if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
-                                    if (!servicesConnected()) {
-                                        return;
-                                    }
-                                    mGeofenceRequester.addGeofences(mCurrentGeofences);
-                                }else {
-                                    for (SimpleGeofence simpleGeofence : geofences) {
-                                       mPathsenseGeofence.addGeofence(simpleGeofence);
-                                    }
-                                }
-                            }
-                        } catch (UnsupportedOperationException e) {
-                            // Notify user that previous request hasn't finished.
-                            Toast.makeText(this, R.string.add_geofences_already_requested_error, Toast.LENGTH_LONG).show();
-                            log.error("Import: Error registering Geofence", e);
-                            showError("Import: Error registering Geofence", e.toString());
-                        }
-                        //
-                        // Settings wieder aufrufen, da Aktion Import war
-                        log.debug("onOptionsItemSelected: menu_settings");
-                        Intent i5 = new Intent(this, Settings.class);
-                        Bundle b = new Bundle();
-                        b.putBoolean("import", true);
-                        i5.putExtras(b);
-                        startActivityForResult(i5, 5004);
+            });
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // If the request code matches the code sent in onConnectionFailed
+        if (requestCode == Constants.CONNECTION_FAILURE_RESOLUTION_REQUEST) {// If Google Play services resolved the problem
+            if (resultCode == Activity.RESULT_OK) {// If the request was to add geofences
+                if (Constants.REQUEST_TYPE.ADD == mRequestType) {
+
+                    // Restart the process of adding the current geofences
+                    if (mCurrentGeofences.size() > 0) {
+                        mGeofenceRequester.addGeofences(mCurrentGeofences);
+                    }
+                    // If the request was to remove geofences
+                } else if (Constants.REQUEST_TYPE.REMOVE == mRequestType) {
+
+                    // Toggle the removal flag and send a new removal request
+                    mGeofenceRemover.setInProgressFlag(false);
+
+                    // If the removal was by Intent
+                    if (Constants.REMOVE_TYPE.INTENT == mRemoveType) {
+
+                        // Restart the removal of all geofences for the PendingIntent
+                        mGeofenceRemover.removeGeofencesByIntent(
+                                mGeofenceRequester.getRequestPendingIntent());
+
+                        // If the removal was by a List of geofence IDs
+                    } else {
+
+                        // Restart the removal of the geofence list
+                        mGeofenceRemover.removeGeofencesById(mGeofenceIdsToRemove);
                     }
                 }
-                refreshFences();
-                setGeofenceList2Drawer();
-                break;
+
+                // If any other result was returned by Google Play services
+            } else {// Report that Google Play services was unable to resolve the problem.
+                Log.d(Constants.APPTAG, getString(R.string.no_resolution));
+                log.info("onActivityResult: " + getString(R.string.no_resolution));
+            }
             // If any other request code was received
-            default:
-                // Report that this Activity received an unknown requestCode
-                Log.d(Constants.APPTAG, getString(R.string.unknown_activity_request_code, requestCode));
-                break;
-        }
+        }// Report that this Activity received an unknown requestCode
+        Log.d(Constants.APPTAG, getString(R.string.unknown_activity_request_code, requestCode));
     }
     /**
      * Fehlerdialog anzeigen
      */
     private void showError(String title, String error){
+        String TAG = "MainEgiGeoZone";
         Log.d(TAG, error);
         NotificationUtil.showError(getApplicationContext(), title, error);
     }
@@ -810,7 +881,7 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
             // Google Play services was not available for some reason
         } else if (api.isUserResolvableError(code)){
             if (log != null) log.error("servicesConnected result: could not connect to Google Play services");
-            api.showErrorDialogFragment(this, code, Constants.PLAY_SERVICES_RESOLU‌​TION_REQUEST);
+            api.showErrorDialogFragment(this, code, Constants.PLAY_SERVICES_RESOLUTION_REQUEST);
         } else {
             if (log != null) log.error("servicesConnected result: could not connect to Google Play services");
             Toast.makeText(this, api.getErrorString(code), Toast.LENGTH_LONG).show();
@@ -852,55 +923,6 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        // If Google Play Services is available
-        if (servicesConnected()) {
-            // Get the current location
-            Location currentLocation = null;
-            try{
-                currentLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
-            }catch(SecurityException se){
-                // Display UI and wait for user interaction
-                android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
-                alertDialogBuilder.setMessage(getString(R.string.alertPermissions));
-                alertDialogBuilder.setTitle(getString(R.string.titleAlertPermissions));
-
-                alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-                android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-
-            if (currentLocation != null){
-                // Start test
-                if (log != null) log.debug("onConnected - location: " + (Double.valueOf(currentLocation.getLatitude()).toString()) + "##" + (Double.valueOf(currentLocation.getLongitude()).toString()));
-                locationMerk = currentLocation;
-            }else{
-//                Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
-                log.error("Could not determine location.");
-            }
-        }
-
-        refreshFences();
-        setGeofenceList2Drawer();
-
-        mLocationClient.disconnect();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-    }
-
     @Override
     public void onRefresh() {
         log.debug("onRefresh called from SwipeRefreshLayout");
@@ -913,23 +935,3 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         init();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -252,15 +252,6 @@ public class DbContract {
 
 	/* Inner class that defines the global table contents */
 	public static abstract class GlobalsEntry implements BaseColumns {
-
-//		public static final String KEY_NOTIFICATION = "notification";
-//		public static final String KEY_ERRORNOTIFICATION = "errorNotification";
-//		public static final String KEY_GCM = "gcm";
-//		public static final String KEY_GCMLOGGING = "gcmLogging";
-//		public static final String KEY_SENDERID = "senderId";
-//		public static final String KEY_LOCINTERVAL = "locInterval";
-//		public static final String KEY_LOCPRIORITY = "locPriority";
-
 		private GlobalsEntry() {
 		}
 

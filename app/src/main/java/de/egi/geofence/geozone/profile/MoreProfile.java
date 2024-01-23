@@ -16,16 +16,12 @@
 
 package de.egi.geofence.geozone.profile;
 
-import android.app.NotificationManager;
-import android.content.Context;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,6 +34,10 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.location.Geofence;
 
 import de.egi.geofence.geozone.GlobalSingleton;
@@ -48,10 +48,10 @@ import de.egi.geofence.geozone.db.MoreEntity;
 import de.egi.geofence.geozone.db.ZoneEntity;
 import de.egi.geofence.geozone.utils.Constants;
 import de.egi.geofence.geozone.utils.NotificationUtil;
+import de.egi.geofence.geozone.utils.RuntimePermissionsActivity;
 import de.egi.geofence.geozone.utils.Utils;
 
-@SuppressWarnings("deprecation")
-public class MoreProfile extends AppCompatActivity implements OnCheckedChangeListener, TextWatcher{
+public class MoreProfile extends RuntimePermissionsActivity implements OnCheckedChangeListener, TextWatcher{
 	private boolean check = false;
 	private DbMoreHelper datasource;
 	private String aktion;
@@ -68,15 +68,15 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 		Utils.onActivityCreateSetTheme(this);
 		setContentView(R.layout.more_profile);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
 
 		datasource = new DbMoreHelper(this);
 
-		moreTaskB = ((EditText) this.findViewById(R.id.value_tasker_enter_id));
-		moreTaskV = ((EditText) this.findViewById(R.id.value_tasker_exit_id));
-		EditText prof_name = ((EditText) this.findViewById(R.id.value_name));
+		moreTaskB = this.findViewById(R.id.value_tasker_enter_id);
+		moreTaskV = this.findViewById(R.id.value_tasker_exit_id);
+		EditText prof_name = this.findViewById(R.id.value_name);
 
 		moreTaskB.addTextChangedListener(this);
 		moreTaskV.addTextChangedListener(this);
@@ -92,39 +92,39 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 		((RadioGroup)findViewById(R.id.radioGroupMmV)).setOnCheckedChangeListener(this);
 
 		Bundle b = getIntent().getExtras();
-        if (null != b){
-	        aktion = b.getString("action");
-	        ind = b.getString("ind");
-	        ((RadioGroup) this.findViewById(R.id.radioGroupWlanB)).check(R.id.radioButtonWlanBNone);
-	        ((RadioGroup) this.findViewById(R.id.radioGroupWlanV)).check(R.id.radioButtonWlanVNone);
-	        ((RadioGroup) this.findViewById(R.id.radioGroupBluetoothB)).check(R.id.radioButtonBluetoothBNone);
-	        ((RadioGroup) this.findViewById(R.id.radioGroupBluetoothV)).check(R.id.radioButtonBluetoothVNone);
-	        ((RadioGroup) this.findViewById(R.id.radioGroupSoundB)).check(R.id.radioButtonSoundBNone);
-	        ((RadioGroup) this.findViewById(R.id.radioGroupSoundV)).check(R.id.radioButtonSoundVNone);
+		if (null != b){
+			aktion = b.getString("action");
+			ind = b.getString("ind");
+			((RadioGroup) this.findViewById(R.id.radioGroupWlanB)).check(R.id.radioButtonWlanBNone);
+			((RadioGroup) this.findViewById(R.id.radioGroupWlanV)).check(R.id.radioButtonWlanVNone);
+			((RadioGroup) this.findViewById(R.id.radioGroupBluetoothB)).check(R.id.radioButtonBluetoothBNone);
+			((RadioGroup) this.findViewById(R.id.radioGroupBluetoothV)).check(R.id.radioButtonBluetoothVNone);
+			((RadioGroup) this.findViewById(R.id.radioGroupSoundB)).check(R.id.radioButtonSoundBNone);
+			((RadioGroup) this.findViewById(R.id.radioGroupSoundV)).check(R.id.radioButtonSoundVNone);
 			((RadioGroup) this.findViewById(R.id.radioGroupMmB)).check(R.id.radioButtonMmBNone);
 			((RadioGroup) this.findViewById(R.id.radioGroupMmV)).check(R.id.radioButtonMmVNone);
-        }
-        if (aktion.equalsIgnoreCase("new")){
-        	// Felder leer lassen
-//			boolean _new = true;
-        	// Neuer Satz
-        	me = new MoreEntity();
-        	me.setId(0);
-        }else if (aktion.equalsIgnoreCase("update")){
-        	_update = true;
-        	// Satz aus der DB lesen
-        	me = datasource.getCursorMoreById(Integer.valueOf(ind));
-        }
-        
-        GlobalSingleton.getInstance().setMoreEntity(me);
-        	
-        if (_update){	
-    		
-			((TextView) this.findViewById(R.id.value_name)).setText(me.getName());
-    		((EditText) this.findViewById(R.id.value_tasker_enter_id)).setText(me.getEnter_task());
-    		((EditText) this.findViewById(R.id.value_tasker_exit_id)).setText(me.getExit_task());
+		}
+		if (aktion.equalsIgnoreCase("new")){
+		// Felder leer lassen
+		//boolean _new = true;
+		// Neuer Satz
+			me = new MoreEntity();
+			me.setId(0);
+		}else if (aktion.equalsIgnoreCase("update")){
+			_update = true;
+			// Satz aus der DB lesen
+			me = datasource.getCursorMoreById(Integer.parseInt(ind));
+		}
 
-    		switch (me.getEnter_wifi()) {
+		GlobalSingleton.getInstance().setMoreEntity(me);
+
+		if (_update){
+
+			((TextView) this.findViewById(R.id.value_name)).setText(me.getName());
+			((EditText) this.findViewById(R.id.value_tasker_enter_id)).setText(me.getEnter_task());
+			((EditText) this.findViewById(R.id.value_tasker_exit_id)).setText(me.getExit_task());
+
+			switch (me.getEnter_wifi()) {
 			case 0: ((RadioGroup) this.findViewById(R.id.radioGroupWlanB)).check(R.id.radioButtonWlanBOff);
 				break;
 			case 1: ((RadioGroup) this.findViewById(R.id.radioGroupWlanB)).check(R.id.radioButtonWlanBOn);
@@ -134,8 +134,8 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 			default:
 				break;
 			}
-    		
-    		switch (me.getExit_wifi()) {
+
+		switch (me.getExit_wifi()) {
 			case 0: ((RadioGroup) this.findViewById(R.id.radioGroupWlanV)).check(R.id.radioButtonWlanVOff);
 				break;
 			case 1: ((RadioGroup) this.findViewById(R.id.radioGroupWlanV)).check(R.id.radioButtonWlanVOn);
@@ -145,8 +145,8 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 			default:
 				break;
 			}
-    		
-    		switch (me.getEnter_bt()) {
+
+			switch (me.getEnter_bt()) {
 			case 0: ((RadioGroup) this.findViewById(R.id.radioGroupBluetoothB)).check(R.id.radioButtonBluetoothBOff);
 				break;
 			case 1: ((RadioGroup) this.findViewById(R.id.radioGroupBluetoothB)).check(R.id.radioButtonBluetoothBOn);
@@ -157,7 +157,7 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 				break;
 			}
 
-    		switch (me.getExit_bt()) {
+			switch (me.getExit_bt()) {
 			case 0: ((RadioGroup) this.findViewById(R.id.radioGroupBluetoothV)).check(R.id.radioButtonBluetoothVOff);
 				break;
 			case 1: ((RadioGroup) this.findViewById(R.id.radioGroupBluetoothV)).check(R.id.radioButtonBluetoothVOn);
@@ -168,7 +168,7 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 				break;
 			}
 
-    		switch (me.getEnter_sound()) {
+			switch (me.getEnter_sound()) {
 			case 0: ((RadioGroup) this.findViewById(R.id.radioGroupSoundB)).check(R.id.radioButtonSoundBOff);
 				break;
 			case 1: ((RadioGroup) this.findViewById(R.id.radioGroupSoundB)).check(R.id.radioButtonSoundBOn);
@@ -181,7 +181,7 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 				break;
 			}
 
-    		switch (me.getExit_sound()) {
+			switch (me.getExit_sound()) {
 			case 0: ((RadioGroup) this.findViewById(R.id.radioGroupSoundV)).check(R.id.radioButtonSoundVOff);
 				break;
 			case 1: ((RadioGroup) this.findViewById(R.id.radioGroupSoundV)).check(R.id.radioButtonSoundVOn);
@@ -216,227 +216,197 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 					break;
 			}
 		}
+		check = true;
 
-        check = true;
-        
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+				requestAppPermission(Manifest.permission.BLUETOOTH_CONNECT, R.string.alert2020BT, 2020);
+			}
+		}
 	}
 	
-    @Override
-    public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-    	
-    	if (!check) return;
-    	
-        if (radioGroup.getId() == R.id.radioGroupWlanB){            
-            switch (checkedId) {
-            case R.id.radioButtonWlanBOn:
-    	        me.setEnter_wifi(1);
-                break;
-            case R.id.radioButtonWlanBOff:
-        	    AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
-        	    ab.setMessage(R.string.wlan_on_text).setPositiveButton(R.string.action_ok, dialogClickListener).setTitle("WLAN").setIcon(R.drawable.ic_network_wifi_black_24dp).show();
+	@Override
+	public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
 
-    	        me.setEnter_wifi(0);
-                break;
-            case R.id.radioButtonWlanBNone:
-    	        me.setEnter_wifi(2);
-                break;
-            }
-        }
-        if (radioGroup.getId() == R.id.radioGroupWlanV){            
-            switch (checkedId) {
-            case R.id.radioButtonWlanVOn:
-    	        me.setExit_wifi(1);
-                break;
-            case R.id.radioButtonWlanVOff:
-    	        me.setExit_wifi(0);
-                break;
-            case R.id.radioButtonWlanVNone:
-    	        me.setExit_wifi(2);
-                break;
-            }
-        }
+		if (!check) {
+			return;
+		}
 
-        if (radioGroup.getId() == R.id.radioGroupBluetoothB){            
-            switch (checkedId) {
-            case R.id.radioButtonBluetoothBOn:
-    	        me.setEnter_bt(1);
-                break;
-            case R.id.radioButtonBluetoothBOff:
-    	        me.setEnter_bt(0);
-                break;
-            case R.id.radioButtonBluetoothBNone:
-    	        me.setEnter_bt(2);
-                break;
-            }
-        }
-        if (radioGroup.getId() == R.id.radioGroupBluetoothV){            
-            switch (checkedId) {
-            case R.id.radioButtonBluetoothVOn:
-    	        me.setExit_bt(1);
-                break;
-            case R.id.radioButtonBluetoothVOff:
-    	        me.setExit_bt(0);
-                break;
-            case R.id.radioButtonBluetoothVNone:
-    	        me.setExit_bt(2);
-                break;
-            }
-        }
+		if (radioGroup.getId() == R.id.radioGroupWlanB){
+			if (checkedId == R.id.radioButtonWlanBOn) {
+				me.setEnter_wifi(1);
+			} else if (checkedId == R.id.radioButtonWlanBOff) {
+				AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
+				ab.setMessage(R.string.wlan_on_text).setPositiveButton(R.string.action_ok, dialogClickListener).setTitle("WLAN").setIcon(R.drawable.ic_network_wifi_black_24dp).show();
 
-        if (radioGroup.getId() == R.id.radioGroupSoundB){            
-			// Android 7: check if notification policy is granted
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				if (!notificationManager.isNotificationPolicyAccessGranted()) {
-					// Display UI and ask the user to put app to the battery optimization whitelist.
-					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
-
-					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-								startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-							}
-						}
-					});
-					AlertDialog alertDialog = alertDialogBuilder.create();
-					alertDialog.show();
-//					return;
-				}
+				me.setEnter_wifi(0);
+			} else if (checkedId == R.id.radioButtonWlanBNone) {
+				me.setEnter_wifi(2);
 			}
-            switch (checkedId) {
-            case R.id.radioButtonSoundBOn:
-    	        me.setEnter_sound(1);
-                break;
-            case R.id.radioButtonSoundBOff:
-    	        me.setEnter_sound(0);
-                break;
-			case R.id.radioButtonSoundBNone:
+		}
+		if (radioGroup.getId() == R.id.radioGroupWlanV){
+			if (checkedId == R.id.radioButtonWlanVOn) {
+				me.setExit_wifi(1);
+			} else if (checkedId == R.id.radioButtonWlanVOff) {
+				me.setExit_wifi(0);
+			} else if (checkedId == R.id.radioButtonWlanVNone) {
+				me.setExit_wifi(2);
+			}
+		}
+		if (radioGroup.getId() == R.id.radioGroupBluetoothB){
+			if (checkedId == R.id.radioButtonBluetoothBOn) {
+				me.setEnter_bt(1);
+			} else if (checkedId == R.id.radioButtonBluetoothBOff) {
+				me.setEnter_bt(0);
+			} else if (checkedId == R.id.radioButtonBluetoothBNone) {
+				me.setEnter_bt(2);
+			}
+		}
+		if (radioGroup.getId() == R.id.radioGroupBluetoothV){
+			if (checkedId == R.id.radioButtonBluetoothVOn) {
+				me.setExit_bt(1);
+			} else if (checkedId == R.id.radioButtonBluetoothVOff) {
+				me.setExit_bt(0);
+			} else if (checkedId == R.id.radioButtonBluetoothVNone) {
+				me.setExit_bt(2);
+			}
+		}
+
+		if (radioGroup.getId() == R.id.radioGroupSoundB){
+			// Android 7: check if notification policy is granted
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//				if (!notificationManager.isNotificationPolicyAccessGranted()) {
+//					// Display UI and ask the user to put app to the battery optimization whitelist.
+//					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+//					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+//					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+//
+//					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface arg0, int arg1) {
+//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+//						}
+//					});
+//					AlertDialog alertDialog = alertDialogBuilder.create();
+//					alertDialog.show();
+////					return;
+//				}
+//			}
+			if (checkedId == R.id.radioButtonSoundBOn) {
+				me.setEnter_sound(1);
+			} else if (checkedId == R.id.radioButtonSoundBOff) {
+				me.setEnter_sound(0);
+			} else if (checkedId == R.id.radioButtonSoundBNone) {
 				me.setEnter_sound(2);
-				break;
-			case R.id.radioButtonSoundBVib:
+			} else if (checkedId == R.id.radioButtonSoundBVib) {
 				me.setEnter_sound(3);
-				break;
-            }
+			}
         }
 
-        if (radioGroup.getId() == R.id.radioGroupSoundV){
+		if (radioGroup.getId() == R.id.radioGroupSoundV){
             // Android 7: check if notification policy is granted
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                if (!notificationManager.isNotificationPolicyAccessGranted()) {
-                    // Display UI and ask the user to put app to the battery optimization whitelist.
-                    AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-                    alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-                    alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//                if (!notificationManager.isNotificationPolicyAccessGranted()) {
+//                    // Display UI and ask the user to put app to the battery optimization whitelist.
+//                    AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+//                    alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+//                    alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+//
+//                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface arg0, int arg1) {
+//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+//						}
+//                    });
+//                    AlertDialog alertDialog = alertDialogBuilder.create();
+//                    alertDialog.show();
+////                    return;
+//                }
+//            }
 
-                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface arg0, int arg1) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-                            }
-                        }
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-//                    return;
-                }
-            }
-
-            switch (checkedId) {
-            case R.id.radioButtonSoundVOn:
-    	        me.setExit_sound(1);
-                break;
-            case R.id.radioButtonSoundVOff:
-    	        me.setExit_sound(0);
-                break;
-			case R.id.radioButtonSoundVNone:
+			if (checkedId == R.id.radioButtonSoundVOn) {
+				me.setExit_sound(1);
+			} else if (checkedId == R.id.radioButtonSoundVOff) {
+				me.setExit_sound(0);
+			} else if (checkedId == R.id.radioButtonSoundVNone) {
 				me.setExit_sound(2);
-				break;
-			case R.id.radioButtonSoundVVib:
+			} else if (checkedId == R.id.radioButtonSoundVVib) {
 				me.setExit_sound(3);
-				break;
-            }
+			}
         }
 		// Multimedia sound
 		if (radioGroup.getId() == R.id.radioGroupMmB){
 			// Android 7: check if notification policy is granted
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				if (!notificationManager.isNotificationPolicyAccessGranted()) {
-					// Display UI and ask the user to put app to the battery optimization whitelist.
-					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
-
-					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-								startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-							}
-						}
-					});
-					AlertDialog alertDialog = alertDialogBuilder.create();
-					alertDialog.show();
-//					return;
-				}
-			}
-			switch (checkedId) {
-				case R.id.radioButtonMmBOn:
-					me.setEnter_soundMM(1);
-					break;
-				case R.id.radioButtonMmBOff:
-					me.setEnter_soundMM(0);
-					break;
-				case R.id.radioButtonMmBNone:
-					me.setEnter_soundMM(2);
-					break;
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//				if (!notificationManager.isNotificationPolicyAccessGranted()) {
+//					// Display UI and ask the user to put app to the battery optimization whitelist.
+//					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+//					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+//					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+//
+//					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface arg0, int arg1) {
+//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+//						}
+//					});
+//					AlertDialog alertDialog = alertDialogBuilder.create();
+//					alertDialog.show();
+////					return;
+//				}
+//			}
+			if (checkedId == R.id.radioButtonMmBOn) {
+				me.setEnter_soundMM(1);
+			} else if (checkedId == R.id.radioButtonMmBOff) {
+				me.setEnter_soundMM(0);
+			} else if (checkedId == R.id.radioButtonMmBNone) {
+				me.setEnter_soundMM(2);
 			}
 		}
 
 		if (radioGroup.getId() == R.id.radioGroupMmV){
 			// Android 7: check if notification policy is granted
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				if (!notificationManager.isNotificationPolicyAccessGranted()) {
-					// Display UI and ask the user to put app to the battery optimization whitelist.
-					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//				if (!notificationManager.isNotificationPolicyAccessGranted()) {
+//					// Display UI and ask the user to put app to the battery optimization whitelist.
+//					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+//					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+//					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+//
+//					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//						@Override
+//						public void onClick(DialogInterface arg0, int arg1) {
+//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+//						}
+//					});
+//					AlertDialog alertDialog = alertDialogBuilder.create();
+//					alertDialog.show();
+////                    return;
+//				}
+//			}
 
-					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-								startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-							}
-						}
-					});
-					AlertDialog alertDialog = alertDialogBuilder.create();
-					alertDialog.show();
-//                    return;
-				}
-			}
-
-			switch (checkedId) {
-				case R.id.radioButtonMmVOn:
-					me.setExit_soundMM(1);
-					break;
-				case R.id.radioButtonMmVOff:
-					me.setExit_soundMM(0);
-					break;
-				case R.id.radioButtonMmVNone:
-					me.setExit_soundMM(2);
-					break;
+			if (checkedId == R.id.radioButtonMmVOn) {
+				me.setExit_soundMM(1);
+			} else if (checkedId == R.id.radioButtonMmVOff) {
+				me.setExit_soundMM(0);
+			} else if (checkedId == R.id.radioButtonMmVNone) {
+				me.setExit_soundMM(2);
 			}
 		}
     }
-    
-    @Override
+
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		setResult(4711);
+		finish();
+	}
+
+	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -445,11 +415,7 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 	private final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-            case DialogInterface.BUTTON_POSITIVE:
-                break;
-            }
-        }
+		}
     };
 
 	@Override
@@ -480,19 +446,18 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action buttons
-        switch(item.getItemId()) {
-        case R.id.menu_delete_profile_log:
-		    AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
-		    ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, mdialogClickListener).setNegativeButton(R.string.action_no, mdialogClickListener).show();
-            return true;
-			case R.id.menu_test:
-				doTest();
-				return true;
-        // Pass through any other request
-        default:
-            return super.onOptionsItemSelected(item);
-        }
-    }
+		int itemId = item.getItemId();
+		if (itemId == R.id.menu_delete_profile_log) {
+			AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
+			ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, mdialogClickListener).setNegativeButton(R.string.action_no, mdialogClickListener).show();
+			return true;
+		} else if (itemId == R.id.menu_test) {
+			doTest();
+			return true;
+			// Pass through any other request
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 	
     private final DialogInterface.OnClickListener mdialogClickListener = new DialogInterface.OnClickListener() {
@@ -509,8 +474,9 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 	        	}catch(Exception e){
 	                Toast.makeText(getApplicationContext(), R.string.profile_in_use, Toast.LENGTH_LONG).show();
 	        	}
-    			
-    			finish();
+				Intent intent = new Intent();
+				setResult(4814, intent);
+				finish();
                 break;
 
             case DialogInterface.BUTTON_NEGATIVE:
@@ -528,8 +494,12 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 
 		Worker worker = new Worker(this.getApplicationContext());
 		try {
-			worker.doWifi(this.getApplicationContext(), ze, transition);
-			worker.doBluetooth(this.getApplicationContext(), ze, transition);
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+				worker.doWifi(this.getApplicationContext(), ze, transition);
+			}
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+				worker.doBluetooth(this.getApplicationContext(), ze, transition);
+			}
 			worker.doSound(this.getApplicationContext(), ze, transition);
 			worker.doSoundMM(this.getApplicationContext(), ze, transition);
 			worker.doCallTasker(this.getApplicationContext(), ze, transition);
@@ -538,7 +508,7 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 		} catch (Exception ex) {
 			Log.e(Constants.APPTAG, "error testing profile", ex);
 			NotificationUtil.showError(this.getApplicationContext(), "TestMoreProfile" + ": Error testing profile", ex.toString());
-			showAlert(Constants.ACTION_TEST_STATUS_NOK, "TestMoreProfile" + ": Error testing profile. " + ex.toString());
+			showAlert(Constants.ACTION_TEST_STATUS_NOK, "TestMoreProfile" + ": Error testing profile. " + ex);
 		}
 	}
 
@@ -560,10 +530,10 @@ public class MoreProfile extends AppCompatActivity implements OnCheckedChangeLis
 	private final DialogInterface.OnClickListener testDialogClickListener = new DialogInterface.OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			switch (which){
-				case DialogInterface.BUTTON_POSITIVE:
-					break;
-			}
 		}
 	};
+
+	@Override
+	public void onPermissionsGranted(int requestCode) {
+	}
 }

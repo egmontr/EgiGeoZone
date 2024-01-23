@@ -16,10 +16,16 @@
 
 package de.egi.geofence.geozone.tracker;
 
+import android.app.AlarmManager;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SwitchCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
+
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -59,18 +65,18 @@ public class TrackingLocalSettings extends AppCompatActivity implements TextWatc
 
         ze = GlobalSingleton.getInstance().getZoneEntity();
 
-        trackToFile = ((CheckBox) this.findViewById(R.id.value_trackToFile));
+        trackToFile = this.findViewById(R.id.value_trackToFile);
         trackToFile.setOnCheckedChangeListener(this);
         ((CheckBox) this.findViewById(R.id.value_trackToFile)).setChecked(ze.isTrack_to_file());
 
         ((TextView) this.findViewById(R.id.location_tracking_settings)).setText(ze.getName());
-        EditText interval = ((EditText) this.findViewById(R.id.valuelocalInterval));
+        EditText interval = this.findViewById(R.id.valuelocalInterval);
         ((EditText) this.findViewById(R.id.valuelocalInterval)).setText(String.valueOf(ze.getLocal_tracking_interval() == null ? "5" : ze.getLocal_tracking_interval()));
         interval.addTextChangedListener(this);
         interval.setSelection(interval.getText().length());
 
-        enter = (SwitchCompat) this.findViewById(R.id.enterTracking);
-        exit = (SwitchCompat) this.findViewById(R.id.exitTracking);
+        enter = this.findViewById(R.id.enterTracking);
+        exit = this.findViewById(R.id.exitTracking);
         enter.setOnCheckedChangeListener(this);
         exit.setOnCheckedChangeListener(this);
         ((SwitchCompat) this.findViewById(R.id.enterTracking)).setChecked(ze.isEnter_tracker());
@@ -86,7 +92,7 @@ public class TrackingLocalSettings extends AppCompatActivity implements TextWatc
         }
         cursorMail.close();
         ArrayAdapter<String> adapterMail = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listMail);
-        spinner_mail = (Spinner) findViewById(R.id.spinner_tracking_mail_profile);
+        spinner_mail = findViewById(R.id.spinner_tracking_mail_profile);
 
         adapterMail.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_mail.setAdapter(adapterMail);
@@ -95,7 +101,7 @@ public class TrackingLocalSettings extends AppCompatActivity implements TextWatc
 
         // Gespeicherten Eintrag setzen
         if(ze != null && ze.getTrack_id_email() != null){
-            int ind_se = listMail.indexOf(ze.getTrack_id_email()) < 0 ? 0 : listMail.indexOf(ze.getTrack_id_email());
+            int ind_se = !listMail.contains(ze.getTrack_id_email()) ? 0 : listMail.indexOf(ze.getTrack_id_email());
             spinner_mail.setSelection(ind_se, true);
         }
 
@@ -109,7 +115,7 @@ public class TrackingLocalSettings extends AppCompatActivity implements TextWatc
         }
         serverMail.close();
         ArrayAdapter<String> adapterServer = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listServer);
-        spinner_server = (Spinner) findViewById(R.id.spinner_tracking_server_profile);
+        spinner_server = findViewById(R.id.spinner_tracking_server_profile);
 
         adapterServer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_server.setAdapter(adapterServer);
@@ -118,10 +124,12 @@ public class TrackingLocalSettings extends AppCompatActivity implements TextWatc
 
         // Gespeicherten Eintrag setzen
         if(ze != null && ze.getTrack_url() != null){
-            int ind_se = listServer.indexOf(ze.getTrack_url()) < 0 ? 0 : listServer.indexOf(ze.getTrack_url());
+            int ind_se = !listServer.contains(ze.getTrack_url()) ? 0 : listServer.indexOf(ze.getTrack_url());
             spinner_server.setSelection(ind_se, true);
         }
 
+        Intent intent = new Intent();
+        setResult(4712, intent);
     }
 
     @Override
@@ -149,12 +157,20 @@ public class TrackingLocalSettings extends AppCompatActivity implements TextWatc
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (buttonView == trackToFile) {
-            if (isChecked) {
-                ze.setTrack_to_file(true);
-            } else {
-                ze.setTrack_to_file(false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = ContextCompat.getSystemService(this, AlarmManager.class);
+            if (!alarmManager.canScheduleExactAlarms()) {
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                this.startActivity(intent);
+                return;
             }
+        }
+
+
+        if (buttonView == trackToFile) {
+            ze.setTrack_to_file(isChecked);
         }
 
         // Start/Stop Tracking at enter zone

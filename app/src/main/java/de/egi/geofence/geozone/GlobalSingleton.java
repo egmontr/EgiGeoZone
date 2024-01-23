@@ -19,7 +19,6 @@ package de.egi.geofence.geozone;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.egi.geofence.geozone.db.GlobalsEntity;
 import de.egi.geofence.geozone.db.MoreEntity;
 import de.egi.geofence.geozone.db.RequirementsEntity;
 import de.egi.geofence.geozone.db.ZoneEntity;
@@ -32,7 +31,7 @@ public class GlobalSingleton {
     private ZoneEntity zoneEntity = null;
     private MoreEntity moreEntity = null;
     private RequirementsEntity requirementsEntity = null;
-	private List<String> btDevicesConnected = new ArrayList<>();
+	private final List<String> btDevicesConnected = new ArrayList<>();
 
 	public List<String> getBtDevicesConnected() {
 		return btDevicesConnected;

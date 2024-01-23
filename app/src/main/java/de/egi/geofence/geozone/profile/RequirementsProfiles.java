@@ -15,16 +15,12 @@
 */		
 
 package de.egi.geofence.geozone.profile;
-		
+
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +30,16 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import de.egi.geofence.geozone.GlobalSingleton;
 import de.egi.geofence.geozone.R;
 import de.egi.geofence.geozone.db.DbContract;
@@ -42,7 +48,6 @@ import de.egi.geofence.geozone.db.RequirementsEntity;
 import de.egi.geofence.geozone.utils.Constants;
 import de.egi.geofence.geozone.utils.Utils;
 
-@SuppressWarnings("deprecation")
 public class RequirementsProfiles extends AppCompatActivity implements OnItemClickListener {
 	private ListView list;
 	private DbRequirementsHelper datasource;
@@ -53,7 +58,7 @@ public class RequirementsProfiles extends AppCompatActivity implements OnItemCli
 		Utils.onActivityCreateSetTheme(this);
 		setContentView(R.layout.profile_alle);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
 
@@ -62,20 +67,20 @@ public class RequirementsProfiles extends AppCompatActivity implements OnItemCli
 			actionBar.setDisplayHomeAsUpEnabled(true);
 			actionBar.setHomeButtonEnabled(true);
 		}
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_profiles);
+		FloatingActionButton fab = findViewById(R.id.fab_profiles);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				Intent i = new Intent(RequirementsProfiles.this, RequirementsProfile.class);
 				i.putExtra("action", "new");
-				startActivityForResult(i, 4711);
+				activityResultLaunch.launch(i); // 4711
 			}
 		});
 
 
 		datasource = new DbRequirementsHelper(this);
 		
-	    list = (ListView) findViewById (R.id.list);  
+	    list = findViewById (R.id.list);
         registerForContextMenu(list);
         fillList();
 	}
@@ -90,10 +95,6 @@ public class RequirementsProfiles extends AppCompatActivity implements OnItemCli
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
 				final View row = super.getView(position, convertView, parent);
-
-//	            	((TextView)row.findViewById(R.id.profName)).setTextColor(Color.BLACK);
-//	            	((TextView)row.findViewById(R.id.profWert)).setTextColor(Color.BLACK);
-
 				if (position % 2 == 0)
 					row.setBackgroundColor(Color.parseColor("#F7F7F7"));
 				else
@@ -110,33 +111,37 @@ public class RequirementsProfiles extends AppCompatActivity implements OnItemCli
 	public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
     	// Eintrag evtl. ändern
 		cursorMerk.moveToPosition(position);
-		String ind = cursorMerk.getString(cursorMerk.getColumnIndex(DbContract.RequirementsEntry._ID));
+		String ind = cursorMerk.getString(cursorMerk.getColumnIndexOrThrow(DbContract.RequirementsEntry._ID));
 		
 		Intent is = new Intent(this, RequirementsProfile.class);
 		is.putExtra("action", "update");
 		is.putExtra("ind", ind);
-		startActivityForResult(is, 4711);
+		activityResultLaunch.launch(is); // 4711
 	}
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        // Choose what to do based on the request code
-        switch (requestCode) {
-            case 4711 :
-            	RequirementsEntity re = GlobalSingleton.getInstance().getRequirementsEntity();
-            	DbRequirementsHelper dbRequirementsHelper = new DbRequirementsHelper(this);
-            	if (re.getName() != null && !re.getName().equalsIgnoreCase("")){
-            		dbRequirementsHelper.storeRequirements(re);
-            	}
-                fillList();
-                break;
-            // If any other request code was received
-            default:
-               // Report that this Activity received an unknown requestCode
-               Log.d(Constants.APPTAG, getString(R.string.unknown_activity_request_code, requestCode));
-               break;
-        }
-    }
+	ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
+			new ActivityResultContracts.StartActivityForResult(),
+			new ActivityResultCallback<ActivityResult>() {
+				@SuppressLint("SetTextI18n")
+				@Override
+				public void onActivityResult(ActivityResult result) {
+					// Add Requ
+					if (result.getResultCode() == 4711) {
+						RequirementsEntity re = GlobalSingleton.getInstance().getRequirementsEntity();
+						DbRequirementsHelper dbRequirementsHelper = new DbRequirementsHelper(getApplicationContext());
+						if (re.getName() != null && !re.getName().equalsIgnoreCase("")) {
+							dbRequirementsHelper.storeRequirements(re);
+						}
+						fillList();
+						// If any other request code was received
+					} else {// Report that this Activity received an unknown requestCode
+						fillList();
+						Log.d(Constants.APPTAG, getString(R.string.unknown_activity_request_code, result.getResultCode()));
+					}
+				}
+			});
+
+
 }
 
 

@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,22 +21,21 @@
     android:fitsSystemWindows="true"
     tools:context=".MainEgiGeoZone">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
@@ -61,12 +60,12 @@
                 android:id="@+id/value_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:inputType="text"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="Autofill" />
 
             <View
                 android:layout_width="fill_parent"
@@ -82,7 +81,7 @@
                 android:background="@drawable/box"
                 android:stretchColumns="1">
 
-                <TableRow>
+                <TableRow tools:ignore="UselessParent">
 
                     <TextView
                         android:layout_width="0dip"
@@ -121,13 +120,15 @@
                         android:id="@+id/value_tasker_enter_id"
                         android:layout_width="0dip"
                         android:layout_weight="1"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        tools:ignore="Autofill" />
 
                     <EditText
                         android:id="@+id/value_tasker_exit_id"
                         android:layout_width="0dip"
                         android:layout_weight="1"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        tools:ignore="Autofill" />
 
                 </TableRow>
             </TableLayout>
@@ -143,7 +144,7 @@
                 <TableRow>
 
                     <TextView
-                        android:layout_height="20dp"
+                        android:layout_height="36dp"
                         android:text="@string/moreWlan"
                         android:textStyle="bold" />
                 </TableRow>
@@ -355,7 +356,8 @@
                 <TableRow>
 
                     <TextView
-                        android:layout_height="20dp"
+                        android:layout_width="341dp"
+                        android:layout_height="36dp"
                         android:text="@string/moreBluetooth"
                         android:textStyle="bold" />
                 </TableRow>
@@ -413,4 +415,4 @@
             </TableLayout>
         </LinearLayout>
     </ScrollView>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

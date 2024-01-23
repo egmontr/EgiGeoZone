@@ -132,7 +132,7 @@ public class SimpleGeofence {
         return new Geofence.Builder()
                        .setRequestId(getId())
                        .setTransitionTypes(mTransitionType)
-                       .setCircularRegion(Double.valueOf(getLatitude()), Double.valueOf(getLongitude()), Float.valueOf(getRadius()))
+                       .setCircularRegion(Double.parseDouble(getLatitude()), Double.parseDouble(getLongitude()), Float.parseFloat(getRadius()))
                        .setExpirationDuration(mExpirationDuration)
                        .build();
     }

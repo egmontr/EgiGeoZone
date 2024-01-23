@@ -35,15 +35,12 @@ public class GeofenceReceiverService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         log.debug("onHandleIntent");
         GeofencingEvent event = GeofencingEvent.fromIntent(intent);
-        try {
-            if (event != null) {
-                if (event.hasError()) {
-                    handleError(event);
-                } else {
-                    handleEnterExit(event);
-                }
+        if (event != null) {
+            if (event.hasError()) {
+                handleError(event);
+            } else {
+                handleEnterExit(event);
             }
-        }finally {
         }
     }
 
@@ -67,9 +64,9 @@ public class GeofenceReceiverService extends IntentService {
 
         // Genauigkeit des Standortes einschränken
         Location location = event.getTriggeringLocation();
-        log.debug("Location accuracy: " + location.toString());
-        float accuracy = -1;
-        if (location.hasAccuracy()) {
+        log.debug("Location accuracy: " + location);
+        float accuracy = 0;
+        if (location != null && location.hasAccuracy()) {
             accuracy = location.getAccuracy();
         }
 

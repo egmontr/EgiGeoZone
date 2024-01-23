@@ -3,24 +3,24 @@
     <item android:id="@+id/action_search"
         android:title="@string/search"
         android:icon="@drawable/ic_search_black_24dp"
-        theapp:showAsAction="always|collapseActionView"
-        theapp:actionViewClass="android.support.v7.widget.SearchView" />
+        theapp:showAsAction="ifRoom|collapseActionView"
+        theapp:actionViewClass="androidx.appcompat.widget.SearchView" />
     <item
         android:id="@+id/menu_globe"
         android:title="@string/satellite"
-        theapp:showAsAction="always"
+        theapp:showAsAction="ifRoom"
         android:icon="@drawable/ic_language_white_24dp1"
         />
     <item
         android:id="@+id/menu_increase_radius"
         android:title="@string/increaseRadius"
-        theapp:showAsAction="always"
+        theapp:showAsAction="ifRoom"
         android:icon="@drawable/ic_zoom_in_black_24dp"
         />
     <item
         android:id="@+id/menu_decrease_radius"
         android:title="@string/decreaseRadius"
-        theapp:showAsAction="always"
+        theapp:showAsAction="ifRoom"
         android:icon="@drawable/ic_zoom_out_black_24dp"
         />
 </menu>

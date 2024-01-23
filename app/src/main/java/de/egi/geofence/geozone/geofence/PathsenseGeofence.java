@@ -35,7 +35,7 @@ public class PathsenseGeofence implements PathsenseMonitoringGeofenceCallback{
         api.removeGeofence(geofence.getId());
 
         // then add geofence
-        PathsenseGeofenceEventEnum pse = PathsenseGeofenceEventEnum.INGRESS_EGRESS;
+        PathsenseGeofenceEventEnum pse;
         switch (geofence.getTransitionType()){
             case Geofence.GEOFENCE_TRANSITION_ENTER:
                 pse = PathsenseGeofenceEventEnum.INGRESS;
@@ -48,9 +48,9 @@ public class PathsenseGeofence implements PathsenseMonitoringGeofenceCallback{
         }
 
         api.addGeofence(geofence.getId(),
-                Double.valueOf(geofence.getLatitude()),
-                Double.valueOf(geofence.getLongitude()),
-                Integer.valueOf(geofence.getRadius()),
+                Double.parseDouble(geofence.getLatitude()),
+                Double.parseDouble(geofence.getLongitude()),
+                Integer.parseInt(geofence.getRadius()),
                 pse,
                 PathsenseGeofenceEventReceiver.class);
 

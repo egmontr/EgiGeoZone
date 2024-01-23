@@ -65,10 +65,12 @@ public final class Constants {
     public static final String DB_KEY_REBOOT = "reboot";
     public static final String DB_KEY_LASTINSTALLEDAPPLICATIONVERSION = "lastInstalledApplicationVersion";
     public static final String DB_KEY_BEACON_SCAN = "beacon_scan";
+    public static final String DB_KEY_GUID = "guid";
 
     public static final String DB_KEY_MIGRATED_TO_DB = "migratedToDb";
 
     public static final String TEST_ZONE = "TestGeoZone";
+    public static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     // Used to track what type of geofence removal request was made.
     public enum REMOVE_TYPE {INTENT, LIST}
@@ -79,9 +81,7 @@ public final class Constants {
     /*
      * A log tag for the application
      */
-    public static final String APPTAG = "GeofenceReceiver";
-
-    public final static int PLAY_SERVICES_RESOLU‌​TION_REQUEST = 9000;
+    public static final String APPTAG = "EgiGeoZone";
 
     // Intent actions
     public static final String ACTION_STATUS_CHANGED = "de.egi.geofence.geozone.STATUS";

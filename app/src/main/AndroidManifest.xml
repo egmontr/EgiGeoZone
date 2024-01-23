@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.egi.geofence.geozone"
-    android:versionCode="2800"
-    android:versionName="2.8.0">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="3180"
+    android:versionName="3.1.8">
 
-    <uses-permission  android:name="de.egi.geofence.geozone.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
+    <queries>
+        <intent>
+            <action android:name="de.egi.geofence.geozone.GETPLUGINS" />
+        </intent>
+        <package android:name="net.dinglisch.android.taskerm" />
+    </queries>
+
+
+    <uses-permission android:name="de.egi.geofence.geozone.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
     <uses-permission android:name="net.dinglisch.android.tasker.PERMISSION_RUN_TASKS"/>
@@ -16,17 +24,30 @@
     <uses-feature android:name="android.hardware.location.network" android:required="false" />
     <uses-feature android:name="android.hardware.location.gps" android:required="false" />
 
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" tools:node="remove"/>
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
@@ -48,14 +69,15 @@
         android:supportsRtl="true"
         android:installLocation="internalOnly"
         android:name="EgiGeoZoneApplication"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
 
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".MainEgiGeoZone"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -78,8 +100,10 @@
         <activity android:name="de.egi.geofence.geozone.Privacy" android:label="@string/menu_item_privacy" android:theme="@style/StyledDialog"/>
         <activity android:name="de.egi.geofence.geozone.Help" android:label="@string/menu_item_help" android:theme="@style/StyledDialog"/>
 
-        <activity android:name="de.egi.geofence.geozone.Karte"  android:label="@string/app_name"  android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name="de.egi.geofence.geozone.KarteAll"  android:label="@string/app_name"  android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="de.egi.geofence.geozone.Karte"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name="de.egi.geofence.geozone.KarteAll"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name="de.egi.geofence.geozone.Debug" android:theme="@style/StyledDialog" android:label="@string/app_debug"/>
 
@@ -104,12 +128,6 @@
                 android:value=".MainEgiGeoZone"/>
         </activity>
         <activity android:name="de.egi.geofence.geozone.profile.MailProfile" android:label="@string/mail_opt_title" android:theme="@style/AppTheme.NoActionBar" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name="de.egi.geofence.geozone.profile.SmsProfiles" android:label="@string/sms_opt_title" android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainEgiGeoZone"/>
-        </activity>
-        <activity android:name="de.egi.geofence.geozone.profile.SmsProfile"  android:label="@string/sms_opt_title" android:theme="@style/AppTheme.NoActionBar" android:windowSoftInputMode="stateHidden"/>
         <activity android:name="de.egi.geofence.geozone.profile.MoreProfiles"  android:label="@string/other_opt_title" android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -128,9 +146,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainEgiGeoZone"/>
         </activity>
-        <activity android:name="de.egi.geofence.geozone.utils.NotificationError" android:label="@string/app_name"/>
-        <activity android:name="de.egi.geofence.geozone.EgiLog" android:label="@string/app_name"/>
-        <activity android:name="de.egi.geofence.geozone.GcmLog" android:label="@string/app_name"/>
+        <activity android:name="de.egi.geofence.geozone.utils.NotificationError" />
+        <activity android:name="de.egi.geofence.geozone.EgiLog" />
+        <activity android:name="de.egi.geofence.geozone.GcmLog" />
 
         <activity android:name=".tracker.TrackingGeneralSettings" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".tracker.TrackingLocalSettings" android:label="@string/app_locationTrackerActivity" android:windowSoftInputMode="stateHidden" />
@@ -160,47 +178,16 @@
             android:name="de.egi.geofence.geozone.geofence.PathsenseGeofenceEventReceiverService" android:exported="true" android:permission="android.permission.BIND_JOB_SERVICE">
         </service>
 
-        <!--
-           WakefulBroadcastReceiver that will receive intents from GCM
-           services and hand them to the custom IntentService.
-
-           The com.google.android.c2dm.permission.SEND permission is necessary
-           so only GCM services can send data messages for the app.
-         -->
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
-                <!-- Receives the actual messages. -->
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="de.egi.geofence.geozone" />
-            </intent-filter>
-        </receiver>
-        <!-- Do not export this service. Instead, keep it private to prevent other apps accessing your service. -->
-        <service android:name="de.egi.geofence.geozone.gcm.GcmListenerService" android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="de.egi.geofence.geozone.gcm.InstanceIdListenerService" android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name="de.egi.geofence.geozone.gcm.GcmRegistrationIntentService" android:exported="false">
-        </service>
-
-        <service android:name=".tracker.TrackingLocationService"/>
-        <receiver android:name=".tracker.TrackingReceiverWorker"/>
+        <service android:name=".tracker.TrackingLocationService" android:foregroundServiceType="location"/>
         <service
             android:name="de.egi.geofence.geozone.tracker.TrackingReceiverWorkerService" android:exported="false">
         </service>
 
-        <receiver android:name="de.egi.geofence.geozone.geofence.RetryRequestsInternetReceiver" >
+        <receiver android:name="de.egi.geofence.geozone.geofence.RetryRequestsInternetReceiver"
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
             </intent-filter>
         </receiver>
         <service
@@ -230,7 +217,7 @@
             android:exported="true" />
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="de.egi.geofence.geozone.fileContentProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -238,6 +225,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <!-- [START firebase_service] -->
+        <service
+            android:name=".gcm.FirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
 
     </application>
 </manifest>

@@ -27,12 +27,11 @@ import android.widget.ListView;
 public class Debug extends Activity   {
 	private ListView listViewDebug = null;
 	
-    @SuppressWarnings("rawtypes")
-	public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.debug);
 //		final ArrayAdapter adapter = new ArrayAdapter(this, R.id.listView_debug);
-        listViewDebug =  (ListView) findViewById(R.id.listView_debug);
+        listViewDebug = findViewById(R.id.listView_debug);
         listViewDebug.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
@@ -40,9 +39,9 @@ public class Debug extends Activity   {
             	String  itemValue    = (String) listViewDebug.getItemAtPosition(position);
 	     	    Intent data = new Intent();
 	    	    data.putExtra("level", itemValue);
-	    	    setResult(RESULT_OK, data);
+	    	    setResult(4712, data);
 	    	    finish();
             }
-       }); 
+       });
     }
 }

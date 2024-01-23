@@ -27,8 +27,6 @@
     <string name="geofence">Geofence  name</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
-    <string name="latitudeOpt">Latitude (optional)</string>
-    <string name="longitudeOpt">Longitude (optional)</string>
     <string name="geofenceHint">Enter geofence name</string>
     <string name="latitudeHint">Enter latitude</string>
     <string name="longitudeHint">Enter longitude</string>
@@ -69,8 +67,8 @@
     <string name="menu_item_profiles">Profiles</string>
     <string name="menu_item_settings">Settings</string>
     <string name="admin">Administration</string>
-    <string name="menu_item_log">Show last log file</string>
-    <string name="menu_item_send_log">Send last log file</string>
+    <string name="menu_item_log">Show log file</string>
+    <string name="menu_item_send_log">Send log file</string>
     <string name="menu_item_configuration">Configuration</string>
     <string name="menu_item_debug">Log level</string>
     <string name="menu_item_export">Export to:</string>
@@ -78,7 +76,7 @@
     <string name="menu_item_plugins">Show registered plugins</string>
     <string name="menu_item_track">Location tracking</string>
 
-    <string name="export_ok_text">Configuration exported.</string>
+    <string name="export_ok_text">File exported.</string>
     <string name="import_ok_text">Configuration registered.</string>
     <string name="settings_tracker">General location tracker settings</string>
     <string name="loc_interval">Time in minutes between location updates (polling)</string>
@@ -113,6 +111,8 @@
     <string name="geofence_not_available">Geofence service is not available. Turn on location access in settings and try again. Redirected to the Location Settings?</string>
     <string name="geofence_too_many_geofences">Your app has registered more than 100 geofences. Remove unused ones before adding new geofences.</string>
     <string name="geofence_too_many_pending_intents">You have provided more than 5 different PendingIntents. Please contact developer.</string>
+    <string name="geofence_insufficient_location_permission">The client does not have sufficient location permission to perform geofencing operations.</string>
+    <string name="geofence_request_too_frequent">Your app has been adding Geofences too frequently.</string>
 
     <string name="add_geofences_result_success">
         Add Geofences: Success
@@ -123,10 +123,7 @@
     <string name="add_geofences_already_requested_error">
         Can\'t add geofences, previous request hasn\'t finished.
     </string>
-    <string name="connected">Client connected</string>
-    <string name="disconnected">Client disconnected</string>
     <string name="geofence_input_error_missing">Missing value</string>
-    <string name="geofence_input_not_greater_zero">Value must be greater or equal zero</string>
     <string name="geofence_input_error_comma">Character not allowed in name.</string>
     <string name="geofence_input_error_latitude_invalid">
         Invalid latitude(s). Must be in the range -90 to 90 degrees
@@ -134,14 +131,11 @@
     <string name="geofence_input_error_longitude_invalid">
         Invalid longitude(s). Must be in the range -180 to 180 degrees
     </string>
-    <string name="bt_input_error_radius_invalid">
-        Invalid radius(s). Must be 1 meter or greater.
-    </string>
     <string name="geofence_input_error_radius_invalid">
         Invalid radius(s). Must be 50 meter or greater.
     </string>
     <string name="geofence_transition_entered">entered</string>
-    <string name="geofence_transition_error_detail">
+    <string name="geofence_transition_error_detail" tools:ignore="PluralsCandidate">
         Geofence transition error, code %1$d message %2$s.
     </string>
     <string name="geofence_transition_exited">exited</string>
@@ -183,26 +177,13 @@
     <string name="disclaimer_title">Disclaimer - End User License Agreement</string>
     <string name="disclaimer">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
 
-    <string name="sms_info_title">Sending SMS prohibited by Google</string>
-    <string name="sms_info">Google has informed me that starting January 9, 2019, SMS sending will no longer be allowed in the background. If the feature is not disabled, the app will be blocked. A request for a special permit was rejected.</string>
-    <string name="info_1">See here:\n <a href="https://android-developers.googleblog.com/2018/10/providing-safe-and-secure-experience.html">https://android-developers.googleblog.com/2018/10/providing-safe-and-secure-experience.html</a></string>
-    <string name="info_2">And here:\n <a href="https://play.google.com/about/privacy-security-deception/permissions/">https://play.google.com/about/privacy-security-deception/permissions/</a></string>
-
     <string name="privacy_short">The EgiGeoZone app does not collect any personal data from the users or do pass them to third parties. Also, the app does not generate any statistics</string>
     <string name="privacy_title">Description of the required Android permissions</string>
     <string name="privacy_contact_title">On the web</string>
-    <string name="privacy_web">Privacy policy on the web</string>
     <string name="privacy_hp">The text on the website:\n <a href="https://www.egigeozone.de/privacy/default_en.html">https://www.egigeozone.de/privacy/default_en.html</a></string>
     <string name="privacy_mail">Contact:\n <a href="egmontr@gmail.com">egmontr@gmail.com</a></string>
 
     <string name="usage">Usage:</string>
-    <string name="pt_1">Phone Calls:</string>
-    <string name="put_1">This authorization allows the app to determine, among other things, the telephone number and device ID.</string>
-    <string name="p_1">Used to determine the device ID. This is then sent to FHEM or other used servers to identify the user there.</string>
-
-    <string name="pt_2">Your messages:</string>
-    <string name="put_2">Sends SMS messages.</string>
-    <string name="p_2">Allows the app to send SMS messages. Charges may apply.</string>
 
     <string name="pt_3">Your location:</string>
     <string name="put_3">Allows the app to get your location.</string>
@@ -233,7 +214,6 @@
     <string name="p_11">When you start (boot), the zones are passed to the Google Geofence service, since they are not remembered.</string>
 
     <string name="put_12">Connect and disconnect Wifi connections:</string>
-    <string name="p_12">Starting and Stopping Wifi in "More Actions".</string>
 
     <string name="put_13">Vibration alarm control:</string>
     <string name="p_13">Start and stop vibration at "More Actions".</string>
@@ -242,24 +222,12 @@
     <string name="p_14">The device is only briefly awakened, so that actions can be started in the background.</string>
 
     <string name="rinfo_title">Description</string>
-    <string name="rinfo">In the subject and body of mails, in body of the SMS and in the server URL you can use variables, which will be replaced on runtime.</string>
+    <string name="rinfo">In the subject and body of mails and in the server URL you can use variables, which will be replaced on runtime.</string>
     <string name="rdesc_title">Variables</string>
     <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
         \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
         Date = ${date}\nLocal Date = ${localDate}\nUTC location date = ${locationDate}\nLocal location date = ${localLocationDate}\n
     </string>
-
-    <string name="beaconscanHelp_title">What means beacons scan</string>
-    <string name="beaconscanHelpText">When you start the \"beacon scan \", the scans after BLE devices (Bluetooth Low Energy) is started. These devices are also called beacons. By starting BeaconZones can be created. This BeaconZones can be assigned to actions defined in the profiles, which are called when entering or leaving the BeaconZone. In principle, as the GeoZones.</string>
-    <string name="beaconsScanOn">Stop beacons scan</string>
-    <string name="beaconsScanOff">Start beacons scan</string>
-
-    <string name="bluetoothNotEnabled">Bluetooth not enabled</string>
-    <string name="bluetoothWillBeEnabled">Bluetooth will be enabled.</string>
-    <string name="bluetoothLENotAvailable">Bluetooth LE not available</string>
-    <string name="bluetoothLeNotSupported">Sorry, this device does not support Bluetooth LE.</string>
-    <string name="BtScanNotEnabledSettings">Scan for Bluetooth devices not enabled. Go to Settings and start Beacon Scan.</string>
-    <string name="BtScanNotEnabled">Scan for Bluetooth devices not enabled</string>
 
     <string-array name="debug_array">
         <item>verbose</item>
@@ -307,13 +275,6 @@
     <string name="mailHintSubject">Enter subject</string>
     <string name="mailHintText">Enter body</string>
 
-    <string name="sms_opt_title">SMS options</string>
-    <string name="prof_sms">SMS profiles</string>
-    <string name="smsTo">SMS receiver</string>
-    <string name="smsText">Body</string>
-    <string name="smsHintTo">Enter number</string>
-    <string name="smsHintText">Enter text</string>
-
     <string name="other_opt_title">More actions</string>
     <string name="prof_other">Profiles for more actions</string>
 
@@ -328,9 +289,10 @@
     <string name="gcm">Receive GCM notifications</string>
     <string name="gcm_logging">Log GCM notifications</string>
     <string name="menu_item_show_gcm_log">Show GCM logging</string>
-    <string name="gcm_sender_id">GCM project number</string>
+    <string name="gcm_sender_id">GCM</string>
     <string name="gcm_sender_id_clipboard">Copied API client key to clipboard</string>
-    <string name="menu_item_delete_gcm_log">Delete GCM log file</string>
+    <string name="menu_item_delete_gcm_log">Delete file</string>
+    <string name="menu_item_export_file">Export file</string>
     <string name="getApiKey">Get GCM-API-Key</string>
     <string name="noApiKey">No API-Key present! Register first to Google GCM. See manual for details.</string>
 
@@ -345,10 +307,10 @@
     <string name="vibration">vibrate</string>
     <string name="none">do nothing</string>
 
-    <string name="moreWlan">Wifi</string>
+    <string name="moreWlan">Wifi (For Android smaller or equal Version 9)</string>
     <string name="moreSound">Sound</string>
     <string name="moreMM">Multimedia Sound</string>
-    <string name="moreBluetooth">Bluetooth</string>
+    <string name="moreBluetooth">Bluetooth (For Android smaller or equal Version 11)</string>
     <string name="moreEnter">Entering zone</string>
     <string name="moreExit">Exiting zone</string>
 
@@ -363,6 +325,7 @@
     <string name="text_trackToMail">Track to email profile</string>
     <string name="text_trackToServer">Track to server profile</string>
     <string name="text_stopAllTrackings">Stop all trackings</string>
+    <string name="text_exportTrackings">Export tracking files</string>
     <string name="text_serviceState">Tracking service state</string>
     <string name="text_tracking_notification">Live tracking is active</string>
     <string name="text_running_notification">EgiGeoZone is running</string>
@@ -386,7 +349,7 @@
 
     <string name="hp_help">You can find the EgiGeoZone manual here:\n <a href="http://www.egigeozone.de/manual/default_en.html">http://www.egigeozone.de/manual/default_en.html</a></string>
     <string name="hp">EgiGeoZone website:\n <a href="http://www.egigeozone.de">http://www.egigeozone.de</a></string>
-    <string name="forum">EgiGeoZone forum:\n <a href="http://rpi.spdns.eu/egigeozone/">http://rpi.spdns.eu/egigeozone/</a></string>
+    <string name="forum">EgiGeoZone forum:\n <a href="https://www.egigeozone.de/forum">https://www.egigeozone.de/forum</a></string>
 
     <string name="spinner_local">Folder \"egigeozone\"</string>
     <string name="spinner_extern">GDrive, Dropbox, &#8230;</string>
@@ -394,59 +357,42 @@
     <string name="accuracy">Location accuracy: Consider only locations below the specified meters. \nOnly required for special cases. At the beginning, leave the value to 0. If not, it can happen, that no actions are executed! </string>
     <string name="accuracy_hint">Accuracy in meters</string>
 
-    <string name="beacon">Name of beacon zone</string>
-    <string name="beacon_ident1">Beacon identifier 1</string>
-    <string name="beacon_ident2">Beacon identifier 2</string>
-    <string name="beacon_ident3">Beacon identifier 3</string>
-    <string name="beaconHint">Name of the beacon zone</string>
-    <string name="scanHint">Scan to find ids</string>
-    <string name="scan">Scan</string>
-    <string name="wait">Please wait. Scan is running…</string>
-
-    <string name="checkLocation">From Android 6 for the functionality of the geographic zones the location permission is a prerequisite. Therefore, you should allow this permission in the next dialog and then optionally perform the action again.</string>
-    <string name="descAskLocation">From Android 6 for the functionality of the geographic zones the location permission is a prerequisite. You have declined this. Therefore, you will be asked again to accept this authorization. Then perform the action again.</string>
-    <string name="titleLocation">Location permission</string>
-
-    <string name="checkExtStorage">This app writes a log file. Likewise, you can export the configuration and re-import it. From Android 6 for writing files a unique authorization is required. Therefore, you should allow this permission in the next dialog and then optionally perform the action again.</string>
-    <string name="descAskExtStorage">This app writes a log file. Likewise, you can export the configuration and re-import it. From Android 6 for writing files a unique authorization is required. You have declined this. Therefore, you will be asked again to accept this authorization. Then perform the action again.</string>
-    <string name="titleExtStorage">Write permissions</string>
-
-    <string name="checkGCM">To use GCM push messages, from Android 6 you must activate the access to the accounts (contacts). Therefore, you should allow this permission in the next dialog.</string>
-    <string name="descAskGCM">To use GCM push messages, from Android 6 you must activate the access to the accounts (contacts). You have rejected these and will therefore not be able to use GCM push messages.</string>
-    <string name="titleGCM">Use of GCM (use accounts) permission</string>
-
-    <string name="checkSMS">From Android 6 to send a SMS (short messages) the SMS permission is a prerequisite. Therefore, you should allow this permission in the next dialog.</string>
-    <string name="descAskSMS">From Android 6 to send a SMS (short messages) the SMS permission is a prerequisite. You have rejected these and will therefore not be able to send SMS.</string>
-    <string name="titleSMS">SMS permission</string>
-
-    <string name="titleMain">Enable App base permissions: Read phone state, Location and Write permissions</string>
-
-    <string name="checkPhone">The server profiles make use of the device ID, to send it to the specified server. To do this, from Android 6 the read-phone-state permission is required. Therefore, you should allow this permission in the next dialog.</string>
-    <string name="descAskPhone">The server profiles make use of the device ID, to send it to the specified server. To do this, from Android 6 the read-phone-state permission is required. You have declined this. Therefore, you will be asked again to accept this authorization.</string>
-    <string name="titlePhone">Read device id permission</string>
-
-    <string name="descAskAll">From Android 6 you have to enable the following permissions, so the app can run correctly.
-        \n\n
-        Write permission (Storage): This app writes a log file. Likewise, you can export the configuration and re-import it.\n\n
-        Location permission (Location): This is needed for the main functionality of the app.\n\n
-        Read device id permission (Telephone): The server profiles makes use of the device ID, to send it to the specified server.
-            \n\n
-        You have rejected these permissions. You may enable App the permissions now or later in the device settings (Settings \u279d Apps \u279d EgiGeoZone \u279d Permissions).
+    <string name="descAskAll">You denied one or more permissions. So some of the features will not be working.\n\n
+        You may enable the permissions later in the device settings (Settings \u279d Apps \u279d EgiGeoZone \u279d Permissions).
     </string>
-    <string name="alertPermissions">From Android 6 you have to enable the following permissions, so the app can run correct.
+
+    <string name="alert2010Location">The location permission is needed for the main functionality of the app.
+    </string>
+    <string name="titleAlert2010Location">Location permission for App</string>
+
+    <string name="alert2020BT">If you want to use Bluetooth, you have to enable the permission for it.
+    </string>
+    <string name="titleAlert2020BT">Bluetooth permission for App</string>
+
+    <string name="alert2030BgLocation">Background location is needed to update the location of the Geofence in the background. For example, when your device is in your pocket.
+    </string>
+    <string name="titleAlert2030BgLocation">Background location permission for App</string>
+
+    <string name="alert2040Read">Read the certificates. Read and write the export / import file. Write, read and delete various log files. Thats why you should allow this permission.
+    </string>
+    <string name="titleAlert2040Read">Allows the app to read and write to the SD card</string>
+
+    <string name="alert2050Notification">If you want to get notifications, you have to enable the permission. For example, when you enter or leave a fence.
+    </string>
+    <string name="titleAlert2050Notification">Notifications permission for App</string>
+
+    <string name="alert2060Write">Read and write the export / import file. Write, read and delete various log files. Thats why you should allow this permission.
+    </string>
+    <string name="titleAlert2060Write">Allows the app to write to the SD card</string>
+
+    <string name="alertPermissions">You have to enable the following permissions, so the app can run correct.
         \n\n
-        Write permission (Storage): This app writes a log file. Likewise, you can export the configuration and re-import it.\n\n
+        Read/Write permission (Storage): This app writes a log file. Likewise, you can export the configuration and re-import it.\n\n
         Location permission (Location): This is needed for the main functionality of the app.\n\n
-        Read device id permission (Telephone): The server profiles makes use of the device ID, to send it to the specified server.
+        It must also be admitted that the location can be queried in the background. \n\n
     </string>
 
     <string name="titleAlertPermissions">Base permissions for App</string>
-
-    <string name="dozePermissionsTitle">Battery optimisation</string>
-    <string name="dozePermissionsMessage">
-        Attention: This dialog comes only once!\n\n
-        In the following Battery settings dialog, tap on the menu \u22ee and add the EgiGeoZone app to the Battery optimisation whitelist (not optimised). Otherwise it can be, that the app will not work properly.
-    </string>
 
     <string name="doNotDisturbPermissionsTitle">Do not disturb permission</string>
     <string name="doNotDisturbPermissionsMessage">
@@ -468,8 +414,6 @@
     <string name="stateResetToast">State of all Geofences reset</string>
 
     <string name="geoZones">Geofences</string>
-    <string name="btZones">Bluetooth fences</string>
-    <string name="egigeozone">EgiGeoZone</string>
     <string name="egigeofence">EgiGeoFence</string>
     <string name="geofencing_and_bluetoothfencing">Geofencing</string>
     <string name="google">Google</string>
@@ -492,5 +436,12 @@
     <string name="android_uuid_almost_used_for_server_calls">Android UUID (almost used for server calls)</string>
     <string name="device_uuid_used_for_server_calls_if_android_uuid_not_available">Device UUID (used for server calls, if Android UUID not available)</string>
     <string name="gcm_api_key">GCM API Key</string>
+
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="fcm_message">FCM Message</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
+    <string name="menu_item_scroll_bottom_gcm_log">Scroll to bottom log file</string>
+    <string name="menu_item_scroll_top_gcm_log">Scroll to top log file</string>
+    <string name="changeCert">Choose</string>
 
 </resources>

@@ -1,7 +1,8 @@
 package de.egi.geofence.geozone.fences;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -25,10 +26,14 @@ public class Accuracy extends AppCompatActivity implements TextWatcher {
 
         ze = GlobalSingleton.getInstance().getZoneEntity();
 
-        EditText accuracy = ((EditText) this.findViewById(R.id.value_accuracy));
+        EditText accuracy = this.findViewById(R.id.value_accuracy);
         ((EditText) this.findViewById(R.id.value_accuracy)).setText(String.valueOf(ze.getAccuracy() == null ? "0" : ze.getAccuracy()));
         accuracy.addTextChangedListener(this);
         accuracy.setSelection(accuracy.getText().length());
+
+        Intent intent = new Intent();
+        setResult(4713, intent);
+
     }
 
     @Override

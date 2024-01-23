@@ -16,6 +16,7 @@
 
 package de.egi.geofence.geozone;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -23,6 +24,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -33,30 +35,28 @@ import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings.Secure;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.OnFailureListener;
 
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -88,14 +88,13 @@ import de.egi.geofence.geozone.utils.IOUtil;
 import de.egi.geofence.geozone.utils.NotificationUtil;
 import de.egi.geofence.geozone.utils.Utils;
 
-public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener{
+public class Worker {
 	private final Context context;
 	private final Logger log = Logger.getLogger(Worker.class);
 	private Api geoApi;
 	private DbServerHelper datasourceServer;
 	private String fallback;
 	private static int kJobId = 0;
-	private GoogleApiClient mLocationClient;
 	private Location checkLocation;
 	private int transition;
 	private String ids;
@@ -105,26 +104,23 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 	private String origin;
 	private GeofenceRequester mGeofenceRequester;
     private PathsenseGeofence mPathsenseGeofence;
-    private DbGlobalsHelper dbGlobalsHelper;
+    private final DbGlobalsHelper dbGlobalsHelper;
+	private FusedLocationProviderClient mLocationClient;
+	private LocationCallback locationCallback = null;
 
 	final BroadcastReceiver myReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String action_name = intent.getAction();
 			if (action_name.equals(Constants.ACTION_DONOTDISTURB_OK)) {
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-					context.startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
-				}
+				context.startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 
-			}
-			if (action_name.equals(Constants.ACTION_DONOTDISTURB_NOK)) {
-				// Do nothing
 			}
 			// Get an instance of the Notification manager
 			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 			notificationManager.cancel(222);
 			context.unregisterReceiver(myReceiver);
-		};
+		}
 	};
 
 
@@ -164,8 +160,59 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		log.debug("Geofe: " + Double.valueOf(location.getLongitude()).toString());
 
 		if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
-			mLocationClient = new GoogleApiClient.Builder(context, this, this).addApi(LocationServices.API).build();
-			mLocationClient.connect();
+			mLocationClient = LocationServices.getFusedLocationProviderClient(context);
+			try{
+				mLocationClient.getLastLocation()
+						.addOnSuccessListener(mlocation -> {
+							// Begin polling for new location updates.
+							// Note that this can be NULL if last location isn't already known.
+							LocationRequest mLocationRequest = LocationRequest.create();
+							mLocationRequest.setPriority(Priority.PRIORITY_HIGH_ACCURACY);
+							locationCallback = new LocationCallback() {
+								@Override
+								public void onLocationResult(@NonNull LocationResult locationResult) {
+									Location location = locationResult.getLastLocation();
+									// Update UI with location data
+									log.debug("4-a GeofencingFalsePositives onLocationChanged ");
+									log.debug("4-b GeofencingFalsePositives location reported: " + Double.valueOf(location != null ? location.getLatitude() : 0).toString());
+									log.debug("4-c GeofencingFalsePositives location reported: " + Double.valueOf(location != null ? location.getLongitude() : 0).toString());
+
+									checkLocation = location;
+									doWork();
+								}
+								@Override
+								public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
+									super.onLocationAvailability(locationAvailability);
+								}
+							};
+							mLocationClient.requestLocationUpdates(mLocationRequest,
+									locationCallback,
+									Looper.getMainLooper());
+
+							if (mlocation != null) {
+								log.debug("1-a GeofencingFalsePositives onConnected: " + mlocation);
+							}
+						})
+						.addOnFailureListener(new OnFailureListener() {
+							@Override
+							public void onFailure(@NonNull Exception e) {
+								log.error("Could not determine location.");
+							}
+						});
+			}catch(SecurityException se){
+				// Display UI and wait for user interaction
+				androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(context);
+				alertDialogBuilder.setMessage(context.getString(R.string.alertPermissions));
+				alertDialogBuilder.setTitle(context.getString(R.string.titleAlertPermissions));
+
+				alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+					}
+				});
+				androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
 		}else{
 			doWork();
 		}
@@ -184,12 +231,15 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 
 			// Doublecheck
 			if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+
+				mLocationClient.removeLocationUpdates(locationCallback);
+
 				Location locationZone = new Location("locationZone");
-				locationZone.setLatitude(Double.valueOf(ze.getLatitude()));
-				locationZone.setLongitude(Double.valueOf(ze.getLongitude()));
+				locationZone.setLatitude(Double.parseDouble(ze.getLatitude()));
+				locationZone.setLongitude(Double.parseDouble(ze.getLongitude()));
 
 				int radius = ze.getRadius();
-				float distanceMeters = 0;
+				float distanceMeters;
 				if (checkLocation != null) {
 					distanceMeters = checkLocation.distanceTo(locationZone);
 				}else{
@@ -272,8 +322,8 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 			if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
 				if (checkLocation != null) {
 					Location locationZone = new Location("locationZone");
-					locationZone.setLatitude(Double.valueOf(ze.getLatitude()));
-					locationZone.setLongitude(Double.valueOf(ze.getLongitude()));
+					locationZone.setLatitude(Double.parseDouble(ze.getLatitude()));
+					locationZone.setLongitude(Double.parseDouble(ze.getLongitude()));
 
 					int radius = ze.getRadius();
 					float distanceMeters = checkLocation.distanceTo(locationZone);
@@ -347,14 +397,10 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 			}
 
 			// Für Anzeige der Anwesenheit in der App, Status hier merken
-			if (transition == Geofence.GEOFENCE_TRANSITION_ENTER){
-				ze.setStatus(true);
-			}else{
-				ze.setStatus(false);
-			}
+			ze.setStatus(transition == Geofence.GEOFENCE_TRANSITION_ENTER);
 			datasource.updateZoneField(ze.getName(), DbContract.ZoneEntry.CN_STATUS, ze.isStatus());
-			// Broadcast to the Main, to refresh drawer.
-			Intent intent = new Intent();
+//			// Broadcast to the Main, to refresh drawer.
+			Intent intent = new Intent(context.getPackageName());
 			intent.setAction(Constants.ACTION_STATUS_CHANGED);
 			if (type.equalsIgnoreCase(Constants.GEOZONE)){
 				intent.putExtra("state", Constants.GEOZONE);
@@ -434,13 +480,14 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 				}
 			}
 
-			if (ze.getSmsEntity() != null){
-				log.error(context.getString(R.string.info_1));
-			}
-
 			if (ze.getMoreEntity() != null){
-				doWifi(context, ze, transition);
-				doBluetooth(context, ze, transition);
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+					doWifi(context, ze, transition);
+				}
+
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+					doBluetooth(context, ze, transition);
+				}
 				doSound(context, ze, transition);
 				doSoundMM(context, ze, transition);
 				doCallTasker(context, ze, transition);
@@ -448,6 +495,16 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 
 			doTracking(context, ze, transition);
 		}
+		// Broadcast to the Main, to refresh drawer.
+		Intent intent = new Intent(context.getPackageName());
+		intent.setAction(Constants.ACTION_STATUS_CHANGED);
+		if (type.equalsIgnoreCase(Constants.GEOZONE)){
+			intent.putExtra("state", Constants.GEOZONE);
+		}else{
+			intent.putExtra("state", Constants.BEACON);
+		}
+		context.sendBroadcast(intent);
+
 		// Reset
 		checkLocation = null;
 	}
@@ -533,7 +590,7 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 			return;
 		}
 
-		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		if (transition == Geofence.GEOFENCE_TRANSITION_ENTER){
 			if (zone.getMoreEntity().getEnter_wifi() != null){
 				if (zone.getMoreEntity().getEnter_wifi() == 1){
@@ -560,6 +617,7 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		}
 	}
 	// Bluetooth
+	@SuppressLint("MissingPermission")
 	public void doBluetooth(Context context, ZoneEntity zone, int transition){
 		log.info("doBluetooth ...");
 		PackageManager packageManager = context.getPackageManager();
@@ -596,6 +654,7 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		}
 	}
 
+
 	// Sound
 	public void doSound(Context context, ZoneEntity zone, int transition){
 		log.info("doSound ...");
@@ -604,15 +663,18 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		if (transition == Geofence.GEOFENCE_TRANSITION_ENTER){
 			if (zone.getMoreEntity().getEnter_sound() != null){
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-					if (!notificationManager.isNotificationPolicyAccessGranted()) {
-						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+				if (!notificationManager.isNotificationPolicyAccessGranted() && zone.getMoreEntity().getEnter_sound() != 2) {
+					NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+					}else{
 						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
 						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
-						return;
 					}
+					return;
 				}
-                if (zone.getMoreEntity().getEnter_sound() == 1) {
+				if (zone.getMoreEntity().getEnter_sound() == 1) {
                     // Ton an
                     aManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
                 }
@@ -629,11 +691,16 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		if (transition == Geofence.GEOFENCE_TRANSITION_EXIT){
 			if (zone.getMoreEntity().getExit_sound() != null){
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				if (zone.getMoreEntity().getEnter_sound() != 2) {
 					if (!notificationManager.isNotificationPolicyAccessGranted()) {
 						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+						}else{
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+						}
 						return;
 					}
 				}
@@ -661,11 +728,16 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		if (transition == Geofence.GEOFENCE_TRANSITION_ENTER) {
 			if (zone.getMoreEntity().getEnter_soundMM() != null) {
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				if (zone.getMoreEntity().getEnter_sound() != 2) {
 					if (!notificationManager.isNotificationPolicyAccessGranted()) {
 						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+						}else{
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+						}
 					}
 				}
 				if (zone.getMoreEntity().getEnter_soundMM() == 1) {
@@ -682,11 +754,16 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
 			if (zone.getMoreEntity().getExit_soundMM() != null) {
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				if (zone.getMoreEntity().getEnter_sound() != 2) {
 					if (!notificationManager.isNotificationPolicyAccessGranted()) {
 						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+						}else{
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
+							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+						}
 					}
 				}
 				if (zone.getMoreEntity().getExit_soundMM() == 1) {
@@ -730,9 +807,9 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 			// TestErgebnis
 			if (test){
 				// Broadcats an die Main, damit der Drawer sich refreshed.
-				Intent intent = new Intent();
+				Intent intent = new Intent(context.getPackageName());
 				intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
-				intent.putExtra("TestResult", "Error sending mail: " + ex.toString());
+				intent.putExtra("TestResult", "Error sending mail: " + ex);
 				context.sendBroadcast(intent);
 			}
 		}
@@ -804,47 +881,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		}
 	}
 
-	// SMS senden
-	public void doSendSms(Context context, String zone, String to, String text, boolean test) {
-		PackageManager packageManager = context.getPackageManager();
-		if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)){
-			log.error("No Telephony on device!");
-			Toast.makeText(context, "No Telephony on device!", Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		try {
-			log.info("doSendSms");
-			log.debug("zone: " + zone);
-			log.debug("sms to: " + to);
-			log.debug("sms text: " + text);
-
-			// SMS senden
-			SmsManager sms = SmsManager.getDefault();
-			sms.sendTextMessage(to, null, text, null, null);
-
-			// TestErgebnis
-			if (test){
-				// Broadcats damit der Test-Dialog angezeigt wird
-				Intent intent = new Intent();
-				intent.setAction(Constants.ACTION_TEST_STATUS_OK);
-				context.sendBroadcast(intent);
-			}
-
-		} catch (Exception ex) {
-			Log.e(Constants.APPTAG, "error sending sms", ex);
-			log.error(zone + ": Error sending sms", ex);
-			NotificationUtil.showError(context, zone + ": Error sending sms", ex.toString());
-			// TestErgebnis
-			if (test){
-				// Broadcats damit der Test-Dialog angezeigt wird
-				Intent intent = new Intent();
-				intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
-				context.sendBroadcast(intent);
-			}
-		}
-	}
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void doServerRequest(final int transition, final Context context, final String urlEntered, final String urlExited, final String fhemGeofancyUrl, final String zone, final String latitude, final String longitude,
 								final String cert, final String certPasswd, final String caCert, final String user, final String userPasswd, final String timeout, final String alias,
@@ -879,23 +915,8 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 					DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
 					df.setTimeZone(tz);
 					String nowAsISO = df.format(new Date());
-					final String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
-					// Use the Android ID unless it's broken, in which case fallback on deviceId,
-					// unless it's not available, then fallback on a random number which we store
-					// to a prefs file
-					UUID uuid = null;
-					try {
-						if (!"9774d56d682e549c".equals(androidId)) {
-							uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
-						} else {
-							final String deviceId = ((TelephonyManager) context.getSystemService( Context.TELEPHONY_SERVICE )).getDeviceId();
-							uuid = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")) : UUID.randomUUID();
-						}
-					} catch (UnsupportedEncodingException e) {
-						throw new RuntimeException(e);
-					} catch (SecurityException e) {
-					// Permission read phone state is missing
-					}
+
+					UUID uuid = Utils.getGuid(context);
 
 				// /$infix?id=UUIDloc&name=locName&entry=(1|0)&date=DATE&latitude=xx.x&longitude=xx.x&device=UUIDdev
 					StringBuilder fhemGeofancy = new StringBuilder();
@@ -912,18 +933,18 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 					fhemGeofancy.append("&longitude=");
 					fhemGeofancy.append(longitude);
 					fhemGeofancy.append("&device=");
-					fhemGeofancy.append(uuid.toString());
+					fhemGeofancy.append(uuid);
 
 					if (fhemGeofancyUrl.endsWith("?")){
-						authParams.setUrl(fhemGeofancyUrl + fhemGeofancy.toString());
+						authParams.setUrl(fhemGeofancyUrl + fhemGeofancy);
 					}else{
-						authParams.setUrl(fhemGeofancyUrl + "?" + fhemGeofancy.toString());
+						authParams.setUrl(fhemGeofancyUrl + "?" + fhemGeofancy);
 					}
 				}
 			}
 
             // No Url set --> return
-            if (authParams.getUrl().isEmpty()) return;
+			if (authParams.getUrl().isEmpty()) return;
 
 			authParams.setClientCertificate(TextUtils.isEmpty(cert) ? null : getClientCertFile(cert));
 			authParams.setClientCertificatePassword(TextUtils.isEmpty(certPasswd) ? null : certPasswd);
@@ -962,7 +983,7 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 						if (responseCode == 200) {
 							if (test){
 								// Broadcats damit der Test-Dialog angezeigt wird
-								Intent intent = new Intent();
+								Intent intent = new Intent(context.getPackageName());
 								intent.setAction(Constants.ACTION_TEST_STATUS_OK);
 								intent.putExtra("TestType", "GeoZone");
 								context.sendBroadcast(intent);
@@ -988,7 +1009,7 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 							NotificationUtil.showError(context, zone + ": Error (GR01) in get of the server response", "Response Code: " + responseCode);
 							if (test){
 								// Broadcats damit der Test-Dialog angezeigt wird
-								Intent intent = new Intent();
+								Intent intent = new Intent(context.getPackageName());
 								intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
 								intent.putExtra("TestResult", "Error (GR01) in get of the server response. Response Code: " + responseCode);
 								intent.putExtra("TestType", "GeoZone");
@@ -1000,7 +1021,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 						if(fallback != null){
 							datasourceServer = new DbServerHelper(context);
 							ServerEntity se = datasourceServer.getCursorServerByName(fallback);
-							String fallbackServer = fallback;
 							fallback = null;
 							doServerRequest(transition, context, se.getUrl_enter(), se.getUrl_exit(), se.getUrl_fhem(), TextUtils.isEmpty(alias) ? zone : alias, latitude, longitude, se.getCert(),
 									se.getCert_password(), se.getCa_cert(), se.getUser(), se.getUser_pw(), se.getTimeout(), alias, realLat, realLng, realTime, test, 0);
@@ -1018,33 +1038,32 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 							RetryRequestQueue.setRequest(context, zone, transition, realLat, realLng, realTime, retrys + 1);
 							log.debug("############ RetryJob: 1 ");
 							// If Android 7+ retry with JobScheduler
-							if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-								log.debug("############ RetryJob: 2 ");
-								try {
-									RetryJobSchedulerService retryJobScheduler;
-									ComponentName serviceComponent = new ComponentName(context, RetryJobSchedulerService.class);
-									JobInfo.Builder builder = new JobInfo.Builder(kJobId++, serviceComponent);
-									builder.setMinimumLatency(5 * 1000);
-									builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-									JobInfo jobInfo = builder.build();
-									JobScheduler jobScheduler =  (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-									int result = jobScheduler.schedule(jobInfo);
-									log.debug("############ RetryJob: result = " + result);
-									if (result == JobScheduler.RESULT_SUCCESS) {
-										log.error("RetryJob scheduled successfully!");
-									}
-								}catch(Exception e){
-									log.error("Error Starting RetryJob with JobScheduler: " + e);
+							log.debug("############ RetryJob: 2 ");
+							try {
+
+								ComponentName serviceComponent = new ComponentName(context, RetryJobSchedulerService.class);
+								JobInfo.Builder builder = new JobInfo.Builder(kJobId++, serviceComponent);
+								builder.setMinimumLatency(5 * 1000);
+								builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+								JobInfo jobInfo = builder.build();
+								JobScheduler jobScheduler =  (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+								int result = jobScheduler.schedule(jobInfo);
+								log.debug("############ RetryJob: result = " + result);
+								if (result == JobScheduler.RESULT_SUCCESS) {
+									log.error("RetryJob scheduled successfully!");
 								}
+
+							}catch(Exception e){
+								log.error("Error Starting RetryJob with JobScheduler: " + e);
 							}
 							log.error("The request for " + zone + " is queued and will be retried, when internet connection is available.");
 						}
 
 						if (test){
 							// Broadcats damit der Test-Dialog angezeigt wird
-							Intent intent = new Intent();
+							Intent intent = new Intent(context.getPackageName());
 							intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
-							intent.putExtra("TestResult", "Error (GR02) in get of the server response: " + ex.toString());
+							intent.putExtra("TestResult", "Error (GR02) in get of the server response: " + ex);
 							intent.putExtra("TestType", "GeoZone");
 							context.sendBroadcast(intent);
 						}
@@ -1054,10 +1073,6 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 
 				@Override
 				protected void onProgressUpdate(final Object... values) {
-//                        StringBuilder buf = new StringBuilder();
-//                        for (final Object value : values) {
-//                            buf.append(value.toString());
-//                        }
 				}
 
 				@Override
@@ -1074,13 +1089,11 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 	}
 
 	private File getClientCertFile(String clientCertificateName) {
-		File externalStorageDir = Environment.getExternalStorageDirectory();
-		return new File(externalStorageDir + File.separator + "egigeozone", clientCertificateName);
+		return new File(clientCertificateName);
 	}
 
 	private String readCaCert(String caCertificateName) throws Exception {
-		File externalStorageDir = Environment.getExternalStorageDirectory();
-		File caCert = new File(externalStorageDir + File.separator + "egigeozone", caCertificateName);
+		File caCert = new File(caCertificateName);
 		InputStream inputStream = new FileInputStream(caCert);
 		return IOUtil.readFully(inputStream);
 	}
@@ -1089,12 +1102,13 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 	private void doBroadcastToPlugins(int transition, ZoneEntity ze, String realLat, String realLng, String location_accuracy){
 
 		PackageManager manager = context.getPackageManager();
-		Intent intent = new Intent();
+		Intent intent = new Intent(context.getPackageName());
 		intent.setAction(Constants.ACTION_EGIGEOZONE_GETPLUGINS);
 
 		// Query for all activities that match my filter and request that the filter used
-		//  to match is returned in the ResolveInfo
+		// to match is returned in the ResolveInfo
 		List<ResolveInfo> infos = manager.queryIntentActivities (intent, PackageManager.GET_RESOLVED_FILTER);
+
 		for (ResolveInfo info : infos) {
 			ActivityInfo activityInfo = info.activityInfo;
 			IntentFilter filter = info.filter;
@@ -1104,7 +1118,7 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 				if (pckg == null || pckg.equals("")) continue;
 
 				// Broadcast starten
-				Intent plugintIntent = new Intent();
+				Intent plugintIntent = new Intent(context.getPackageName());
 				plugintIntent.setAction(Constants.ACTION_EGIGEOZONE_PLUGIN_EVENT);
 				plugintIntent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
 				plugintIntent.setPackage(pckg);
@@ -1130,23 +1144,8 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 				DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
 				df.setTimeZone(tz);
 				String nowAsISO = df.format(new Date());
-				final String androidId = Secure.getString(context.getContentResolver(), Secure.ANDROID_ID);
-				// Use the Android ID unless it's broken, in which case fallback on deviceId,
-				// unless it's not available, then fallback on a random number which we store
-				// to a prefs file
-				UUID uuid = null;
-				try {
-					if (!"9774d56d682e549c".equals(androidId)) {
-						uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
-					} else {
-						final String deviceId = ((TelephonyManager) context.getSystemService( Context.TELEPHONY_SERVICE )).getDeviceId();
-						uuid = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")) : UUID.randomUUID();
-					}
-				} catch (UnsupportedEncodingException e) {
-					throw new RuntimeException(e);
-				} catch (SecurityException e) {
-					// Permission read phone state is missing
-				}
+
+				UUID uuid = Utils.getGuid(context);
 
 				plugintIntent.putExtra("device_id", uuid != null ? uuid.toString() : "0"); // String
 				plugintIntent.putExtra("date_iso", nowAsISO); // String
@@ -1200,76 +1199,14 @@ public class Worker implements GoogleApiClient.ConnectionCallbacks, GoogleApiCli
 		}
 	}
 
-	@Override
-	public void onConnected(@Nullable Bundle bundle) {
-		// Begin polling for new location updates.
-		// Note that this can be NULL if last location isn't already known.
-		LocationRequest mLocationRequest = LocationRequest.create();
-		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-		try {
-			// Get last known recent location.
-			Location mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
-			if (mCurrentLocation != null) {
-				// Print current location if not null
-				log.debug("1-a GeofencingFalsePositives onConnected: " + mCurrentLocation.toString());
-			}
-
-			LocationServices.FusedLocationApi.requestLocationUpdates (mLocationClient, mLocationRequest, this);
-
-		}catch (SecurityException se){
-			// Display UI and wait for user interaction
-//			AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//			alertDialogBuilder.setMessage(this.getString(R.string.alertPermissions));
-//			alertDialogBuilder.setTitle(this.getString(R.string.titleAlertPermissions));
-//
-//			alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//				@Override
-//				public void onClick(DialogInterface arg0, int arg1) {
-//				}
-//			});
-//			AlertDialog alertDialog = alertDialogBuilder.create();
-//			alertDialog.show();
-		}
-	}
-
-	@Override
-	public void onConnectionSuspended(int i) {
-		log.debug("2-a GeofencingFalsePositives onConnectionSuspended ");
-		doWork();
-	}
-
-	@Override
-	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-		log.debug("3-a GeofencingFalsePositives onConnectionFailed ");
-		doWork();
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		log.debug("4-a GeofencingFalsePositives onLocationChanged ");
-		log.debug("4-b GeofencingFalsePositives location reported: " + Double.valueOf(location.getLatitude()).toString());
-		log.debug("4-c GeofencingFalsePositives location reported: " + Double.valueOf(location.getLongitude()).toString());
-
-		checkLocation = location;
-
-		mLocationClient.disconnect();
-
-		doWork();
-	}
-
     private Geofence getGeofence(ZoneEntity ze, int transition){
         return  new Geofence.Builder().setRequestId(ze.getName())
                 .setTransitionTypes(transition)
-                .setCircularRegion(Double.valueOf(ze.getLatitude()), Double.valueOf(ze.getLongitude()), ze.getRadius())
+                .setCircularRegion(Double.parseDouble(ze.getLatitude()), Double.parseDouble(ze.getLongitude()), ze.getRadius())
                 .setExpirationDuration(Geofence.NEVER_EXPIRE)
                 .build();
     }
 
-    private SimpleGeofence getSimpleGeofence(ZoneEntity ze){
-        return  new SimpleGeofence(ze.getName(), ze.getLatitude(), ze.getLongitude(),
-                Integer.toString(ze.getRadius()), null, 0, 0, true, null);
-    }
 	/**
 	 * Maps geofence transition types to their human-readable equivalents.
 	 * @param transitionType A transition type constant defined in Geofence

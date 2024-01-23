@@ -23,7 +23,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class DbZoneHelper{
 
-    private Context context = null;
+    private final Context context;
 
     private final DbHelper dbHelper;
     private SQLiteDatabase db;

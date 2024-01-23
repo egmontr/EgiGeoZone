@@ -37,7 +37,7 @@ public class TrackingUtils {
     	
 		int reqId = exists(context, zone);
     	// Prüfen, ob ein Tracking zu dieser Zone schon läuft und dann nicht mehr einen neuen track starten
-    	if (reqId == 0){
+		if (reqId == 0){
 	    	reqId = getNewReqId(context);
 	    	// Save TrackingRule to SharedPrefs
 	        checkAndSaveTrackingRule(context, zone, reqId);
@@ -52,8 +52,8 @@ public class TrackingUtils {
 		}
 		
 		// Starten eines Location Tracker Services 
-		Intent myIntent = new Intent(context, TrackingReceiverWorker.class);
-        myIntent.putExtra("zone", zone);
+		Intent myIntent = new Intent(context, TrackingReceiverWorkerService.class);
+		myIntent.putExtra("zone", zone);
 		myIntent.putExtra("mins", trackIntervallZone);
         myIntent.putExtra("trackUrl", trackUrl);
         myIntent.putExtra("trackToFile", trackToFile);
@@ -74,10 +74,10 @@ public class TrackingUtils {
     	removeTrackingRule(context, zone, reqId);
 
     	// Alarm stoppen
-		Intent myIntent = new Intent(context, TrackingReceiverWorker.class);
-        myIntent.putExtra("zone", zone);
-        myIntent.putExtra("reqId", Integer.toString(reqId));
-        TrackingReceiverWorkerService.cancelAlarm(context, myIntent, reqId);
+		Intent myIntent = new Intent(context, TrackingReceiverWorkerService.class);
+		myIntent.putExtra("zone", zone);
+		myIntent.putExtra("reqId", Integer.toString(reqId));
+		TrackingReceiverWorkerService.cancelAlarm(context, myIntent, reqId);
         
         // Schauen, ob Service nicht noch von anderen Trackings benötigt wird. Wenn nicht, dann löschen.
 		if (isMyServiceRunning(TrackingLocationService.class, context)){
@@ -108,7 +108,7 @@ public class TrackingUtils {
 			}
 
 			// Alarm stoppen
-			Intent myIntent = new Intent(context, TrackingReceiverWorker.class);
+			Intent myIntent = new Intent(context, TrackingReceiverWorkerService.class);
 			//        myIntent.putExtra("zone", zone);
 			myIntent.putExtra("reqId", Integer.toString(reqId));
 			TrackingReceiverWorkerService.cancelAlarm(context, myIntent, reqId);
@@ -121,7 +121,7 @@ public class TrackingUtils {
 			Intent i = new Intent(context, TrackingLocationService.class);
 			context.stopService(i);
 			// Delete permanent notification, that shown that we tracked
-            NotificationUtil.cancelPermanentNotification(context, 6666);
+			NotificationUtil.cancelPermanentNotification(context, 6666);
 			Log.i("TrackingUtils","Service stopped");
 		}
     }
@@ -143,8 +143,8 @@ public class TrackingUtils {
     	SharedPrefsUtil sharedPrefsUtil = new SharedPrefsUtil(context);
     	String tracking = sharedPrefsUtil.getTrackingPref(key);
     	if (tracking == null || tracking.equalsIgnoreCase("")){
-            Log.i("TrackingReceiverWorker","Saving key: " + key);
-    		sharedPrefsUtil.setTrackingPref(key, zone);
+			Log.i("TrackingUtils","Saving key: " + key);
+			sharedPrefsUtil.setTrackingPref(key, zone);
     	}
     }
 
@@ -162,8 +162,9 @@ public class TrackingUtils {
 			if (key.startsWith(Constants.KEY_PREFIX + "_" + "##TRACKING##")) {
 				int unterstrich = key.lastIndexOf("_");
 				if (isNumeric(key.substring(unterstrich + 1))) {
-					if (Integer.parseInt(key.substring(unterstrich + 1)) > resp) {
-						resp = Integer.parseInt(key.substring(unterstrich + 1)) + 1;
+					int parseInt = Integer.parseInt(key.substring(unterstrich + 1));
+					if (parseInt > resp) {
+						resp = parseInt + 1;
 					}
 				}
 			}
@@ -273,7 +274,7 @@ public class TrackingUtils {
     
 	private static boolean isNumeric(String str) {
 		try {
-			@SuppressWarnings({"unused", "UnusedAssignment"})
+			@SuppressWarnings({"unused"})
 			double d = Double.parseDouble(str);
 		} catch (NumberFormatException nfe) {
 			return false;

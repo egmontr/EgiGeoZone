@@ -3,9 +3,11 @@ package de.egi.geofence.geozone;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,8 +23,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
-import org.apache.log4j.Logger;
-
 import java.util.List;
 
 import de.egi.geofence.geozone.geofence.SimpleGeofence;
@@ -31,20 +31,13 @@ import de.egi.geofence.geozone.utils.Utils;
 
 public class KarteAll extends AppCompatActivity implements GoogleMap.OnMarkerClickListener, OnMapReadyCallback{
 
-    private final Logger log = Logger.getLogger(KarteAll.class);
     private GoogleMap mMap;
-    private Marker markerInfoWindow;
     private boolean zoomIn = true;
     private LatLngBounds.Builder builder;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Utils.onActivityCreateSetTheme(this);
         setContentView(R.layout.map_all);
-
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        Utils.changeBackGroundToolbar(this, toolbar);
 
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapAll);
         mapFragment.getMapAsync(this);
@@ -81,8 +74,8 @@ public class KarteAll extends AppCompatActivity implements GoogleMap.OnMarkerCli
             for (SimpleGeofence sg : geofences) {
                 //Instantiates a new CircleOptions object +  center/radius
                 CircleOptions circleOptions = new CircleOptions()
-                        .center(new LatLng(Double.valueOf(sg.getLatitude()), Double.valueOf(sg.getLongitude())))
-                        .radius(Double.valueOf(sg.getRadius()))
+                        .center(new LatLng(Double.parseDouble(sg.getLatitude()), Double.parseDouble(sg.getLongitude())))
+                        .radius(Double.parseDouble(sg.getRadius()))
                         .fillColor(0x40ff4e40)
                         .strokeColor(Color.TRANSPARENT)
                         .strokeWidth(2);
@@ -93,14 +86,16 @@ public class KarteAll extends AppCompatActivity implements GoogleMap.OnMarkerCli
                 ig.setStyle(sg.isStatus() ? IconGenerator.STYLE_GREEN : IconGenerator.STYLE_RED);
 
                 MarkerOptions markerOptions = new MarkerOptions()
-                        .position(new LatLng(Double.valueOf(sg.getLatitude()), Double.valueOf(sg.getLongitude())))
+                        .position(new LatLng(Double.parseDouble(sg.getLatitude()), Double.parseDouble(sg.getLongitude())))
                         .icon(BitmapDescriptorFactory.fromBitmap(ig.makeIcon(sg.getId())))
                         .anchor(ig.getAnchorU(), ig.getAnchorV())
                         ;
 
-                builder.include(new LatLng(Double.valueOf(sg.getLatitude()), Double.valueOf(sg.getLongitude())));
-                markerInfoWindow = mMap.addMarker(markerOptions);
-                markerInfoWindow.showInfoWindow();
+                builder.include(new LatLng(Double.parseDouble(sg.getLatitude()), Double.parseDouble(sg.getLongitude())));
+                Marker markerInfoWindow = mMap.addMarker(markerOptions);
+                if (markerInfoWindow != null) {
+                    markerInfoWindow.showInfoWindow();
+                }
             }
 
             DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -113,7 +108,7 @@ public class KarteAll extends AppCompatActivity implements GoogleMap.OnMarkerCli
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
+    public boolean onMarkerClick(@NonNull Marker marker) {
         if (zoomIn) {
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(marker.getPosition()) // Sets the center of the map to Mountain View
@@ -138,7 +133,7 @@ public class KarteAll extends AppCompatActivity implements GoogleMap.OnMarkerCli
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         setFences();
     }

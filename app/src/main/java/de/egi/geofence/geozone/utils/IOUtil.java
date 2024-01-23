@@ -28,11 +28,8 @@ public class IOUtil {
             return "";
         }
 
-        BufferedInputStream bufferedInputStream = null;
         ByteArrayOutputStream byteArrayOutputStream;
-
-        try {
-            bufferedInputStream = new BufferedInputStream(inputStream);
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)) {
             byteArrayOutputStream = new ByteArrayOutputStream();
 
             final byte[] buffer = new byte[1024];
@@ -44,10 +41,6 @@ public class IOUtil {
 
             return byteArrayOutputStream.toString();
 
-        } finally {
-            if(bufferedInputStream != null) {
-                bufferedInputStream.close();
-            }
         }
     }
 }

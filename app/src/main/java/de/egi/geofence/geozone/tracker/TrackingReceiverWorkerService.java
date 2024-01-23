@@ -1,5 +1,6 @@
 package de.egi.geofence.geozone.tracker;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -7,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,104 +49,100 @@ public class TrackingReceiverWorkerService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        try {
-            String zone = intent.getStringExtra("zone");
-            String reqId = intent.getStringExtra("reqId");
-            boolean trackToFile = intent.getBooleanExtra("trackToFile", false);
-            boolean trackToMail = intent.getBooleanExtra("trackToMail", false);
-            boolean trackToUrl = intent.getBooleanExtra("trackUrl", false);
-            int trackIntervallZone = intent.getIntExtra("mins", 5);
+        String zone = intent.getStringExtra("zone");
+        String reqId = intent.getStringExtra("reqId");
+        boolean trackToFile = intent.getBooleanExtra("trackToFile", false);
+        boolean trackToMail = intent.getBooleanExtra("trackToMail", false);
+        boolean trackToUrl = intent.getBooleanExtra("trackUrl", false);
+        int trackIntervallZone = intent.getIntExtra("mins", 5);
 
-            TrackingUtils.startTracking(this, zone, trackIntervallZone, trackToFile, trackToUrl, trackToMail);
+        TrackingUtils.startTracking(this, zone, trackIntervallZone, trackToFile, trackToUrl, trackToMail);
 
-            String key_lat = "location_lat";
-            String key_lng = "location_lng";
-            String key_time_utc = "location_utc_time";
-            String key_time_local = "location_local_time";
-            String key_accuracy = "location_accuracy";
+        String key_lat = "location_lat";
+        String key_lng = "location_lng";
+        String key_time_utc = "location_utc_time";
+        String key_time_local = "location_local_time";
+        String key_accuracy = "location_accuracy";
 
-            SharedPrefsUtil sharedPrefsUtil = new SharedPrefsUtil(this);
-            String location_lat = sharedPrefsUtil.getLocationPref(key_lat);
-            String location_lng = sharedPrefsUtil.getLocationPref(key_lng);
-            String location_local_time = sharedPrefsUtil.getLocationPref(key_time_local);
-            String location_utc_time = sharedPrefsUtil.getLocationPref(key_time_utc);
-            String location_accuracy = sharedPrefsUtil.getLocationPref(key_accuracy);
+        SharedPrefsUtil sharedPrefsUtil = new SharedPrefsUtil(this);
+        String location_lat = sharedPrefsUtil.getLocationPref(key_lat);
+        String location_lng = sharedPrefsUtil.getLocationPref(key_lng);
+        String location_local_time = sharedPrefsUtil.getLocationPref(key_time_local);
+        String location_utc_time = sharedPrefsUtil.getLocationPref(key_time_utc);
+        String location_accuracy = sharedPrefsUtil.getLocationPref(key_accuracy);
 
-            Log.i(TAG, "Location: " + zone + "/" + reqId + " " + location_lat + ", " + location_lng + " " + location_local_time + " accuracy: " + location_accuracy);
-            log.debug("Location: " + zone + "/" + reqId + " " + location_lat + ", " + location_lng + " " + location_local_time + " accuracy: " + location_accuracy);
-            if (!TrackingUtils.isMyServiceRunning(TrackingLocationService.class, this)) {
-                Log.i(TAG, "************** Location Service NOT RUNNING **************");
-                Log.i(TAG, "************** RESTARTING Location Service **************");
-                Intent i = new Intent(this, TrackingLocationService.class);
-                this.startService(i);
+        String msg = "Location: " + zone + "/" + reqId + " " + location_lat + ", " + location_lng + " " + location_local_time + " accuracy: " + location_accuracy;
+        Log.i(TAG, msg);
+        log.debug(msg);
+        if (!TrackingUtils.isMyServiceRunning(TrackingLocationService.class, this)) {
+            Log.i(TAG, "************** Location Service NOT RUNNING **************");
+            Log.i(TAG, "************** RESTARTING Location Service **************");
+            Intent i = new Intent(this, TrackingLocationService.class);
+            this.startService(i);
+        }
+
+        // Write to file
+        if (trackToFile) {
+            writeToFile(zone, location_lat, location_lng, location_local_time, location_accuracy);
+        }
+
+        // Write to EMail
+        if (trackToMail) {
+            DbZoneHelper dbZoneHelper = new DbZoneHelper(this);
+            ZoneEntity ze = dbZoneHelper.getCursorZoneByName(zone);
+            MailEntity me = ze.getTrackMailEntity();
+
+            String mailUser = me.getSmtp_user();
+            String mailUserPw = me.getSmtp_pw();
+            String mailSmtpHost = me.getSmtp_server();
+            String mailSmtpPort = me.getSmtp_port();
+            String mailSender = me.getFrom();
+            String mailEmpf = me.getTo();
+            String mailText = me.getBody();
+            String mailSubject = me.getSubject();
+            boolean mailSsl = me.isSsl();
+            boolean mailStarttls = me.isStarttls();
+            if (TextUtils.isEmpty(mailUser) || TextUtils.isEmpty(mailUserPw) || TextUtils.isEmpty(mailSmtpHost)
+                    || TextUtils.isEmpty(mailSmtpPort) || TextUtils.isEmpty(mailSender) || TextUtils.isEmpty(mailEmpf)) {
+                // Configure Mail-Settings properly
+                NotificationUtil.showError(this, zone + ": Error sending tracking mail", "Tracking: configure mail properly");
             }
 
-            // Write to file
-            if (trackToFile) {
-                writeToFile(zone, location_lat, location_lng, location_local_time, location_accuracy);
-            }
+            try {
+                // Mail senden
+                SendMail smail = new SendMail(this, mailUser, mailUserPw, mailSmtpHost, mailSmtpPort, mailSender, mailEmpf, mailSsl, mailStarttls);
+                // Subject
+                mailSubject = Utils.replaceAllTracking(this, mailSubject, zone, ze.getAlias(), location_lat, location_lng, location_local_time, location_utc_time, location_accuracy);
+                // Body
+                mailText = Utils.replaceAllTracking(this, mailText, zone, ze.getAlias(), location_lat, location_lng, location_local_time, location_utc_time, location_accuracy);
+                // Send mail
+                smail.sendMail(mailSubject, mailText, false);
 
-            // Write to EMail
-            if (trackToMail) {
+            } catch (Exception ex) {
+                Log.e(Constants.APPTAG, "error sending mail", ex);
+                NotificationUtil.showError(this, zone + ": Error sending tracking mail", ex.toString());
+            }
+        }
+
+        // Call Server
+        // Beispiel: yyyy.xxx.eu/tracking/track.php?latitude=48.2160&longitude=11.3213&&date=yyyy-MM-dd'T'HH:mm:ssZ&device=xxxxx&zone=home
+        if (trackToUrl) {
+            try {
                 DbZoneHelper dbZoneHelper = new DbZoneHelper(this);
                 ZoneEntity ze = dbZoneHelper.getCursorZoneByName(zone);
-                MailEntity me = ze.getTrackMailEntity();
+                ServerEntity se = ze.getTrackServerEntity();
 
-                String mailUser = me.getSmtp_user();
-                String mailUserPw = me.getSmtp_pw();
-                String mailSmtpHost = me.getSmtp_server();
-                String mailSmtpPort = me.getSmtp_port();
-                String mailSender = me.getFrom();
-                String mailEmpf = me.getTo();
-                String mailText = me.getBody();
-                String mailSubject = me.getSubject();
-                boolean mailSsl = me.isSsl();
-                boolean mailStarttls = me.isStarttls();
-                if (TextUtils.isEmpty(mailUser) || TextUtils.isEmpty(mailUserPw) || TextUtils.isEmpty(mailSmtpHost)
-                        || TextUtils.isEmpty(mailSmtpPort) || TextUtils.isEmpty(mailSender) || TextUtils.isEmpty(mailEmpf)) {
-                    // Configure Mail-Settings properly
-                    NotificationUtil.showError(this, zone + ": Error sending tracking mail", "Tracking: configure mail properly");
-                }
+                String trackUrl = se.getUrl_tracking();
 
-                try {
-                    // Mail senden
-                    SendMail smail = new SendMail(this, mailUser, mailUserPw, mailSmtpHost, mailSmtpPort, mailSender, mailEmpf, mailSsl, mailStarttls);
-                    // Subject
-                    mailSubject = Utils.replaceAllTracking(this, mailSubject, zone, ze.getAlias(), location_lat, location_lng, location_local_time, location_utc_time, location_accuracy);
-                    // Body
-                    mailText = Utils.replaceAllTracking(this, mailText, zone, ze.getAlias(), location_lat, location_lng, location_local_time, location_utc_time, location_accuracy);
-                    // Send mail
-                    smail.sendMail(mailSubject, mailText, false);
+                // No Url set --> return
+                if (trackUrl.isEmpty()) return;
 
-                } catch (Exception ex) {
-                    Log.e(Constants.APPTAG, "error sending mail", ex);
-                    NotificationUtil.showError(this, zone + ": Error sending tracking mail", ex.toString());
-                }
+                executeCall(this, zone, ze.getAlias(), location_lat, location_lng, location_local_time, location_utc_time, location_accuracy, trackUrl, se.getTimeout(), se.getCert(),
+                        se.getCert_password(), se.getCa_cert(), se.getUser(), se.getUser_pw(), false);
+
+            } catch (Exception e) {
+                // nothing to do
             }
-
-            // Call Server
-            // Beispiel: yyyy.xxx.eu/tracking/track.php?latitude=48.2160&longitude=11.3213&&date=yyyy-MM-dd'T'HH:mm:ssZ&device=xxxxx&zone=home
-            if (trackToUrl) {
-                try {
-                    DbZoneHelper dbZoneHelper = new DbZoneHelper(this);
-                    ZoneEntity ze = dbZoneHelper.getCursorZoneByName(zone);
-                    ServerEntity se = ze.getTrackServerEntity();
-
-                    String trackUrl = se.getUrl_tracking();
-
-                    // No Url set --> return
-                    if (trackUrl.isEmpty()) return;
-
-                    executeCall(this, zone, ze.getAlias(), location_lat, location_lng, location_local_time, location_utc_time, location_accuracy, trackUrl, se.getTimeout(), se.getCert(),
-                            se.getCert_password(), se.getCa_cert(), se.getUser(), se.getUser_pw(), false);
-
-                } catch (Exception e) {
-                    // nothing to do
-                }
-            }
-        }finally {
-            // Release the wake lock provided by the WakefulBroadcastReceiver.
-            TrackingReceiverWorker.completeWakefulIntent(intent);
         }
     }
 
@@ -159,30 +155,27 @@ public class TrackingReceiverWorkerService extends IntentService {
 //    setExactAndAllowWhileIdle(...)
 // }
 
+    @SuppressLint({"UnspecifiedImmutableFlag", "ScheduleExactAlarm"})
     public static void startAlarm(Context context, Intent alarmIntent, int alarmId, int delayMs) {
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        PendingIntent recurringAlarm = PendingIntent.getBroadcast(context, alarmId, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent recurringAlarm;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            recurringAlarm = PendingIntent.getService(context, alarmId, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT|PendingIntent.FLAG_MUTABLE);
+        }else{
+            recurringAlarm = PendingIntent.getService(context, alarmId, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
         Calendar updateTime = Calendar.getInstance();
         alarm.cancel(recurringAlarm);
-        if (Build.VERSION.SDK_INT >= 23) {
-            alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis() + (1000 * 60 * delayMs), recurringAlarm);
-        } else if (Build.VERSION.SDK_INT >= 19) {
-            alarm.setExact(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis() + (1000 * 60 * delayMs), recurringAlarm);
-        } else {
-            alarm.set(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis() + (1000 * 60 * delayMs), recurringAlarm);
-        }
+        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis() + (1000L * 60 * delayMs), recurringAlarm);
     }
-
-// http://stackoverflow.com/questions/36064701/android-alarm-setexactandallowwhileidle-unexpected-behavior-on-samsung
-
-//	public static void startAlarm(Context context, Intent intent, int reqId, int min) {
-//		AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-//		PendingIntent pi = PendingIntent.getBroadcast(context, reqId, intent,  PendingIntent.FLAG_UPDATE_CURRENT);
-//		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 60 * min, pi); // Millisec * Second * Minuten -  Minuten
-//	}
-
+    @SuppressLint("UnspecifiedImmutableFlag")
     public static void cancelAlarm(Context context, Intent alarmIntent, int reqId) {
-        PendingIntent alarm = PendingIntent.getBroadcast(context, reqId, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent alarm;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+            alarm = PendingIntent.getService(context, reqId, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT|PendingIntent.FLAG_MUTABLE);
+        }else{
+            alarm = PendingIntent.getService(context, reqId, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(alarm);
     }
@@ -191,13 +184,13 @@ public class TrackingReceiverWorkerService extends IntentService {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void writeToFile(String zone, String location_lat, String location_lng, String location_time, String location_accuracy){
         try {
-            String trackerLogDir = Environment.getExternalStorageDirectory() + File.separator + "egigeozone";
+            String trackerLogDir = getFilesDir() + File.separator + "egigeozone";
             File trackerDir = new File(trackerLogDir);
             if(!trackerDir.exists()){
                 trackerDir.mkdir();
             }
 
-            String trackerLogFile = Environment.getExternalStorageDirectory() + File.separator + "egigeozone" + File.separator + "locationtracker_" + zone + ".txt";
+            String trackerLogFile = getFilesDir() + File.separator + "egigeozone" + File.separator + "locationtracker_" + zone + ".txt";
             File trackerFile = new File(trackerLogFile);
             //if file doesnt exists, then create it
             if(!trackerFile.exists()){
@@ -209,18 +202,16 @@ public class TrackingReceiverWorkerService extends IntentService {
             bufferWritter.write(location_time + " " + location_lat + ", " + location_lng + ", " + location_accuracy + "\n");
             bufferWritter.close();
         } catch (Exception e) {
-            Log.e("Exception", "File write failed: " + e.toString());
+            Log.e("Exception", "File write failed: " + e);
         }
 
     }
     private File getClientCertFile(String clientCertificateName) {
-        File externalStorageDir = Environment.getExternalStorageDirectory();
-        return new File(externalStorageDir + File.separator + "egigeozone", clientCertificateName);
+        return new File(clientCertificateName);
     }
 
     private String readCaCert(String caCertificateName) throws Exception {
-        File externalStorageDir = Environment.getExternalStorageDirectory();
-        File caCert = new File(externalStorageDir + File.separator + "egigeozone", caCertificateName);
+        File caCert = new File(caCertificateName);
         InputStream inputStream = new FileInputStream(caCert);
         return IOUtil.readFully(inputStream);
     }
@@ -272,7 +263,7 @@ public class TrackingReceiverWorkerService extends IntentService {
                         if (responseCode == 200) {
                             if (test){
                                 // Broadcast damit der Test-Dialog angezeigt wird
-                                Intent intent = new Intent();
+                                Intent intent = new Intent(context.getPackageName());
                                 intent.setAction(Constants.ACTION_TEST_STATUS_OK);
                                 intent.putExtra("TestType", "Tracking");
                                 context.sendBroadcast(intent);
@@ -281,7 +272,7 @@ public class TrackingReceiverWorkerService extends IntentService {
                         } else {
                             if (test){
                                 // Broadcast damit der Test-Dialog angezeigt wird
-                                Intent intent = new Intent();
+                                Intent intent = new Intent(context.getPackageName());
                                 intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
                                 intent.putExtra("TestResult", "Error (GR01) in get of the server response. Response Code: " + responseCode);
                                 intent.putExtra("TestType", "Tracking");
@@ -293,9 +284,9 @@ public class TrackingReceiverWorkerService extends IntentService {
                         log.error(zone + ": Error (GR02) in get of the server response", ex);
                         if (test){
                             // Broadcast damit der Test-Dialog angezeigt wird
-                            Intent intent = new Intent();
+                            Intent intent = new Intent(context.getPackageName());
                             intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
-                            intent.putExtra("TestResult", "Error (GR02) in get of the server response: " + ex.toString());
+                            intent.putExtra("TestResult", "Error (GR02) in get of the server response: " + ex);
                             intent.putExtra("TestType", "Tracking");
                             context.sendBroadcast(intent);
                         }

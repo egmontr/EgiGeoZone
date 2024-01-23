@@ -25,6 +25,7 @@ import javax.net.ssl.X509TrustManager;
 /**
  * Fake Trustmanager that accepts all Server certs.
  */
+@SuppressLint("CustomX509TrustManager")
 class CustomFakeTrustManager implements X509TrustManager {
 
     public CustomFakeTrustManager() {
@@ -38,10 +39,10 @@ class CustomFakeTrustManager implements X509TrustManager {
     }
 
     @SuppressLint("TrustAllX509TrustManager")
-    public void checkClientTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+    public void checkClientTrusted(X509Certificate[] chain, String authType) {
     }
 
     @SuppressLint("TrustAllX509TrustManager")
-    public void checkServerTrusted(X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {
+    public void checkServerTrusted(X509Certificate[] chain, String authType) {
     }
 }

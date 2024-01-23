@@ -16,27 +16,17 @@
 
 package de.egi.geofence.geozone.profile;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -45,21 +35,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.egi.geofence.geozone.InfoReplace;
-import de.egi.geofence.geozone.MainEgiGeoZone;
 import de.egi.geofence.geozone.R;
 import de.egi.geofence.geozone.Worker;
 import de.egi.geofence.geozone.db.DbServerHelper;
@@ -70,8 +73,8 @@ import de.egi.geofence.geozone.utils.Constants;
 import de.egi.geofence.geozone.utils.NotificationUtil;
 import de.egi.geofence.geozone.utils.Utils;
 
-@SuppressWarnings("deprecation")
-public class ServerProfile  extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+// @SuppressWarnings("deprecation")
+public class ServerProfile  extends AppCompatActivity implements View.OnClickListener{
 	private DbServerHelper datasource;
 	private String aktion;
 	private String ind;
@@ -79,20 +82,26 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 	private DbServerHelper datasourceFallbackServer;
 	private ServerEntity srv;
 	private View viewMerk;
+	ImageButton buttonSetCaCert = null;
+	ImageButton buttonSetCert = null;
 
-	private GoogleApiClient mLocationClient;
 	private final Logger log = Logger.getLogger(ServerProfile.class);
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Utils.onActivityCreateSetTheme(this);
 		setContentView(R.layout.server_profile);
+		buttonSetCert = this.findViewById(R.id.setClientCert);
+		buttonSetCaCert = this.findViewById(R.id.setCaCert);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		buttonSetCert.setOnClickListener(this);
+		buttonSetCaCert.setOnClickListener(this);
+
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
 
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_server_profile);
+		FloatingActionButton fab = findViewById(R.id.fab_server_profile);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -102,33 +111,6 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 		});
 
 		viewMerk = findViewById(R.id.snackbarPosition);
-
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-			// Check Permissions Now
-			if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
-				// Display UI and wait for user interaction
-				AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-				alertDialogBuilder.setMessage(getString(R.string.checkPhone));
-				alertDialogBuilder.setTitle(getString(R.string.titlePhone));
-
-						alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface arg0, int arg1) {
-								ActivityCompat.requestPermissions(ServerProfile.this, new String[]{Manifest.permission.READ_PHONE_STATE}, MainEgiGeoZone.REQUEST_PHONE_STATE);
-//						Toast.makeText(getBaseContext(),"You clicked yes button",Toast.LENGTH_LONG).show();
-							}
-						});
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
-
-			} else {
-				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, MainEgiGeoZone.REQUEST_PHONE_STATE);
-			}
-		} else {
-			// permission has been granted, continue as usual
-//			Toast.makeText(this,"permission has been granted, continue as usual",Toast.LENGTH_LONG).show();
-		}
-
 		datasource = new DbServerHelper(this);
 		datasourceFallbackServer = new DbServerHelper(this);
 
@@ -140,16 +122,21 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 		}
 		cursorSrv.close();
 		ArrayAdapter<String> adapterServer = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listSrv);
-		Spinner spinner_fallbackServer = (Spinner) findViewById(R.id.spinner_server_profile_fallback);
+		Spinner spinner_fallbackServer = findViewById(R.id.spinner_server_profile_fallback);
 
 		adapterServer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner_fallbackServer.setAdapter(adapterServer);
 
 		// Receiver registrieren
 		IntentFilter testOkStatusFilter = new IntentFilter(Constants.ACTION_TEST_STATUS_OK);
-		this.registerReceiver(mReceiver, testOkStatusFilter);
 		IntentFilter testNokStatusFilter = new IntentFilter(Constants.ACTION_TEST_STATUS_NOK);
-		this.registerReceiver(mReceiver, testNokStatusFilter);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			this.registerReceiver(mReceiver, testOkStatusFilter, RECEIVER_EXPORTED);
+			this.registerReceiver(mReceiver, testNokStatusFilter, RECEIVER_EXPORTED);
+		}else{
+			this.registerReceiver(mReceiver, testOkStatusFilter);
+			this.registerReceiver(mReceiver, testNokStatusFilter);
+		}
 
 		Bundle b = getIntent().getExtras();
 		if (null != b){
@@ -160,14 +147,13 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 
 		if (aktion.equalsIgnoreCase("new")){
 			// Felder leer lassen
-//			boolean _new = true;
 		}else if (aktion.equalsIgnoreCase("update")){
 			_update = true;
 		}
 
 		if (_update){
 			// Satz aus der DB lesen
-			srv = datasource.getCursorServerById(Integer.valueOf(ind));
+			srv = datasource.getCursorServerById(Integer.parseInt(ind));
 
 			((EditText) this.findViewById(R.id.value_name)).setText(srv.getName());
 			((EditText) this.findViewById(R.id.value_urlEntered)).setText(srv.getUrl_enter());
@@ -175,8 +161,10 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 			((EditText) this.findViewById(R.id.value_user)).setText(srv.getUser());
 			((EditText) this.findViewById(R.id.value_userPasswd)).setText(srv.getUser_pw());
 			((EditText) this.findViewById(R.id.value_certName)).setText(srv.getCert());
+			((EditText) findViewById(R.id.value_certName)).setSelection(((EditText) findViewById(R.id.value_certName)).getText().length());
 			((EditText) this.findViewById(R.id.value_certNamePasswd)).setText(srv.getCert_password());
 			((EditText) this.findViewById(R.id.value_caCertName)).setText(srv.getCa_cert());
+			((EditText) findViewById(R.id.value_caCertName)).setSelection(((EditText) findViewById(R.id.value_caCertName)).getText().length());
 			((EditText) this.findViewById(R.id.value_fhem_geofancy)).setText(srv.getUrl_fhem());
 			((EditText) this.findViewById(R.id.value_tracking)).setText(srv.getUrl_tracking());
 			((EditText) this.findViewById(R.id.value_timeout)).setText(srv.getTimeout());
@@ -184,7 +172,7 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 			if(srv != null && srv.getId_fallback() != null){
 				ServerEntity se = datasourceFallbackServer.getCursorServerByName(srv.getId_fallback());
 				if (se != null) {
-					int ind_se = listSrv.indexOf(se.getName()) < 0 ? 0 : listSrv.indexOf(se.getName());
+					int ind_se = !listSrv.contains(se.getName()) ? 0 : listSrv.indexOf(se.getName());
 					spinner_fallbackServer.setSelection(ind_se, true);
 				}
 			}
@@ -212,7 +200,7 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 		srvEntity.setCa_cert(((EditText) this.findViewById(R.id.value_caCertName)).getText().toString());
 		srvEntity.setTimeout(((EditText) this.findViewById(R.id.value_timeout)).getText().toString());
 
-		Spinner mSpinner_server = (Spinner)findViewById(R.id.spinner_server_profile_fallback);
+		Spinner mSpinner_server = findViewById(R.id.spinner_server_profile_fallback);
 		String serverFallback = (String)mSpinner_server.getSelectedItem();
 
 		srvEntity.setId_fallback(serverFallback.equals("none") ? null : serverFallback);
@@ -260,30 +248,55 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action buttons
-		switch(item.getItemId()) {
-			case R.id.menu_delete_profile_log:
-				AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
-				ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, dialogClickListener).setNegativeButton(R.string.action_no, dialogClickListener).show();
+		int itemId = item.getItemId();
+		if (itemId == R.id.menu_delete_profile_log) {
+			AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
+			ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, dialogClickListener).setNegativeButton(R.string.action_no, dialogClickListener).show();
+			return true;
+		} else if (itemId == R.id.menu_help) {
+			Intent i = new Intent(this, InfoReplace.class);
+			startActivity(i);
+			return true;
+		} else if (itemId == R.id.menu_test) {
+			if (checkInputFields()) {
 				return true;
-			case R.id.menu_help:
-				Intent i = new Intent(this, InfoReplace.class);
-				startActivity(i);
-				return true;
-			case R.id.menu_test:
-				if (checkInputFields()) {
-					return true;
-				}
+			}
 
-				mLocationClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
-				mLocationClient.connect();
+			// Stores the current instantiation of the location client in this object
+			FusedLocationProviderClient mLocationClient = LocationServices.getFusedLocationProviderClient(this);
+			try {
+				mLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+						.addOnSuccessListener(location -> {
+							if (location != null) {
+								// Start test
+								log.debug("onConnected - location: " + (Double.valueOf(location.getLatitude()).toString()) + "##" + (Double.valueOf(location.getLongitude()).toString()));
+								doTest(location);
+							}else{
+								Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
+								log.error("Could not determine location.");
+							}
+						});
 
 				return true;
-			// Pass through any other request
-			default:
-				return super.onOptionsItemSelected(item);
+				// Pass through any other request
+			} catch (SecurityException se) {
+				// Display UI and wait for user interaction
+				// Display UI and wait for user interaction
+				AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+				alertDialogBuilder.setMessage(getString(R.string.alertPermissions));
+				alertDialogBuilder.setTitle(getString(R.string.titleAlertPermissions));
+
+				alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) {
+					}
+				});
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
 		}
+		return super.onOptionsItemSelected(item);
 	}
-
 
 	private final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 		@Override
@@ -308,6 +321,8 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 					}catch(Exception e){
 						Toast.makeText(getApplicationContext(), R.string.profile_in_use, Toast.LENGTH_LONG).show();
 					}
+					Intent intent = new Intent();
+					setResult(4811, intent);
 					finish();
 					break;
 
@@ -349,83 +364,109 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 	private final DialogInterface.OnClickListener testDialogClickListener = new DialogInterface.OnClickListener() {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
-			switch (which){
-				case DialogInterface.BUTTON_POSITIVE:
-					break;
-			}
 		}
 	};
 
-	@SuppressLint("SetTextI18n")
-	@Override
-	public void onConnected(@Nullable Bundle bundle) {
-		// If Google Play Services is available
-		if (servicesConnected()) {
-			// Get the current location
-			Location currentLocation = null;
-			try{
-				currentLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
-			}catch(SecurityException se){
-				// Display UI and wait for user interaction
-				AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-				alertDialogBuilder.setMessage(getString(R.string.alertPermissions));
-				alertDialogBuilder.setTitle(getString(R.string.titleAlertPermissions));
+	// Load private certificate and copy it to apps private space
+	ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
+			new ActivityResultContracts.StartActivityForResult(),
+			new ActivityResultCallback<ActivityResult>() {
+				@Override
+				public void onActivityResult(ActivityResult result) {
+					// Load private certificate and copy it to apps private space
+					if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+						Uri uriInput = result.getData().getData();
+						String[] dateiName = uriInput.getPath().split("/");
+						String neuerDateiName = dateiName[dateiName.length - 1];
+						File certDir = getDir("certificates", Context.MODE_PRIVATE);
+						File certificateFile = new File(certDir, neuerDateiName);
+						// copyInputStreamToFile
+						try (InputStream is = getContentResolver().openInputStream(uriInput); FileOutputStream outputStream = new FileOutputStream(certificateFile, false)) {
+							// append = false
+							int read;
+							byte[] bytes = new byte[8192];
+							while ((read = is.read(bytes)) != -1) {
+								outputStream.write(bytes, 0, read);
+							}
+						} catch (IOException e) {
+							log.error("Could not load private certificate. Result: " + e.getMessage());
+							Toast.makeText(getApplicationContext(), "Could not load private certificate. Result: " + e.getMessage(), Toast.LENGTH_LONG).show();
+							return;
+						}
 
-				alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface arg0, int arg1) {
-}
-				});
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
-			}
-			if (currentLocation != null){
-				// Start test
-				log.debug("onConnected - location: " + (Double.valueOf(currentLocation.getLatitude()).toString()) + "##" + (Double.valueOf(currentLocation.getLongitude()).toString()));
-				doTest(currentLocation);
-			}else{
-				Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
-                log.error("Could not determine location.");
-			}
-		}
-		mLocationClient.disconnect();
-	}
+						((EditText) findViewById(R.id.value_certName)).setText(certificateFile.getPath());
+						((EditText) findViewById(R.id.value_certName)).setSelection(((EditText) findViewById(R.id.value_certName)).getText().length());
 
-	@Override
-	public void onConnectionSuspended(int i) {
-
-	}
-
-	@Override
-	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-	}
+					}else{
+						log.error("Could not load private certificate. Result: " + result.getResultCode());
+						Toast.makeText(getApplicationContext(), "Could not load private certificate. Result: " + result.getResultCode(), Toast.LENGTH_LONG).show();
+					}
+				}
+			});
 	/**
-	 * Verify that Google Play services is available before making a request.
-	 *
-	 * @return true if Google Play services is available, otherwise false
+	 * Load certificate
 	 */
-	private boolean servicesConnected() {
-		log.debug("servicesConnected");
-		// Check that Google Play services is available
-		GoogleApiAvailability api = GoogleApiAvailability.getInstance();
-		int code = api.isGooglePlayServicesAvailable(this);
-		// If Google Play services is available
-		if (ConnectionResult.SUCCESS == code) {
-			// In debug mode, log the status
-			Log.d(Constants.APPTAG, getString(R.string.play_services_available));
-			log.info("servicesConnected result from Google Play Services: " + getString(R.string.play_services_available));
-			// Continue
-			return true;
-			// Google Play services was not available for some reason
-		} else if (api.isUserResolvableError(code)){
-			log.error("servicesConnected result: could not connect to Google Play services");
-			api.showErrorDialogFragment(this, code, Constants.PLAY_SERVICES_RESOLU‌​TION_REQUEST);
-		} else {
-			log.error("servicesConnected result: could not connect to Google Play services");
-			Toast.makeText(this, api.getErrorString(code), Toast.LENGTH_LONG).show();
-		}
-		return false;
+	public void onCertClicked(View view) {
+		log.debug("onCertClicked");
+
+		// Load certificate
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+		intent.setType("*/*");
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+		activityResultLaunch.launch(intent);
+	}
+
+	// Load CA certificate and copy it to apps private space
+	ActivityResultLauncher<Intent> activityResultLaunch2 = registerForActivityResult(
+			new ActivityResultContracts.StartActivityForResult(),
+			new ActivityResultCallback<ActivityResult>() {
+				@Override
+				public void onActivityResult(ActivityResult result) {
+					// Load CA certificate and copy it to apps private space
+					if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+						Uri uriInput = result.getData().getData();
+						String[] dateiName = uriInput.getPath().split("/");
+						String neuerDateiName = dateiName[dateiName.length - 1];
+						File certDir = getDir("certificates", Context.MODE_PRIVATE);
+						File certificateFile = new File(certDir, neuerDateiName);
+						// copyInputStreamToFile
+						try (InputStream is = getContentResolver().openInputStream(uriInput); FileOutputStream outputStream = new FileOutputStream(certificateFile, false)) {
+							// append = false
+							int read;
+							byte[] bytes = new byte[8192];
+							while ((read = is.read(bytes)) != -1) {
+								outputStream.write(bytes, 0, read);
+							}
+						} catch (IOException e) {
+							log.error("Could not load CA certificate. Result: " + e.getMessage());
+							Toast.makeText(getApplicationContext(), "Could not load CA certificate. Result: " + e.getMessage(), Toast.LENGTH_LONG).show();
+							return;
+						}
+
+						((EditText) findViewById(R.id.value_caCertName)).setText(certificateFile.getPath());
+						((EditText) findViewById(R.id.value_caCertName)).setSelection(((EditText) findViewById(R.id.value_caCertName)).getText().length());
+
+					}else{
+						log.error("Could not load CA certificate. Result: " + result.getResultCode());
+						Toast.makeText(getApplicationContext(), "Could not load CA certificate. Result: " + result.getResultCode(), Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+	/**
+	 * Load CA certificate
+	 */
+	public void onCaCertClicked(View view) {
+		log.debug("onCaCertClicked");
+
+		// Load CA certificate
+		Intent intent = new Intent();
+		intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+		intent.setType("*/*");
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+		activityResultLaunch2.launch(intent);
 	}
 
 	private void doTest(Location currentLocation){
@@ -482,7 +523,7 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 		super.onPause();
 		try {
 			this.unregisterReceiver(mReceiver);
-		} catch (Exception e) {
+		} catch (Exception ignored) {
 		}
 	}
 
@@ -491,30 +532,26 @@ public class ServerProfile  extends AppCompatActivity implements GoogleApiClient
 		super.onResume();
 		// Receiver registrieren
 		IntentFilter testOkStatusFilter = new IntentFilter(Constants.ACTION_TEST_STATUS_OK);
-		this.registerReceiver(mReceiver, testOkStatusFilter);
 		IntentFilter testNokStatusFilter = new IntentFilter(Constants.ACTION_TEST_STATUS_NOK);
-		this.registerReceiver(mReceiver, testNokStatusFilter);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			this.registerReceiver(mReceiver, testOkStatusFilter, RECEIVER_EXPORTED);
+			this.registerReceiver(mReceiver, testNokStatusFilter, RECEIVER_EXPORTED);
+		}else{
+			this.registerReceiver(mReceiver, testOkStatusFilter);
+			this.registerReceiver(mReceiver, testNokStatusFilter);
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		int id = v.getId();
+		if (id == R.id.setClientCert) {
+			log.debug("onOptionsItemSelected: setClientCert");
+			onCertClicked(buttonSetCert);
+		} else if (id == R.id.setCaCert) {
+			log.debug("onOptionsItemSelected: setCaCert");
+			onCaCertClicked(buttonSetCaCert);
+		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

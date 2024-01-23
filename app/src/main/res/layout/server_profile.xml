@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -23,22 +23,21 @@
     android:id="@+id/snackbarPosition"
     tools:context=".profile.ServerProfile">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
@@ -68,7 +67,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <TextView
@@ -97,7 +97,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/fhem_geofancyHint"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <TextView
@@ -124,7 +125,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/urlEnteredHint"
-                    android:inputType="textUri" />
+                    android:inputType="textUri"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <LinearLayout
@@ -143,7 +145,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/urlExitedHint"
-                    android:inputType="textUri" />
+                    android:inputType="textUri"
+                    tools:ignore="Autofill" />
 
             </LinearLayout>
 
@@ -163,7 +166,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/userHint"
-                    android:inputType="textUri" />
+                    android:inputType="textUri"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <LinearLayout
@@ -182,7 +186,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/userPasswdHint"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <TextView
@@ -201,8 +206,17 @@
 
                 <TextView
                     android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="@string/certName" />
+
+                <ImageButton
+                    android:id="@+id/setClientCert"
+                    android:layout_width="@dimen/abc_action_button_min_width_material"
+                    android:layout_height="@dimen/abc_action_button_min_width_material"
+                    android:src="@android:drawable/ic_menu_search"
+                    android:text="@string/changeCert"
+                    android:contentDescription="Choose certificate"
+                    tools:ignore="HardcodedText" />
 
                 <EditText
                     android:id="@+id/value_certName"
@@ -210,7 +224,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/certNameHint"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -220,7 +236,7 @@
 
                 <TextView
                     android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:text="@string/certPasswd" />
 
                 <EditText
@@ -228,7 +244,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/certPasswdHint"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <LinearLayout
@@ -238,9 +255,17 @@
 
                 <TextView
                     android:layout_width="80dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
+                    android:layout_height="match_parent"
                     android:text="@string/caCertName" />
+
+                <ImageButton
+                    android:id="@+id/setCaCert"
+                    android:layout_width="@dimen/abc_action_button_min_width_material"
+                    android:layout_height="@dimen/abc_action_button_min_width_material"
+                    android:src="@android:drawable/ic_menu_search"
+                    android:text="@string/changeCert"
+                    android:contentDescription="Choose CA-Certificate"
+                    tools:ignore="HardcodedText" />
 
                 <EditText
                     android:id="@+id/value_caCertName"
@@ -248,7 +273,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/caCertNameHint"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <TextView
@@ -277,7 +303,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="2dp"
                     android:hint="@string/trackingHint"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <LinearLayout
@@ -296,7 +323,8 @@
                     android:layout_width="295dp"
                     android:layout_height="wrap_content"
                     android:hint="@string/timeoutHint"
-                    android:inputType="numberDecimal" />
+                    android:inputType="numberDecimal"
+                    tools:ignore="Autofill" />
             </LinearLayout>
 
             <LinearLayout
@@ -324,12 +352,13 @@
         </LinearLayout>
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_server_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_save_white_24dp" />
+        android:src="@drawable/ic_save_white_24dp"
+        tools:ignore="ContentDescription" />
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

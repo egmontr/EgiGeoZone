@@ -16,6 +16,7 @@
 
 package de.egi.geofence.geozone.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -25,11 +26,12 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Environment;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.os.Build;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.TaskStackBuilder;
 
 import org.apache.log4j.Logger;
 
@@ -60,17 +62,15 @@ public class NotificationUtil {
 		String channelId = "channel-gcm";
 		String channelName = "EgiGeoZone GCM";
 
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-			NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-			mChannel.setShowBadge(true);
-			mChannel.shouldShowLights();
-			if (vibrate) {
-				mChannel.enableVibration(true);
-				mChannel.setVibrationPattern(new long[] { 100, 400 });
-			}
-
-			notificationManager.createNotificationChannel(mChannel);
+		NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+		mChannel.setShowBadge(true);
+		mChannel.shouldShowLights();
+		if (vibrate) {
+			mChannel.enableVibration(true);
+			mChannel.setVibrationPattern(new long[] { 100, 400 });
 		}
+
+		notificationManager.createNotificationChannel(mChannel);
 
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId)
 				.setContentTitle(contentTitle)
@@ -97,7 +97,7 @@ public class NotificationUtil {
 		// Alle GCM-Benachrichtigungen protokollieren
 		if (gcmLogging){
 			try {
-				String gcmLogFile = Environment.getExternalStorageDirectory() + File.separator + "egigeozone" + File.separator + "gcmnotifications.txt";
+				String gcmLogFile = context.getFilesDir() + File.separator + "egigeozone" + File.separator + "gcmnotifications.txt";
 				File gcmFile = new File(gcmLogFile);
 	    		//if file doesnt exists, then create it
 	    		if(!gcmFile.exists()){
@@ -118,7 +118,7 @@ public class NotificationUtil {
     	        bufferWritter.close();
 
 			} catch (Exception e) {
-				Log.e("Exception", "File write failed: " + e.toString());
+				Log.e("Exception", "File write failed: " + e);
 			}
 		}
 	}
@@ -152,14 +152,19 @@ public class NotificationUtil {
         stackBuilder.addNextIntent(notificationIntent);
 
         RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification);
-        remoteView.setTextViewText(R.id.notification_titel, title);
-        remoteView.setTextViewText(R.id.notification_text, error);
+		remoteView.setTextViewText(R.id.notification_titel, title);
+		remoteView.setTextViewText(R.id.notification_text, error);
 
 		GlobalSingleton.getInstance().setNotificationTitel(title);
 		GlobalSingleton.getInstance().setNotificationText(error);
 
         // Get a PendingIntent containing the entire back stack
-        PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent notificationPendingIntent;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_MUTABLE);
+		}else{
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
 
 		// Get an instance of the Notification manager
 		NotificationManager mNotificationManager =
@@ -168,15 +173,13 @@ public class NotificationUtil {
 		String channelId = "channel-error";
 		String channelName = "EgiGeoZone Error";
 
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-			NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-			mChannel.setShowBadge(true);
-			mChannel.shouldShowLights();
-			mChannel.setShowBadge(true);
-			mNotificationManager.createNotificationChannel(mChannel);
-		}
+		NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+		mChannel.setShowBadge(true);
+		mChannel.shouldShowLights();
+		mChannel.setShowBadge(true);
+		mNotificationManager.createNotificationChannel(mChannel);
 
-        // Get a notification builder that's compatible with platform versions >= 4
+		// Get a notification builder that's compatible with platform versions >= 4
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
 
         // Set the notification contents
@@ -213,8 +216,12 @@ public class NotificationUtil {
         stackBuilder.addNextIntent(notificationIntent);
 
         // Get a PendingIntent containing the entire back stack
-        PendingIntent notificationPendingIntent =
-                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent notificationPendingIntent;
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_MUTABLE);
+		}else{
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
 
 		// Get an instance of the Notification manager
 		NotificationManager mNotificationManager =
@@ -223,14 +230,12 @@ public class NotificationUtil {
 		String channelId = "channel-main";
 		String channelName = "EgiGeoZone Main";
 
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-			NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-			mChannel.setShowBadge(true);
-			mChannel.shouldShowLights();
-			mNotificationManager.createNotificationChannel(mChannel);
-		}
+		NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+		mChannel.setShowBadge(true);
+		mChannel.shouldShowLights();
+		mNotificationManager.createNotificationChannel(mChannel);
 
-        // Get a notification builder that's compatible with platform versions >= 4
+		// Get a notification builder that's compatible with platform versions >= 4
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
 
 		if (log.isDebugEnabled()) {
@@ -266,7 +271,12 @@ public class NotificationUtil {
 		stackBuilder.addNextIntent(notificationIntent);
 
 		// Get a PendingIntent containing the entire back stack
-		PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent notificationPendingIntent;
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_MUTABLE);
+		}else{
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
 
 		// Get an instance of the Notification manager
 		NotificationManager mNotificationManager =
@@ -275,10 +285,8 @@ public class NotificationUtil {
 		String channelId = "channel-perm";
 		String channelName = "EgiGeoZone";
 
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-			NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-			mNotificationManager.createNotificationChannel(mChannel);
-		}
+		NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+		mNotificationManager.createNotificationChannel(mChannel);
 
 		// Get a notification builder that's compatible with platform versions >= 4
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
@@ -324,10 +332,8 @@ public class NotificationUtil {
 		String channelId = "channel-tracker";
 		String channelName = "EgiGeoZone tracker";
 
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-			NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-			mNotificationManager.createNotificationChannel(mChannel);
-		}
+		NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+		mNotificationManager.createNotificationChannel(mChannel);
 
 		// Get a notification builder that's compatible with platform versions >= 4
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
@@ -341,6 +347,7 @@ public class NotificationUtil {
 	 * If the user clicks the notification, control goes to the main Activity.
 	 *
 	 */
+	@SuppressLint("UnspecifiedImmutableFlag")
 	public static void sendErrorNotificationWithButtons(Context context, String title, String error) {
 		datasource = new DbGlobalsHelper(context);
 		boolean doNotification = Utils.isBoolean(datasource.getCursorGlobalsByKey(Constants.DB_KEY_ERROR_NOTIFICATION));
@@ -353,13 +360,23 @@ public class NotificationUtil {
 		notificationIntentTest.setAction(Constants.ACTION_DONOTDISTURB_OK);
 
 		// Get a PendingIntent containing the entire back stack
-		PendingIntent notificationPendingIntentTesta = PendingIntent.getBroadcast(context, 1234, notificationIntentTest, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent notificationPendingIntentTesta;
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			notificationPendingIntentTesta = PendingIntent.getBroadcast(context, 1234, notificationIntentTest, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+		}else{
+			notificationPendingIntentTesta = PendingIntent.getBroadcast(context, 1234, notificationIntentTest, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
 
 		Intent notificationIntentHuber = new Intent();
 		notificationIntentHuber.setAction(Constants.ACTION_DONOTDISTURB_NOK);
 
 		// Get a PendingIntent containing the entire back stack
-		PendingIntent notificationPendingIntentHuber = PendingIntent.getBroadcast(context, 1234, notificationIntentHuber, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent notificationPendingIntentHuber;
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			notificationPendingIntentHuber = PendingIntent.getBroadcast(context, 1234, notificationIntentHuber, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
+		}else{
+			notificationPendingIntentHuber = PendingIntent.getBroadcast(context, 1234, notificationIntentHuber, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
 		// Get an instance of the Notification manager
 		NotificationManager mNotificationManager =
 				(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -367,10 +384,8 @@ public class NotificationUtil {
 		String channelId = "channel-buttons";
 		String channelName = "EgiGeoZone";
 
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-			NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-			mNotificationManager.createNotificationChannel(mChannel);
-		}
+		NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+		mNotificationManager.createNotificationChannel(mChannel);
 
 		// Get a notification builder that's compatible with platform versions >= 4
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);

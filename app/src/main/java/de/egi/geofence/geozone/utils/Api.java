@@ -57,7 +57,7 @@ public class Api {
     		/* nichts tun, da auf 30000 initialisiert */
     	}else{
     		if (isNum(timeout)){
-    			this.timeout = Integer.valueOf(timeout) * 1000;  
+    			this.timeout = Integer.parseInt(timeout) * 1000;
     		}
     	}
     	
@@ -101,9 +101,8 @@ public class Api {
             // http://stackoverflow.com/questions/941628/urlconnection-filenotfoundexception-for-non-standard-http-port-sources/2274535#2274535
             urlConnection.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
             urlConnection.setRequestProperty("Accept","*/*");
-            
             urlConnection.setRequestMethod("GET");
-        	log.info("timeout: " + timeout);
+            log.info("timeout: " + timeout);
             urlConnection.setConnectTimeout(timeout);
             urlConnection.setReadTimeout(timeout);
 
@@ -129,7 +128,6 @@ public class Api {
         boolean ret = true;
         try {
 
-            //noinspection ResultOfMethodCallIgnored
             Double.parseDouble(strNum);
 
         }catch (NumberFormatException e) {

@@ -89,8 +89,8 @@ public class DbSmsHelper{
     
     // Löschen mit ID
     public void deleteSms(String ind) {
-    	db = dbHelper.getWritableDatabase();
-	    db.delete(DbContract.SmsEntry.TN, DbContract.SmsEntry._ID + " = " + ind, null);
+        db = dbHelper.getWritableDatabase();
+        db.delete(DbContract.SmsEntry.TN, DbContract.SmsEntry._ID + " = " + ind, null);
       }
 
     // Update

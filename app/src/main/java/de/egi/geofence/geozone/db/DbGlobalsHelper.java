@@ -21,7 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.Priority;
 
 import java.util.Properties;
 
@@ -35,43 +35,39 @@ public class DbGlobalsHelper  {
 //		db = dbHelper.getDb();
 	}
 
-    // Get all as props
-    public Properties getCursorAllGlobals() {
-    	db = dbHelper.getReadableDatabase();
-	    Cursor cursor = db.query(DbContract.GlobalsEntry.TN, DbContract.GlobalsEntry.allColumns, null, null, null, null, null);
-	    
-	    Properties properties = new Properties();
+	// Get all as props
+	public Properties getCursorAllGlobals() {
+		db = dbHelper.getReadableDatabase();
+		Cursor cursor = db.query(DbContract.GlobalsEntry.TN, DbContract.GlobalsEntry.allColumns, null, null, null, null, null);
+
+		Properties properties = new Properties();
 		// Werte aus DB lesen
-	    while (cursor.moveToNext()) {
+		while (cursor.moveToNext()) {
 			properties.put(cursor.getString(1), cursor.getString(2) == null ? "" : cursor.getString(2));
-        }
-		
-	    // Prüfen, ob vorhanden. Wenn nicht, mit Standardwerten vorbelegen
-	    if (!properties.containsKey(Constants.DB_KEY_NOTIFICATION)){
-	    	properties.put(Constants.DB_KEY_NOTIFICATION, "true");
-	    }
-	    if (!properties.containsKey(Constants.DB_KEY_ERROR_NOTIFICATION)){
-	    	properties.put(Constants.DB_KEY_ERROR_NOTIFICATION, "true");
-	    }
-	    if (!properties.containsKey(Constants.DB_KEY_GCM_SENDERID)){
-	    	properties.put(Constants.DB_KEY_GCM_SENDERID, "");
-	    }
-	    if (!properties.containsKey(Constants.DB_KEY_GCM_REG_ID)){
-	    	properties.put(Constants.DB_KEY_GCM_REG_ID, "");
-	    }
-	    if (!properties.containsKey(Constants.DB_KEY_GCM)){
+		}
+
+		// Prüfen, ob vorhanden. Wenn nicht, mit Standardwerten vorbelegen
+		if (!properties.containsKey(Constants.DB_KEY_NOTIFICATION)){
+			properties.put(Constants.DB_KEY_NOTIFICATION, "true");
+		}if (!properties.containsKey(Constants.DB_KEY_ERROR_NOTIFICATION)){
+			properties.put(Constants.DB_KEY_ERROR_NOTIFICATION, "true");
+		}
+		if (!properties.containsKey(Constants.DB_KEY_GCM_REG_ID)){
+			properties.put(Constants.DB_KEY_GCM_REG_ID, "");
+		}
+		if (!properties.containsKey(Constants.DB_KEY_GCM)){
 	    	properties.put(Constants.DB_KEY_GCM, "false");
 	    }
-	    if (!properties.containsKey(Constants.DB_KEY_GCM_LOGGING)){
+		if (!properties.containsKey(Constants.DB_KEY_GCM_LOGGING)){
 	    	properties.put(Constants.DB_KEY_GCM_LOGGING, "false");
 	    }
-	    if (!properties.containsKey(Constants.DB_KEY_LOCINTERVAL)){
+		if (!properties.containsKey(Constants.DB_KEY_LOCINTERVAL)){
 	    	properties.put(Constants.DB_KEY_LOCINTERVAL, "5");
 	    }
-	    if (!properties.containsKey(Constants.DB_KEY_LOCPRIORITY)){
-	    	properties.put(Constants.DB_KEY_LOCPRIORITY, Integer.valueOf(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY).toString());
+		if (!properties.containsKey(Constants.DB_KEY_LOCPRIORITY)){
+	    	properties.put(Constants.DB_KEY_LOCPRIORITY, Integer.valueOf(Priority.PRIORITY_BALANCED_POWER_ACCURACY).toString());
 	    }
-	    if (!properties.containsKey(Constants.DB_KEY_LOG_LEVEL)){
+		if (!properties.containsKey(Constants.DB_KEY_LOG_LEVEL)){
 	    	properties.put(Constants.DB_KEY_LOG_LEVEL, "ERROR");
 	    }
 		if (!properties.containsKey(Constants.DB_KEY_MIGRATED_TO_DB)){
@@ -79,6 +75,9 @@ public class DbGlobalsHelper  {
 		}
 		if (!properties.containsKey(Constants.DB_KEY_NEW_API)){
 			properties.put(Constants.DB_KEY_NEW_API, "false");
+		}
+		if (!properties.containsKey(Constants.DB_KEY_GCM)){
+			properties.put(Constants.DB_KEY_GCM, "false");
 		}
 	    cursor.close();
 	    return properties;
@@ -107,16 +106,9 @@ public class DbGlobalsHelper  {
 	    	return null;
 	    }
 	    
-//	    if (BuildConfig.DEBUG) {
-//		    while (cursor.moveToNext()) {
-//		    	Log.d("", cursor.getInt(0) + ":" + cursor.getString(1) + ":" + cursor.getString(2));
-//		    }
-//	    }
-	    
 	    cursor.moveToFirst();
         GlobalsEntity me = cursorToGlobals(cursor);
         cursor.close();
-//        db.close();
         return me.getValue();
 
 	}
@@ -164,19 +156,12 @@ public class DbGlobalsHelper  {
     	db = dbHelper.getReadableDatabase();
 	    Cursor cursor = db.query(DbContract.GlobalsEntry.TN, DbContract.GlobalsEntry.allColumns, DbContract.GlobalsEntry.CN_KEY + " = '" + key + "'", null, null, null, null);
 
-//	    if (BuildConfig.DEBUG) {
-//		    while (cursor.moveToNext()) {
-//		    	Log.d("", cursor.getInt(0) + ":" + cursor.getString(1) + ":" + cursor.getString(2));
-//		    }
-//	    }
-
-        cursor.moveToFirst();
-        if (cursor.getCount() == 0){
+		cursor.moveToFirst();
+		if (cursor.getCount() == 0){
         	cursor.close();
-//        	db.close();
         	return false;
-        } 
-    	cursor.close();
+		}
+		cursor.close();
 //    	db.close();
         return true;
 	}

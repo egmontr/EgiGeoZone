@@ -17,14 +17,14 @@
 package de.egi.geofence.geozone.utils;
 
 public class NavDrawerItem {
-    private String zone;
+    private final String zone;
 
     public String getDistance() {
         return distance;
     }
 
-    private String distance;
-    private int icon;
+    private final String distance;
+    private final int icon;
 
     public NavDrawerItem(String zone, int icon, String distance){
         this.zone = zone;

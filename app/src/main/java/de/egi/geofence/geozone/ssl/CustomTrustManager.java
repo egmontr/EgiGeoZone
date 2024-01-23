@@ -16,6 +16,8 @@
 
 package de.egi.geofence.geozone.ssl;
 
+import android.annotation.SuppressLint;
+
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -38,6 +40,7 @@ import javax.net.ssl.X509TrustManager;
  * to those that are in the system TrustStore.
  * Also handles an out-of-order certificate chain, as is often produced by Apache's mod_ssl
  */
+@SuppressLint("CustomX509TrustManager")
 class CustomTrustManager implements X509TrustManager {
 
     private final X509TrustManager originalX509TrustManager;
@@ -45,8 +48,6 @@ class CustomTrustManager implements X509TrustManager {
 
     /**
      * @param trustStore A KeyStore containing the server certificate that should be trusted
-     * @throws NoSuchAlgorithmException
-     * @throws KeyStoreException
      */
     public CustomTrustManager(KeyStore trustStore) throws NoSuchAlgorithmException, KeyStoreException {
         this.trustStore = trustStore;
@@ -70,7 +71,8 @@ class CustomTrustManager implements X509TrustManager {
      * No-op. Never invoked by client, only used in server-side implementations
      *
      */
-    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+    @SuppressLint("TrustAllX509TrustManager")
+    public void checkClientTrusted(X509Certificate[] chain, String authType) {
     }
 
 
@@ -83,7 +85,6 @@ class CustomTrustManager implements X509TrustManager {
      * Defers to the default trust manager first, checks the cert supplied in the ctor if that fails.
      * @param chain the server's certificate chain
      * @param authType the authentication type based on the client certificate
-     * @throws CertificateException
      */
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
         try {

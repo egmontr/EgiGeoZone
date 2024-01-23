@@ -16,23 +16,23 @@
 
 package de.egi.geofence.geozone.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.Settings;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.location.Geofence;
 
 import org.apache.log4j.Logger;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +53,19 @@ public class Utils {
 	private static int themeInd = 0;
 	private static DbGlobalsHelper dbGlobalsHelper;
 
+
+	public static UUID getGuid(Context context){
+		dbGlobalsHelper = new DbGlobalsHelper(context);
+		String guid = dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_GUID);
+		if (guid == null) {
+			@SuppressLint("HardwareIds") final String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+			// Use the Android ID unless it's broken, in which case fallback on
+			// a random number which we store to the database
+			guid = androidId != null ? androidId : UUID.randomUUID().toString();
+			dbGlobalsHelper.storeGlobals(Constants.DB_KEY_GUID, guid);
+		}
+		return UUID.nameUUIDFromBytes(guid.getBytes(StandardCharsets.UTF_8));
+	}
 	/**
 	 * Ersetzen von Text
 	 */
@@ -131,25 +144,8 @@ public class Utils {
 		df1.setTimeZone(tz1);
 		String nowAsLocal = df1.format(new Date());
 
-		final String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-		// Use the Android ID unless it's broken, in which case fallback on deviceId,
-		// unless it's not available, then fallback on a random number which we store
-		// to a prefs file
-		UUID uuidAndroidId = null;
-		UUID uuidDeviceId = null;
-		try{
-			uuidAndroidId = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
-			final String deviceId = ((TelephonyManager) context.getSystemService( Context.TELEPHONY_SERVICE )).getDeviceId();
-			try {
-				uuidDeviceId = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")) : UUID.randomUUID();
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
-			}
-		} catch (SecurityException e) {
-			// Permission read phone state is missing
-		} catch (UnsupportedEncodingException e) {
-			throw new RuntimeException(e);
-		}
+		UUID uuidAndroidId = getGuid(context);
+		UUID uuidDeviceId = getGuid(context);
 
 		in = replaceVar(in, Constants.ZONE, TextUtils.isEmpty(alias) ? zone : alias);
 		in = replaceVar(in, Constants.TRANSITION, getTransitionString(context, transition)); // Textual
@@ -173,48 +169,31 @@ public class Utils {
 
 	public static String replaceAllTracking(Context context, String in, String zone, String alias, String realLat, String realLng, String location_local_time, String location_utc_time, String location_accuracy){
 		// UTC time
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-        df.setTimeZone(tz);
-        String nowAsISO = df.format(new Date());
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+		df.setTimeZone(tz);
+		String nowAsISO = df.format(new Date());
 		// Local device time
 		TimeZone tz1 = TimeZone.getDefault();
 		DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
 		df1.setTimeZone(tz1);
 		String nowAsLocal = df1.format(new Date());
 
-		final String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        // Use the Android ID unless it's broken, in which case fallback on deviceId,
-        // unless it's not available, then fallback on a random number which we store
-        // to a prefs file
-        UUID uuidAndroidId = null;
-        UUID uuidDeviceId = null;
-        try{
-            uuidAndroidId = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
-            final String deviceId = ((TelephonyManager) context.getSystemService( Context.TELEPHONY_SERVICE )).getDeviceId();
-            try {
-                uuidDeviceId = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")) : UUID.randomUUID();
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SecurityException e) {
-            // Permission read phone state is missing
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+		UUID uuidAndroidId = getGuid(context);
+		UUID uuidDeviceId = getGuid(context);
 
-        in = replaceVar(in, Constants.ZONE, TextUtils.isEmpty(alias) ? zone : alias);
-        in = replaceVar(in, Constants.REALLAT, realLat == null ? "" : realLat);
-        in = replaceVar(in, Constants.REALLGN, realLng == null ? "" : realLng);
-        in = replaceVar(in, Constants.ANDROIDID, uuidAndroidId != null ? uuidAndroidId.toString() : "0");
-        in = replaceVar(in, Constants.DEVICEID, uuidDeviceId != null ? uuidDeviceId.toString() : "0");
-        in = replaceVar(in, Constants.ACCURACY, location_accuracy);
-        // This variables are not available at tracking
-        in = replaceVar(in, Constants.TRANSITION, Constants.NA);
-        in = replaceVar(in, Constants.TRANSITIONTYPE, Constants.NA);
-        in = replaceVar(in, Constants.LAT, Constants.NA);
-        in = replaceVar(in, Constants.LNG, Constants.NA);
-        in = replaceVar(in, Constants.RADIUS, Constants.NA);
+		in = replaceVar(in, Constants.ZONE, TextUtils.isEmpty(alias) ? zone : alias);
+		in = replaceVar(in, Constants.REALLAT, realLat == null ? "" : realLat);
+		in = replaceVar(in, Constants.REALLGN, realLng == null ? "" : realLng);
+		in = replaceVar(in, Constants.ANDROIDID, uuidAndroidId != null ? uuidAndroidId.toString() : "0");
+		in = replaceVar(in, Constants.DEVICEID, uuidDeviceId != null ? uuidDeviceId.toString() : "0");
+		in = replaceVar(in, Constants.ACCURACY, location_accuracy);
+		// This variables are not available at tracking
+		in = replaceVar(in, Constants.TRANSITION, Constants.NA);
+		in = replaceVar(in, Constants.TRANSITIONTYPE, Constants.NA);
+		in = replaceVar(in, Constants.LAT, Constants.NA);
+		in = replaceVar(in, Constants.LNG, Constants.NA);
+		in = replaceVar(in, Constants.RADIUS, Constants.NA);
 
 		in = replaceVar(in, Constants.DATE, nowAsISO);
 		in = replaceVar(in, Constants.LOCALDATE, nowAsLocal);
@@ -226,8 +205,6 @@ public class Utils {
 
 	/**
 	 * Change backgroundcolor of Toolbar
-	 * @param activity
-	 * @param toolbar
      */
 	public static void changeBackGroundToolbar(Activity activity, Toolbar toolbar) {
 		switch (themeInd) {
@@ -283,7 +260,7 @@ public class Utils {
 				toolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.primary16));
 				break;
 			case 17:
-				toolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.primary18));
+				toolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.primary17));
 				break;
 			case 18:
 				toolbar.setBackgroundColor(ContextCompat.getColor(activity, R.color.primary18));
@@ -292,42 +269,14 @@ public class Utils {
 	}
 
 	/**
-	 * Change background of NavigationView
-	 * @param navigationView
-     */
-//	public static void changeBackGroundNavigationView(NavigationView navigationView) {
-//		View header = navigationView.getHeaderView(0);
-//		switch (themeInd) {
-//			case 0:
-//				header.setBackgroundResource(R.drawable.side_nav_bar);
-//				break;
-//			case 1:
-//				header.setBackgroundResource(R.drawable.side_nav_header1);
-//				break;
-//			case 2:
-//				header.setBackgroundResource(R.drawable.side_nav_header2);
-//				break;
-//			case 3:
-//				header.setBackgroundResource(R.drawable.side_nav_header3);
-//				break;
-//		}
-//	}
-
-	/**
 	 * Change Theme
-	 * @param activity
-	 * @param theme
      */
 	public static void changeToTheme(Activity activity, int theme) {
 		themeInd = theme;
-		activity.finish();
-		activity.startActivity(new Intent(activity, activity.getClass()));
-		activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 	}
 
     /**
      * Set Theme onCreate of AlertDialog
-     * @param context
      */
     public static AlertDialog.Builder onAlertDialogCreateSetTheme(Context context) {
         dbGlobalsHelper = new DbGlobalsHelper(context);
@@ -387,7 +336,6 @@ public class Utils {
 
 	/**
 	 * Set DialogTheme onCreate of Activity
-	 * @param activity
 	 */
 	public static void onActivityCreateSetDialogTheme(Activity activity) {
 		dbGlobalsHelper = new DbGlobalsHelper(activity);
@@ -465,7 +413,6 @@ public class Utils {
 
 	/**
 	 * Set Theme onCreate of Activity
-	 * @param activity
 	 */
 	public static void onActivityCreateSetTheme(Activity activity) {
 		dbGlobalsHelper = new DbGlobalsHelper(activity);
@@ -567,9 +514,11 @@ public class Utils {
 
 				String transition = (String) map.get(zone);
 				RetryRequestQueue.removePref(context, zone);
-				int transi;
+				int transi = 0;
 				try {
-					transi = Integer.parseInt(transition);
+					if (transition != null) {
+						transi = Integer.parseInt(transition);
+					}
 				} catch (NumberFormatException nfe) {
 					continue;
 				}

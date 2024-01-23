@@ -102,8 +102,6 @@
     <string name="add_geofences_already_requested_error">
         Nu pot adăuga zona geo. Zona precedentă nu a fost adăugată.
     </string>
-    <string name="connected">Clientul este conectat</string>
-    <string name="disconnected">Clientul este deconectat</string>
     <string name="geofence_input_error_missing">Lipsește valoarea</string>
     <string name="geofence_input_error_comma">Virgula nu este permisă în nume.</string>
     <string name="geofence_input_error_latitude_invalid">
@@ -111,9 +109,6 @@
     </string>
     <string name="geofence_input_error_longitude_invalid">
         Longitudine incorectă. Intervalul este între -180 și 180 grade.
-    </string>
-    <string name="bt_input_error_radius_invalid">
-        Radius incorect. Trebuie să fie 1 metru sau mai mult.
     </string>
     <string name="geofence_input_error_radius_invalid">
         Radius incorect. Trebuie să fie 50 metri sau mai mult.
@@ -208,12 +203,6 @@
     <string name="mailHintSubject">Introduce subiectul</string>
     <string name="mailHintText">Introduce mesajul</string>
     
-    <string name="sms_opt_title">Opțiuni SMS</string>
-    <string name="smsTo">Receptor SMS</string>
-    <string name="smsText">Mesaj</string>
-    <string name="smsHintTo">Introduce numărul</string>
-    <string name="smsHintText">Introduce mesajul</string>
-
     <string name="other_opt_title">Alte acțiuni</string>
 
     <string name="other_conditions_title">Condiții</string>
@@ -224,9 +213,9 @@
     <string name="gcm">Primește notificări GCM</string>
     <string name="gcm_logging">Salvează notificări GCM</string>
     <string name="menu_item_show_gcm_log">Arată log GCM</string>
-    <string name="gcm_sender_id">Numărul de proiect GCM</string>
+    <string name="gcm_sender_id">GCM</string>
     <string name="gcm_sender_id_clipboard">Cheia API a clientului a fost copiată în cliplanşetă</string>
-    <string name="menu_item_delete_gcm_log">Șterge fila log GCM</string>
+    <string name="menu_item_delete_gcm_log">Șterge fila</string>
 
     <string name="app_settings">Setări</string>
     <string name="app_locationTrackerActivity">Setări location tracker</string>
@@ -238,9 +227,9 @@
     <string name="vibration">vibrate</string>
     <string name="none">nimic</string>
 
-    <string name="moreWlan">Wi-Fi</string>
+    <string name="moreWlan">Wi-Fi (For Android smaller or equal Version 9)</string>
     <string name="moreSound">Sunet</string>
-    <string name="moreBluetooth">Bluetooth</string>
+    <string name="moreBluetooth">Bluetooth (For Android smaller Version 12)</string>
     <string name="moreEnter">Intrare în zonă</string>
     <string name="moreExit">Ieșire din zonă</string>
     
@@ -275,12 +264,14 @@
     
     <string name="hp_help">Manualul în limba engleză poate fi citit aici:\n <a href="http://www.egigeozone.de/manual/default_en.html">http://www.egigeozone.de/manual/default_en.html</a></string>
     <string name="hp">EgiGeoZone website:\n <a href="http://www.egigeozone.de">http://www.egigeozone.de</a></string>
-    <string name="forum">Forumul EgiGeoZone:\n <a href="http://rpi.spdns.eu/egigeozone/">http://rpi.spdns.eu/egigeozone/</a></string>
+    <string name="forum">Forumul EgiGeoZone:\n <a href="https://www.egigeozone.de/forum">https://www.egigeozone.de/forum</a></string>
 
     <string name="spinner_local">Dosar \"egigeozone\"</string>
     <string name="spinner_extern">GDrive, Dropbox, &#8230;</string>
     <string name="spinner_titel_exp">Export configurație</string>
     <string name="accuracy">Location accuracy: Consider only locations below the specified meters. \nOnly required for special cases. At the beginning, leave the value to 0. If not, it can happen, that no actions are executed! </string>
     <string name="accuracy_hint">Accuracy in meters</string>
+    <string name="menu_item_scroll_bottom_gcm_log">Scroll to bottom log file</string>
+    <string name="menu_item_scroll_top_gcm_log">Scroll to top log file</string>
 
 </resources>

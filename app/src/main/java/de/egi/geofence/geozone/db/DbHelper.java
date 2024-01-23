@@ -111,11 +111,4 @@ public class DbHelper extends SQLiteOpenHelper {
             db.execSQL("PRAGMA foreign_keys=ON;");
         }
     }
-
-    /**
-     * @return the db
-     */
-//    public SQLiteDatabase getDb() {
-//        return db;
-//    }
 }

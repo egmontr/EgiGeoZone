@@ -16,6 +16,7 @@
 
 package de.egi.geofence.geozone.plugins;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -38,7 +39,7 @@ class PluginDrawerItemCustomAdapter extends ArrayAdapter<PluginDrawerItem> {
 
     private final Context mContext;
     private final int layoutResourceId;
-    private PluginDrawerItem[] data = null;
+    private final PluginDrawerItem[] data;
 
     public PluginDrawerItemCustomAdapter(Context mContext, int layoutResourceId, PluginDrawerItem[] data) {
         super(mContext, layoutResourceId, data);
@@ -52,6 +53,7 @@ class PluginDrawerItemCustomAdapter extends ArrayAdapter<PluginDrawerItem> {
         this.clazz = clazz;
     }
 
+    @SuppressLint("ViewHolder")
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
@@ -60,8 +62,8 @@ class PluginDrawerItemCustomAdapter extends ArrayAdapter<PluginDrawerItem> {
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
         listItem = inflater.inflate(layoutResourceId, parent, false);
 
-        ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.icon_plugin);
-        TextView textViewName = (TextView) listItem.findViewById(R.id.text_plugin);
+        ImageView imageViewIcon = listItem.findViewById(R.id.icon_plugin);
+        TextView textViewName = listItem.findViewById(R.id.text_plugin);
         imageViewIcon.setOnClickListener(new OnClickListener() {
 
             @Override

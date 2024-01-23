@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -28,7 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="Autofill" />
 
         <TextView
             android:id="@+id/textView7"
@@ -41,7 +43,8 @@
             android:id="@+id/editDeviceName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="Autofill" />
 
         <TextView
             android:id="@+id/textView6"
@@ -54,7 +57,8 @@
             android:id="@+id/editDeviceBrand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="Autofill" />
 
         <TextView
             android:id="@+id/textView8"
@@ -70,7 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="Autofill" />
 
         <TextView
             android:id="@+id/textAndroidId"
@@ -86,7 +91,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="Autofill" />
 
         <TextView
             android:id="@+id/textDeviceId"
@@ -99,7 +105,8 @@
             android:id="@+id/editDeviceId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="Autofill" />
 
         <TextView
             android:id="@+id/textGCMAPIKey"
@@ -115,7 +122,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:inputType="none" />
+            android:inputType="none"
+            tools:ignore="Autofill" />
 
     </LinearLayout>
 </ScrollView>

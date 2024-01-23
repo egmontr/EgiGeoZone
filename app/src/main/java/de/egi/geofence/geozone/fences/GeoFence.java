@@ -1,20 +1,12 @@
 package de.egi.geofence.geozone.fences;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -25,13 +17,26 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.log4j.Logger;
 
@@ -67,18 +72,19 @@ import it.sephiroth.android.library.tooltip.Tooltip;
 /**
  * Created by egmontr on 28.07.2016.
  */
-public class GeoFence extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class GeoFence extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
     private DbZoneHelper datasource;
     private String action;
     private String zone;
     private boolean _new = true;
     private ZoneEntity ze;
-    // Stores the current instantiation of the location client in this object
-    private GoogleApiClient mLocationClient;
     private final Logger log = Logger.getLogger(GeoFence.class);
     private View viewMerk;
+    ImageButton buttonKarte = null;
+    ImageButton buttonAddServer = null;
+    ImageButton buttonAddMail = null;
+    ImageButton buttonAddMore = null;
+    ImageButton buttonAddRequ = null;
 
     List<String> listNone;
 
@@ -99,7 +105,18 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
 
         setContentView(R.layout.geofence);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        buttonKarte = findViewById(R.id.karte);
+        buttonKarte.setOnClickListener(this);
+        buttonAddServer = findViewById(R.id.add_server);
+        buttonAddServer.setOnClickListener(this);
+        buttonAddMail = findViewById(R.id.add_email);
+        buttonAddMail.setOnClickListener(this);
+        buttonAddMore = findViewById(R.id.add_more);
+        buttonAddMore.setOnClickListener(this);
+        buttonAddRequ = findViewById(R.id.add_requ);
+        buttonAddRequ.setOnClickListener(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Utils.changeBackGroundToolbar(this, toolbar);
 
@@ -110,7 +127,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         }
         datasource = new DbZoneHelper(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_geo);
+        FloatingActionButton fab = findViewById(R.id.fab_geo);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,7 +138,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
             }
         });
 
-        Button trackingButton = (Button) findViewById(R.id.tracking);
+        Button trackingButton = findViewById(R.id.tracking);
         trackingButton.setOnClickListener(this);
 
         // load profiles
@@ -183,19 +200,19 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
 
             // Mit den Ids die Namen der Profile lesen
             if (ze.getId_email() != null) {
-                int ind_me = listMailAll.indexOf(ze.getId_email()) < 0 ? 0 : listMailAll.indexOf(ze.getId_email());
+                int ind_me = (!listMailAll.contains(ze.getId_email())) ? 0 : listMailAll.indexOf(ze.getId_email());
                 spinner_mail.setSelection(ind_me, true);
             }
             if (ze.getId_more_actions() != null) {
-                int ind_mo = listMoreAll.indexOf(ze.getId_more_actions()) < 0 ? 0 : listMoreAll.indexOf(ze.getId_more_actions());
+                int ind_mo = !listMoreAll.contains(ze.getId_more_actions()) ? 0 : listMoreAll.indexOf(ze.getId_more_actions());
                 spinner_more.setSelection(ind_mo, true);
             }
             if (ze.getId_server() != null) {
-                int ind_se = listSrvAll.indexOf(ze.getId_server()) < 0 ? 0 : listSrvAll.indexOf(ze.getId_server());
+                int ind_se = !listSrvAll.contains(ze.getId_server()) ? 0 : listSrvAll.indexOf(ze.getId_server());
                 spinner_server.setSelection(ind_se, true);
             }
             if (ze.getId_requirements() != null) {
-                int ind_re = listRequAll.indexOf(ze.getId_requirements()) < 0 ? 0 : listRequAll.indexOf(ze.getId_requirements());
+                int ind_re = !listRequAll.contains(ze.getId_requirements()) ? 0 : listRequAll.indexOf(ze.getId_requirements());
                 spinner_requ.setSelection(ind_re, true);
             }
             // Für Tasker-Einstellungen setzen
@@ -207,7 +224,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         DbRequirementsHelper datasourceRequ = new DbRequirementsHelper(this);
 
         Cursor cursorRequ = datasourceRequ.getCursorAllRequirements();
-        spinner_requ = (Spinner) findViewById(R.id.spinner_requirements_profile);
+        spinner_requ = findViewById(R.id.spinner_requirements_profile);
         List<String> listRequ = new ArrayList<>();
         while (cursorRequ.moveToNext()) {
             listRequ.add(cursorRequ.getString(1));
@@ -233,7 +250,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         DbMailHelper datasourceMail = new DbMailHelper(this);
 
         Cursor cursorMail = datasourceMail.getCursorAllMail();
-        spinner_mail = (Spinner) findViewById(R.id.spinner_mail_profile);
+        spinner_mail = findViewById(R.id.spinner_mail_profile);
         List<String> listMail = new ArrayList<>();
         while (cursorMail.moveToNext()) {
             listMail.add(cursorMail.getString(1));
@@ -277,7 +294,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         listSrvAll.addAll(listSrv);
 
         ArrayAdapter<String> adapterServer = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listSrvAll);
-        spinner_server = (Spinner) findViewById(R.id.spinner_server_profile);
+        spinner_server = findViewById(R.id.spinner_server_profile);
 
         adapterServer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_server.setAdapter(adapterServer);
@@ -287,7 +304,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         DbMoreHelper datasourceMore = new DbMoreHelper(this);
 
         Cursor cursorMore = datasourceMore.getCursorAllMore();
-        spinner_more = (Spinner) findViewById(R.id.spinner_more_profile);
+        spinner_more = findViewById(R.id.spinner_more_profile);
         List<String> listMore = new ArrayList<>();
         while (cursorMore.moveToNext()) {
             listMore.add(cursorMore.getString(1));
@@ -314,16 +331,16 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
             return;
         }
 
-        EditText mZone = (EditText) findViewById(R.id.value_geofence);
-        EditText mLatitude = (EditText) findViewById(R.id.value_latitude);
-        EditText mLongitude = (EditText) findViewById(R.id.value_longitude);
-        EditText mRadius = (EditText) findViewById(R.id.value_radius);
-        EditText mAlias = (EditText) findViewById(R.id.value_alias);
+        EditText mZone = findViewById(R.id.value_geofence);
+        EditText mLatitude = findViewById(R.id.value_latitude);
+        EditText mLongitude = findViewById(R.id.value_longitude);
+        EditText mRadius = findViewById(R.id.value_radius);
+        EditText mAlias = findViewById(R.id.value_alias);
 
-        Spinner mSpinner_server = (Spinner) findViewById(R.id.spinner_server_profile);
-        Spinner mSpinner_mail = (Spinner) findViewById(R.id.spinner_mail_profile);
-        Spinner mSpinner_more = (Spinner) findViewById(R.id.spinner_more_profile);
-        Spinner mSpinner_requ = (Spinner) findViewById(R.id.spinner_requirements_profile);
+        Spinner mSpinner_server = findViewById(R.id.spinner_server_profile);
+        Spinner mSpinner_mail = findViewById(R.id.spinner_mail_profile);
+        Spinner mSpinner_more = findViewById(R.id.spinner_more_profile);
+        Spinner mSpinner_requ = findViewById(R.id.spinner_requirements_profile);
 
         String zone = mZone.getText().toString();
 
@@ -356,9 +373,9 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         datasource.storeZone(ze);
 
         Intent data = new Intent();
-        data.putExtra("action","add");
+        data.putExtra("action", "add");
         data.putExtra("zoneToAdd", zone);
-        setResult(RESULT_OK, data);
+        setResult(4730, data);
         finish();
     }
 
@@ -375,13 +392,13 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
             Snackbar.make(viewMerk, R.string.geofence_input_error_missing, Snackbar.LENGTH_LONG).show();
             // Set the validity to "invalid" (false)
             return true;
-        } else if (((EditText) findViewById(R.id.value_geofence)).getText().toString().contains(",")){
+        } else if (((EditText) findViewById(R.id.value_geofence)).getText().toString().contains(",")) {
             findViewById(R.id.value_geofence).setBackgroundColor(Color.RED);
             findViewById(R.id.value_geofence).requestFocus();
             Snackbar.make(viewMerk, R.string.geofence_input_error_comma, Snackbar.LENGTH_LONG).show();
             // Set the validity to "invalid" (false)
             return true;
-        } else if (((EditText) findViewById(R.id.value_geofence)).getText().toString().contains("'")){
+        } else if (((EditText) findViewById(R.id.value_geofence)).getText().toString().contains("'")) {
             findViewById(R.id.value_geofence).setBackgroundColor(Color.RED);
             findViewById(R.id.value_geofence).requestFocus();
             Snackbar.make(viewMerk, R.string.geofence_input_error_comma, Snackbar.LENGTH_LONG).show();
@@ -389,13 +406,13 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
             return true;
         }
 
-        if (((EditText) findViewById(R.id.value_alias)).getText().toString().contains(",")){
+        if (((EditText) findViewById(R.id.value_alias)).getText().toString().contains(",")) {
             findViewById(R.id.value_alias).setBackgroundColor(Color.RED);
             findViewById(R.id.value_alias).requestFocus();
             Snackbar.make(viewMerk, R.string.geofence_input_error_comma, Snackbar.LENGTH_LONG).show();
             // Set the validity to "invalid" (false)
             return true;
-        } else if (((EditText) findViewById(R.id.value_alias)).getText().toString().contains("'")){
+        } else if (((EditText) findViewById(R.id.value_alias)).getText().toString().contains("'")) {
             findViewById(R.id.value_alias).setBackgroundColor(Color.RED);
             findViewById(R.id.value_alias).requestFocus();
             Snackbar.make(viewMerk, R.string.geofence_input_error_comma, Snackbar.LENGTH_LONG).show();
@@ -431,13 +448,13 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
             return true;
         }
         try {
-        if (Integer.valueOf(((EditText) findViewById(R.id.value_radius)).getText().toString()) < 50) {
-            findViewById(R.id.value_radius).setBackgroundColor(Color.RED);
-            findViewById(R.id.value_radius).requestFocus();
-            Snackbar.make(viewMerk, R.string.geofence_input_error_radius_invalid, Snackbar.LENGTH_LONG).show();
+            if (Integer.parseInt(((EditText) findViewById(R.id.value_radius)).getText().toString()) < 50) {
+                findViewById(R.id.value_radius).setBackgroundColor(Color.RED);
+                findViewById(R.id.value_radius).requestFocus();
+                Snackbar.make(viewMerk, R.string.geofence_input_error_radius_invalid, Snackbar.LENGTH_LONG).show();
                 return true;
             }
-        }catch (NumberFormatException ne){
+        } catch (NumberFormatException ne) {
             findViewById(R.id.value_radius).setBackgroundColor(Color.RED);
             findViewById(R.id.value_radius).requestFocus();
             Snackbar.make(viewMerk, R.string.geofence_input_error_radius_invalid, Snackbar.LENGTH_LONG).show();
@@ -449,20 +466,22 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
          * actual values in the fields.
          */
 
-            /*
-             * Get values from the latitude, longitude, and radius fields.
-             */
-        double lat1 = Double.valueOf(((EditText) findViewById(R.id.value_latitude)).getText().toString());
-        double lng1 = Double.valueOf(((EditText) findViewById(R.id.value_longitude)).getText().toString());
+        /*
+         * Get values from the latitude, longitude, and radius fields.
+         */
+        double lat1 = Double.parseDouble(((EditText) findViewById(R.id.value_latitude)).getText().toString());
+        double lng1 = Double.parseDouble(((EditText) findViewById(R.id.value_longitude)).getText().toString());
 //        float rd1 = Float.valueOf(((EditText) findViewById(R.id.value_radius)).getText().toString());
 
-            /*
-             * Test latitude and longitude for minimum and maximum values. Highlight incorrect
-             * values and set a Toast in the UI.
-             */
+        /*
+         * Test latitude and longitude for minimum and maximum values. Highlight incorrect
+         * values and set a Toast in the UI.
+         */
 
         if (lat1 > Constants.MAX_LATITUDE || lat1 < Constants.MIN_LATITUDE) {
-            getSupportActionBar().setTitle(R.string.geofence_input_error_latitude_invalid);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(R.string.geofence_input_error_latitude_invalid);
+            }
             findViewById(R.id.value_latitude).setBackgroundColor(Color.RED);
             findViewById(R.id.value_latitude).requestFocus();
             Snackbar.make(viewMerk, R.string.geofence_input_error_latitude_invalid, Snackbar.LENGTH_LONG).show();
@@ -471,7 +490,9 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         }
 
         if ((lng1 > Constants.MAX_LONGITUDE) || (lng1 < Constants.MIN_LONGITUDE)) {
-            getSupportActionBar().setTitle(R.string.geofence_input_error_longitude_invalid);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(R.string.geofence_input_error_longitude_invalid);
+            }
             findViewById(R.id.value_longitude).setBackgroundColor(Color.RED);
             findViewById(R.id.value_longitude).requestFocus();
             Snackbar.make(viewMerk, R.string.geofence_input_error_longitude_invalid, Snackbar.LENGTH_LONG).show();
@@ -490,253 +511,43 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         return super.onCreateOptionsMenu(menu);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action buttons
-        switch (item.getItemId()) {
-            case R.id.menu_delete_geofence:
-                android.support.v7.app.AlertDialog.Builder ab = new android.support.v7.app.AlertDialog.Builder(this);
-                ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, dialogClickListener).setNegativeButton(R.string.action_no, dialogClickListener).show();
-                return true;
-            case R.id.menu_item_clear_geofence:
-//                log.debug("onOptionsItemSelected: menu_item_clear_geofence");
-                ((EditText) findViewById(R.id.value_geofence)).setText(Constants.EMPTY_STRING);
-                ((EditText) findViewById(R.id.value_latitude)).setText(Constants.EMPTY_STRING);
-                ((EditText) findViewById(R.id.value_longitude)).setText(Constants.EMPTY_STRING);
-                ((EditText) findViewById(R.id.value_radius)).setText(Constants.EMPTY_STRING);
-                ((EditText) findViewById(R.id.value_alias)).setText(Constants.EMPTY_STRING);
-                ((Spinner) findViewById(R.id.spinner_server_profile)).setSelection(0, true);
-                ((Spinner) findViewById(R.id.spinner_mail_profile)).setSelection(0, true);
-                ((Spinner) findViewById(R.id.spinner_more_profile)).setSelection(0, true);
-                ((Spinner) findViewById(R.id.spinner_requirements_profile)).setSelection(0, true);
-                return true;
-            case R.id.menu_get_location:
-                log.debug("onOptionsItemSelected: menu_get_location");
-                mLocationClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
-                mLocationClient.connect();
-                return true;
-            case R.id.menu_accuracy:
-                Intent iAccuracy = new Intent(this, Accuracy.class);
-                startActivityForResult(iAccuracy, 4713);
-                return true;
-            case R.id.menu_item_help:
-                Intent i2 = new Intent(this, Help.class);
-                startActivity(i2);
-                return true;
-            // Pass through any other request
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-                    //Do your Yes progress
-                    Intent data = new Intent();
-                    data.putExtra("action","delete");
-                    String zoneToDelete = ((EditText) findViewById(R.id.value_geofence)).getText().toString();
-                    data.putExtra("zoneToDelete", zoneToDelete);
-                    setResult(RESULT_OK, data);
-                    finish();
-                case DialogInterface.BUTTON_NEGATIVE:
-                    //Do your No progress
-                    break;
-            }
-        }
-    };
-
-
-    /**
-     * Map anzeigen
-     */
-    @SuppressWarnings("UnusedParameters")
-    public void onKarteClicked(View view) {
-        log.debug("onKarteClicked");
-
-        Intent iKarte = new Intent(this, Karte.class);
-        Bundle b = new Bundle();
-
-        b.putString("de.egi.geofence.geozone.lat", ((EditText) findViewById(R.id.value_latitude)).getText().toString());
-        b.putString("de.egi.geofence.geozone.lng", ((EditText) findViewById(R.id.value_longitude)).getText().toString());
-        b.putString("de.egi.geofence.geozone.rad", ((EditText) findViewById(R.id.value_radius)).getText().toString());
-        b.putString("de.egi.geofence.geozone.zone", ((EditText) findViewById(R.id.value_geofence)).getText().toString());
-
-        iKarte.putExtras(b);
-        startActivityForResult(iKarte, 4711);
-    }
-
-    /**
-     * Add Server
-     */
-    @SuppressWarnings("UnusedParameters")
-    public void onAddServerClicked(View view) {
-        log.debug("onAddServerClicked");
-        Intent i = new Intent(this, ServerProfile.class);
-        i.putExtra("action", "new");
-        startActivityForResult(i, 4811);
-    }
-
-    /**
-     * Add Mail
-     */
-    @SuppressWarnings("UnusedParameters")
-    public void onAddMailClicked(View view) {
-        log.debug("onAddMailClicked");
-        Intent i = new Intent(this, MailProfile.class);
-        i.putExtra("action", "new");
-        startActivityForResult(i, 4813);
-    }
-
-    /**
-     * Add More
-     */
-    @SuppressWarnings("UnusedParameters")
-    public void onAddMoreClicked(View view) {
-        log.debug("onAddMoreClicked");
-        Intent i = new Intent(this, MoreProfile.class);
-        i.putExtra("action", "new");
-        startActivityForResult(i, 4814);
-    }
-
-    /**
-     * Add Requs
-     */
-    @SuppressWarnings("UnusedParameters")
-    public void onAddRequClicked(View view) {
-        log.debug("onAddRequClicked");
-        Intent i = new Intent(this, RequirementsProfile.class);
-        i.putExtra("action", "new");
-        startActivityForResult(i, 4815);
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        switch (requestCode) {
-            // Karte
-            case 4711:
-                if (resultCode == RESULT_OK) {
-                    Double lat = intent.getDoubleExtra("lat", 0);
-                    Double lng = intent.getDoubleExtra("lng", 0);
-                    @SuppressWarnings("unused")
-                    Double radius = intent.getDoubleExtra("radius", 500);
-                    Long radi = radius.longValue();
-                    // Display the current location in the UI
-                    ((EditText) findViewById(R.id.value_latitude)).setText(lat.toString());
-                    ((EditText) findViewById(R.id.value_longitude)).setText(lng.toString());
-                    ((EditText) findViewById(R.id.value_radius)).setText(radi.toString());
-//                    myCloseDrawer = true;
-                }
-                break;
-            // tracking settings
-            case 4712 :
-                View view;
-                String toolTip;
-                if (GlobalSingleton.getInstance().getZoneEntity().getId() == 0){
-                    // Register
-                    view  = findViewById(R.id.fab_geo);
-                    toolTip = this.getString(R.string.toolTipRegisterZone);
-                }else{
-                    // Alter
-                    view  = findViewById(R.id.fab_geo);
-                    toolTip = this.getString(R.string.toolTipAlterZone);
-                }
-                Tooltip.make(this,
-                        new Tooltip.Builder(101)
-                                .anchor(view, Tooltip.Gravity.BOTTOM)
-                                .closePolicy(new Tooltip.ClosePolicy().insidePolicy(true, false).outsidePolicy(true, false), 5000)
-                                .activateDelay(800)
-                                .showDelay(300)
-                                .text(toolTip)
-                                .maxWidth(500)
-                                .withArrow(true)
-                                .withOverlay(false)
-//                                .typeface(mYourCustomFont)
-                                .floatingAnimation(Tooltip.AnimationBuilder.SLOW)
-                                .fitToScreen(true)
-                                .build()
-                ).show();
-                break;
-            // Accuracy
-            case 4713 :
-                View view_acc;
-                String toolTip_acc;
-                if (GlobalSingleton.getInstance().getZoneEntity().getId() == 0){
-                    // Register
-                    view_acc  = findViewById(R.id.fab_geo);
-                    toolTip_acc = this.getString(R.string.toolTipRegisterZone);
-                }else{
-                    // Alter
-                    view_acc  = findViewById(R.id.fab_geo);
-                    toolTip_acc = this.getString(R.string.toolTipAlterZone);
-                }
-                Tooltip.make(this,
-                        new Tooltip.Builder(101)
-                                .anchor(view_acc, Tooltip.Gravity.BOTTOM)
-                                .closePolicy(new Tooltip.ClosePolicy().insidePolicy(true, false).outsidePolicy(true, false), 5000)
-                                .activateDelay(800)
-                                .showDelay(300)
-                                .text(toolTip_acc)
-                                .maxWidth(500)
-                                .withArrow(true)
-                                .withOverlay(false)
-//                                .typeface(mYourCustomFont)
-                                .floatingAnimation(Tooltip.AnimationBuilder.SLOW)
-                                .fitToScreen(true)
-                                .build()
-                ).show();
-                break;
-            // Add Server
-            case 4811:
-                fillSpinnerServer();
-
-                break;
-            case 4812:
-                break;
-            // Add Mail
-            case 4813:
-                filleSpinnerMail();
-                break;
-            // Add More
-            case 4814:
-                MoreEntity me = GlobalSingleton.getInstance().getMoreEntity();
-                DbMoreHelper dbMoreHelper = new DbMoreHelper(this);
-                if (me.getName() != null && !me.getName().equalsIgnoreCase("")){
-                    dbMoreHelper.storeMore(me);
-                }
-
-                fillSpinnerMore();
-                break;
-            // Add requs
-            case 4815:
-                RequirementsEntity rq = GlobalSingleton.getInstance().getRequirementsEntity();
-                DbRequirementsHelper dbRequHelper = new DbRequirementsHelper(this);
-                if (rq.getName() != null && !rq.getName().equalsIgnoreCase("")){
-                    dbRequHelper.storeRequirements(rq);
-                }
-
-                fillSpinnerRequ();
-                break;
-            // If any other request code was received
-            default:
-                // Report that this Activity received an unknown requestCode
-//                Log.d(Constants.APPTAG, getString(R.string.unknown_activity_request_code, requestCode));
-                break;
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        // If Google Play Services is available
-        if (servicesConnected()) {
-            // Get the current location
-            Location currentLocation = null;
-            try{
-                currentLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_delete_geofence) {
+            AlertDialog.Builder ab = new AlertDialog.Builder(this);
+            ab.setMessage(R.string.action_delete).setPositiveButton(R.string.action_yes, dialogClickListener).setNegativeButton(R.string.action_no, dialogClickListener).show();
+            return true;
+        } else if (itemId == R.id.menu_item_clear_geofence) {//                log.debug("onOptionsItemSelected: menu_item_clear_geofence");
+            ((EditText) findViewById(R.id.value_geofence)).setText(Constants.EMPTY_STRING);
+            ((EditText) findViewById(R.id.value_latitude)).setText(Constants.EMPTY_STRING);
+            ((EditText) findViewById(R.id.value_longitude)).setText(Constants.EMPTY_STRING);
+            ((EditText) findViewById(R.id.value_radius)).setText(Constants.EMPTY_STRING);
+            ((EditText) findViewById(R.id.value_alias)).setText(Constants.EMPTY_STRING);
+            ((Spinner) findViewById(R.id.spinner_server_profile)).setSelection(0, true);
+            ((Spinner) findViewById(R.id.spinner_mail_profile)).setSelection(0, true);
+            ((Spinner) findViewById(R.id.spinner_more_profile)).setSelection(0, true);
+            ((Spinner) findViewById(R.id.spinner_requirements_profile)).setSelection(0, true);
+            return true;
+        } else if (itemId == R.id.menu_get_location) {
+            log.debug("onOptionsItemSelected: menu_get_location");
+            // Stores the current instantiation of the location client in this object
+            FusedLocationProviderClient mLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            try {
+                mLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                        .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        // Display the current location in the UI
+                        ((EditText) findViewById(R.id.value_latitude)).setText(Double.valueOf(location.getLatitude()).toString());
+                        ((EditText) findViewById(R.id.value_longitude)).setText(Double.valueOf(location.getLongitude()).toString());
+//                    log.debug("onConnected - location: " + (Double.valueOf(currentLocation.getLatitude()).toString()) + "##" + (Double.valueOf(currentLocation.getLongitude()).toString()));
+                    }else{
+                        Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
+//                    log.error("Could not determine location.");
+                    }
+                });
             }catch(SecurityException se){
                 // Display UI and wait for user interaction
                 AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
@@ -751,29 +562,199 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.show();
             }
+            return true;
+        } else if (itemId == R.id.menu_accuracy) {
+            Intent iAccuracy = new Intent(this, Accuracy.class);
+            activityResultLaunch.launch(iAccuracy); // 4713
+            return true;
+        } else if (itemId == R.id.menu_item_help) {
+            Intent i2 = new Intent(this, Help.class);
+            startActivity(i2);
+            return true;
+            // Pass through any other request
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-            if (currentLocation != null){
-                // Display the current location in the UI
-                ((EditText) findViewById(R.id.value_latitude)).setText(Double.valueOf(currentLocation.getLatitude()).toString());
-                ((EditText) findViewById(R.id.value_longitude)).setText(Double.valueOf(currentLocation.getLongitude()).toString());
-//                    log.debug("onConnected - location: " + (Double.valueOf(currentLocation.getLatitude()).toString()) + "##" + (Double.valueOf(currentLocation.getLongitude()).toString()));
-            }else{
-                Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
-//                    log.error("Could not determine location.");
+    private final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    //Do your Yes progress
+                    Intent data = new Intent();
+                    data.putExtra("action","delete");
+                    String zoneToDelete = ((EditText) findViewById(R.id.value_geofence)).getText().toString();
+                    data.putExtra("zoneToDelete", zoneToDelete);
+                    setResult(4730, data);
+                    finish();
+                case DialogInterface.BUTTON_NEGATIVE:
+                    //Do your No progress
+                    break;
             }
         }
-        mLocationClient.disconnect();
+    };
+
+
+    /**
+     * Map anzeigen
+     */
+    public void onKarteClicked(View view) {
+        log.debug("onKarteClicked");
+
+        Intent iKarte = new Intent(this, Karte.class);
+        Bundle b = new Bundle();
+
+        b.putString("de.egi.geofence.geozone.lat", ((EditText) findViewById(R.id.value_latitude)).getText().toString());
+        b.putString("de.egi.geofence.geozone.lng", ((EditText) findViewById(R.id.value_longitude)).getText().toString());
+        b.putString("de.egi.geofence.geozone.rad", ((EditText) findViewById(R.id.value_radius)).getText().toString());
+        b.putString("de.egi.geofence.geozone.zone", ((EditText) findViewById(R.id.value_geofence)).getText().toString());
+
+        iKarte.putExtras(b);
+        activityResultLaunch.launch(iKarte); // 4711
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
+    /**
+     * Add Server
+     */
+    public void onAddServerClicked(View view) {
+        log.debug("onAddServerClicked");
+        Intent i = new Intent(this, ServerProfile.class);
+        i.putExtra("action", "new");
+        activityResultLaunch.launch(i); // 4811
+    }
+    /**
+     * Add Mail
+     */
+    public void onAddMailClicked(View view) {
+        log.debug("onAddMailClicked");
+        Intent i = new Intent(this, MailProfile.class);
+        i.putExtra("action", "new");
+        activityResultLaunch.launch(i); // 4813
     }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+    /**
+     * Add More
+     */
+    public void onAddMoreClicked(View view) {
+        log.debug("onAddMoreClicked");
+        Intent i = new Intent(this, MoreProfile.class);
+        i.putExtra("action", "new");
+        activityResultLaunch.launch(i); // 4814
     }
+
+    /**
+     * Add Requs
+     */
+    public void onAddRequClicked(View view) {
+        log.debug("onAddRequClicked");
+        Intent i = new Intent(this, RequirementsProfile.class);
+        i.putExtra("action", "new");
+        activityResultLaunch.launch(i); // 4815
+    }
+
+    ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    // Add Requ
+                    if (result.getResultCode() == 4815) {
+                        RequirementsEntity rq = GlobalSingleton.getInstance().getRequirementsEntity();
+                        DbRequirementsHelper dbRequHelper = new DbRequirementsHelper(GeoFence.this);
+                        if (rq.getName() != null && !rq.getName().equalsIgnoreCase("")) {
+                            dbRequHelper.storeRequirements(rq);
+                        }
+                        fillSpinnerRequ();
+                        // Add More
+                    } else if(result.getResultCode() == 4814) {
+                        MoreEntity me = GlobalSingleton.getInstance().getMoreEntity();
+                        DbMoreHelper dbMoreHelper = new DbMoreHelper(GeoFence.this);
+                        if (me.getName() != null && !me.getName().equalsIgnoreCase("")) {
+                            dbMoreHelper.storeMore(me);
+                        }
+                        fillSpinnerMore();
+                        // Add Mail
+                    }else if(result.getResultCode() == 4813) {
+                        filleSpinnerMail();
+                        // Add Server
+                    }else if(result.getResultCode() == 4811) {
+                        fillSpinnerServer();
+                        // Accuracy
+                    }else if(result.getResultCode() == 4713) {
+                        View view_acc;
+                        String toolTip_acc;
+                        if (GlobalSingleton.getInstance().getZoneEntity().getId() == 0) {
+                            // Register
+                            view_acc = findViewById(R.id.fab_geo);
+                            toolTip_acc = GeoFence.this.getString(R.string.toolTipRegisterZone);
+                        } else {
+                            // Alter
+                            view_acc = findViewById(R.id.fab_geo);
+                            toolTip_acc = GeoFence.this.getString(R.string.toolTipAlterZone);
+                        }
+                        Tooltip.make(GeoFence.this,
+                                new Tooltip.Builder(101)
+                                        .anchor(view_acc, Tooltip.Gravity.BOTTOM)
+                                        .closePolicy(new Tooltip.ClosePolicy().insidePolicy(true, false).outsidePolicy(true, false), 5000)
+                                        .activateDelay(800)
+                                        .showDelay(300)
+                                        .text(toolTip_acc)
+                                        .maxWidth(500)
+                                        .withArrow(true)
+                                        .withOverlay(false)
+//                                .typeface(mYourCustomFont)
+                                        .floatingAnimation(Tooltip.AnimationBuilder.SLOW)
+                                        .fitToScreen(true)
+                                        .build()
+                        ).show();
+                        // tracking settings
+                    }else if(result.getResultCode() == 4712) {
+                            View view;
+                            String toolTip;
+                            if (GlobalSingleton.getInstance().getZoneEntity().getId() == 0) {
+                                // Register
+                                view = findViewById(R.id.fab_geo);
+                                toolTip = GeoFence.this.getString(R.string.toolTipRegisterZone);
+                            } else {
+                                // Alter
+                                view = findViewById(R.id.fab_geo);
+                                toolTip = GeoFence.this.getString(R.string.toolTipAlterZone);
+                            }
+                            Tooltip.make(GeoFence.this,
+                                    new Tooltip.Builder(101)
+                                            .anchor(view, Tooltip.Gravity.BOTTOM)
+                                            .closePolicy(new Tooltip.ClosePolicy().insidePolicy(true, false).outsidePolicy(true, false), 5000)
+                                            .activateDelay(800)
+                                            .showDelay(300)
+                                            .text(toolTip)
+                                            .maxWidth(500)
+                                            .withArrow(true)
+                                            .withOverlay(false)
+//                                .typeface(mYourCustomFont)
+                                            .floatingAnimation(Tooltip.AnimationBuilder.SLOW)
+                                            .fitToScreen(true)
+                                            .build()
+                            ).show();
+                        // Karte
+                    }else if ((result.getResultCode() == 4711) || result.getResultCode() == Activity.RESULT_OK && (result.getData() != null && (result.getData()).getExtras().containsKey("radius"))) {
+                        if (result.getData() != null){
+                            if (result.getData().getExtras() != null) {
+                                double lat = result.getData().getExtras().getDouble("lat", 0);
+                                double lng = result.getData().getExtras().getDouble("lng", 0);
+                                Double radius = result.getData().getExtras().getDouble("radius", 500);
+                                long radi = radius.longValue();
+                                // Display the current location in the UI
+                                ((EditText) findViewById(R.id.value_latitude)).setText(Double.toString(lat));
+                                ((EditText) findViewById(R.id.value_longitude)).setText(Double.toString(lng));
+                                ((EditText) findViewById(R.id.value_radius)).setText(Long.toString(radi));
+                            }
+                        }
+                    }
+                }
+            });
+
     /**
      * Verify that Google Play services is available before making a request.
      *
@@ -794,7 +775,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
             // Google Play services was not available for some reason
         } else if (api.isUserResolvableError(code)){
             log.error("servicesConnected result: could not connect to Google Play services");
-            api.showErrorDialogFragment(this, code, Constants.PLAY_SERVICES_RESOLU‌​TION_REQUEST);
+            api.showErrorDialogFragment(this, code, Constants.PLAY_SERVICES_RESOLUTION_REQUEST);
         } else {
             log.error("servicesConnected result: could not connect to Google Play services");
             Toast.makeText(this, api.getErrorString(code), Toast.LENGTH_LONG).show();
@@ -803,14 +784,24 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tracking:
-//                log.debug("onOptionsItemSelected: button_tracking");
-                onLocationTrackerLokalSettingsClicked();
-                break;
-            default:
-                break;
+    public void onClick(View v) {
+        if (v.getId() == R.id.tracking) {//                log.debug("onOptionsItemSelected: button_tracking");
+            onLocationTrackerLokalSettingsClicked();
+        }else if (v.getId() == R.id.karte) {
+            log.info("onOptionsItemSelected: buttonKarte");
+            onKarteClicked(buttonKarte);
+        }else if (v.getId() == R.id.add_server) {
+            log.info("onOptionsItemSelected: buttonAddServer");
+            onAddServerClicked(buttonAddServer);
+        }else if (v.getId() == R.id.add_email) {
+            log.info("onOptionsItemSelected: buttonAddMail");
+            onAddMailClicked(buttonAddMail);
+        }else if (v.getId() == R.id.add_more) {
+            log.info("onOptionsItemSelected: buttonAddMore");
+            onAddMoreClicked(buttonAddMore);
+        }else if (v.getId() == R.id.add_requ) {
+            log.info("onOptionsItemSelected: buttonAddRequ");
+            onAddRequClicked(buttonAddRequ);
         }
     }
 
@@ -822,7 +813,7 @@ public class GeoFence extends AppCompatActivity implements GoogleApiClient.Conne
         Bundle b = new Bundle();
         b.putString("de.egi.geofence.geozone.tracking.zone", ((EditText) findViewById(R.id.value_geofence)).getText().toString());
         iLocationTracker.putExtras(b);
-        startActivityForResult(iLocationTracker, 4712);
+        activityResultLaunch.launch(iLocationTracker); // 4712
     }
 
 

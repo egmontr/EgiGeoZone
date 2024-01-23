@@ -103,8 +103,8 @@ public class DbMoreHelper{
     
     // Löschen mit ID
     public void deleteMore(String ind) {
-    	db = dbHelper.getWritableDatabase();
-	    db.delete(DbContract.MoreEntry.TN, DbContract.MoreEntry._ID + " = " + ind, null);
+        db = dbHelper.getWritableDatabase();
+        db.delete(DbContract.MoreEntry.TN, DbContract.MoreEntry._ID + " = " + ind, null);
       }
 
     // Update

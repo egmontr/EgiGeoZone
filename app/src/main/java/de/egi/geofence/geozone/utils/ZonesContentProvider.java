@@ -4,8 +4,8 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import de.egi.geofence.geozone.db.DbZoneHelper;
 
@@ -26,8 +26,7 @@ public class ZonesContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] fields, @Nullable String where, @Nullable String[] whereArgs, @Nullable String sortOrder) {
         DbZoneHelper zoneHelper = new DbZoneHelper(getContext());
         // Get all zone names ordered by name
-        Cursor c = zoneHelper.getCursorAllZoneNames();
-        return c;
+        return zoneHelper.getCursorAllZoneNames();
     }
 
     @Nullable

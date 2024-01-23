@@ -1,13 +1,14 @@
 package de.egi.geofence.geozone.geofence;
 
-import android.app.IntentService;
+import android.app.job.JobParameters;
+import android.app.job.JobService;
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.JobIntentService;
+import android.location.Location;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
-import com.pathsense.android.sdk.location.PathsenseGeofenceEvent;
 
 import org.apache.log4j.Logger;
 
@@ -18,72 +19,74 @@ import de.egi.geofence.geozone.utils.Constants;
 import de.egi.geofence.geozone.utils.Utils;
 
 /**
- * Created by egmont on 05.10.2016.
+ * Created by egmont on 05.01.2023.
  */
 
-public class PathsenseGeofenceEventReceiverService extends JobIntentService {
+public class PathsenseGeofenceEventReceiverService extends JobService {
     private final Logger log = Logger.getLogger(PathsenseGeofenceEventReceiverService.class);
-    private static final int JOB_ID = 573;
+    private Context context;
+    private int trans;
+    private Location loc;
+    private String geofenceId;
 
-    /**
-     * Convenience method for enqueuing work in to this service.
-     */
-    public static void enqueueWork(Context context, Intent intent) {
-        enqueueWork(context, PathsenseGeofenceEventReceiverService.class, JOB_ID, intent);
+    private final Handler mJobHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage( Message msg ) {
+            int transition;
+            transition = trans;
+            String transitionType = getTransitionString(transition);
+            DbGlobalsHelper dbGlobalsHelper = new DbGlobalsHelper(context);
+            boolean reboot = Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_REBOOT));
+            if (reboot) {
+                Log.i(Constants.APPTAG, "Do not call events after reboot or at update");
+                log.error("Do not call events after reboot or at update");
+                log.error("Reboot: " + true);
+                dbGlobalsHelper.storeGlobals(Constants.DB_KEY_REBOOT, "false");
+            } else {
+                float accuracy = 0;
+                if (loc.hasAccuracy()) {
+                    accuracy = loc.getAccuracy();
+                }
+                // Requests ausführen
+                // Aktionen ausführen
+                Worker worker = new Worker(context);
+                worker.handleTransition(transition, geofenceId, Constants.GEOZONE, accuracy, loc, Constants.FROM_PATHSENSE);
+                // Log the transition type and a message
+                Log.d(Constants.APPTAG, getString(R.string.geofence_transition_notification_title, transitionType, geofenceId));
+                Log.d(Constants.APPTAG, getString(R.string.geofence_transition_notification_text));
+                log.info("after handleGeofenceTransition: " + getString(R.string.geofence_transition_notification_title, transitionType, geofenceId));
+                log.debug("after handleGeofenceTransition: " + getString(R.string.geofence_transition_notification_text));
+            }
+            jobFinished((JobParameters) msg.obj, false);
+            return true;
+        }
+    } );
+
+    @Override
+    public boolean onStartJob(JobParameters jobParameters) {
+        context = this;
+
+        long acc = jobParameters.getExtras().getLong("acc");
+        trans = jobParameters.getExtras().getInt("trans");
+        geofenceId = jobParameters.getExtras().getString("geofenceId");
+
+        loc = new Location(jobParameters.getExtras().getString("prov"));
+        loc.setLongitude(jobParameters.getExtras().getDouble("lng"));
+        loc.setLatitude(jobParameters.getExtras().getDouble("lat"));
+        loc.setAccuracy(acc);
+        loc.setTime(jobParameters.getExtras().getLong("time"));
+
+        // Start action in own thread
+        mJobHandler.sendMessage(Message.obtain( mJobHandler, 1, jobParameters ));
+        return true;
     }
 
     @Override
-    protected void onHandleWork(Intent intent) {
-        int transition = 0;
-        try {
-            PathsenseGeofenceEvent geofenceEvent = PathsenseGeofenceEvent.fromIntent(intent);
-            if (geofenceEvent != null) {
-                if (geofenceEvent.isIngress()) {
-                    // ingress
-                    transition = Geofence.GEOFENCE_TRANSITION_ENTER;
-                } else if (geofenceEvent.isEgress()) {
-                    // egress
-                    transition = Geofence.GEOFENCE_TRANSITION_EXIT;
-                }
-
-                String transitionType = getTransitionString(transition);
-
-                // Post a notification
-                // Notification senden
-                DbGlobalsHelper dbGlobalsHelper = new DbGlobalsHelper(this);
-                boolean reboot = Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_REBOOT));
-
-                if (reboot) {
-                    Log.i(Constants.APPTAG, "Do not call events after reboot or at update");
-                    log.error("Do not call events after reboot or at update");
-                    log.error("Reboot: " + true);
-                    dbGlobalsHelper.storeGlobals(Constants.DB_KEY_REBOOT, "false");
-                    return;
-//                } else {
-//                    NotificationUtil.sendNotification(this, transitionType, geofenceEvent.getGeofenceId(), Constants.FROM_PATHSENSE);
-                }
-
-                float accuracy = -1;
-                if (geofenceEvent.getLocation().hasAccuracy()) {
-                    accuracy = geofenceEvent.getLocation().getAccuracy();
-                }
-
-                // Requests ausführen
-                // Aktionen ausführen
-                Worker worker = new Worker(this.getApplicationContext());
-                worker.handleTransition(transition, geofenceEvent.getGeofenceId(), Constants.GEOZONE, accuracy, geofenceEvent.getLocation(), Constants.FROM_PATHSENSE);
-
-                // Log the transition type and a message
-                Log.d(Constants.APPTAG, this.getString(R.string.geofence_transition_notification_title, transitionType, geofenceEvent.getGeofenceId()));
-                Log.d(Constants.APPTAG, this.getString(R.string.geofence_transition_notification_text));
-                log.info("after handleGeofenceTransition: " + this.getString(R.string.geofence_transition_notification_title, transitionType, geofenceEvent.getGeofenceId()));
-                log.debug("after handleGeofenceTransition: " + this.getString(R.string.geofence_transition_notification_text));
-
-            }
-        }finally {
-
-        }
+    public boolean onStopJob(JobParameters jobParameters) {
+        // Do not restart
+        return false;
     }
+
     /**
      * Maps geofence transition types to their human-readable equivalents.
      * @param transitionType A transition type constant defined in Geofence

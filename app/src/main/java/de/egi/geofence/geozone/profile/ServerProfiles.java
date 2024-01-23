@@ -16,16 +16,11 @@
 
 package de.egi.geofence.geozone.profile;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,13 +29,21 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import de.egi.geofence.geozone.R;
 import de.egi.geofence.geozone.db.DbContract;
 import de.egi.geofence.geozone.db.DbServerHelper;
-import de.egi.geofence.geozone.utils.Constants;
 import de.egi.geofence.geozone.utils.Utils;
 
-@SuppressWarnings("deprecation")
 public class ServerProfiles extends AppCompatActivity implements OnItemClickListener{
 	private ListView list;
 	private DbServerHelper datasource;
@@ -51,7 +54,7 @@ public class ServerProfiles extends AppCompatActivity implements OnItemClickList
 		Utils.onActivityCreateSetTheme(this);
 		setContentView(R.layout.profile_alle);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
 
@@ -60,20 +63,20 @@ public class ServerProfiles extends AppCompatActivity implements OnItemClickList
 			actionBar.setDisplayHomeAsUpEnabled(true);
 			actionBar.setHomeButtonEnabled(true);
 		}
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_profiles);
+		FloatingActionButton fab = findViewById(R.id.fab_profiles);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				Intent i = new Intent(ServerProfiles.this, ServerProfile.class);
 				i.putExtra("action", "new");
-				startActivityForResult(i, 4711);
+				activityResultLaunch.launch(i); // 4711
 			}
 		});
 
 
 		datasource = new DbServerHelper(this);
 		
-	    list = (ListView) findViewById (R.id.list);  
+	    list = findViewById (R.id.list);
         registerForContextMenu(list);
         fillList();
 	}
@@ -105,28 +108,23 @@ public class ServerProfiles extends AppCompatActivity implements OnItemClickList
 	public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
     	// Eintrag evtl. ändern
 		cursorMerk.moveToPosition(position);
-		String ind = cursorMerk.getString(cursorMerk.getColumnIndex(DbContract.ServerEntry._ID));
+		String ind = cursorMerk.getString(cursorMerk.getColumnIndexOrThrow(DbContract.ServerEntry._ID));
 		
 		Intent is = new Intent(this, ServerProfile.class);
 		is.putExtra("action", "update");
 		is.putExtra("ind", ind);
-		startActivityForResult(is, 4711);
+		activityResultLaunch.launch(is); // 4711
 	}
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        // Choose what to do based on the request code
-        switch (requestCode) {
-            case 4711 :
-                fillList();
-                break;
-            // If any other request code was received
-            default:
-               // Report that this Activity received an unknown requestCode
-               Log.d(Constants.APPTAG, getString(R.string.unknown_activity_request_code, requestCode));
-               break;
-        }
-    }
+	ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
+			new ActivityResultContracts.StartActivityForResult(),
+			new ActivityResultCallback<ActivityResult>() {
+				@SuppressLint("SetTextI18n")
+				@Override
+				public void onActivityResult(ActivityResult result) {
+					fillList();
+				}
+			});
 }
 
 

@@ -21,7 +21,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class Plugins extends AppCompatActivity {
 
         setContentView(R.layout.plugins);
 
-        ListView listViewPlugins = (ListView) findViewById(R.id.listView_plugins);
+        ListView listViewPlugins = findViewById(R.id.listView_plugins);
 
         PackageManager manager = getPackageManager();
         Intent intent = new Intent();
@@ -61,7 +61,7 @@ public class Plugins extends AppCompatActivity {
             }
         }
 
-        PluginDrawerItemCustomAdapter adapter = new PluginDrawerItemCustomAdapter(this, R.layout.plugin_list_item, pluginDrawerItems.toArray(new PluginDrawerItem[pluginDrawerItems.size()]));
+        PluginDrawerItemCustomAdapter adapter = new PluginDrawerItemCustomAdapter(this, R.layout.plugin_list_item, pluginDrawerItems.toArray(new PluginDrawerItem[0]));
         listViewPlugins.setAdapter(adapter);
         // Übergeben damit der OnClickListener die Werte hat
         adapter.setStartInfo(packages, clazz);

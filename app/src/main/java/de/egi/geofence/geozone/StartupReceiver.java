@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -51,7 +50,7 @@ public class StartupReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        logConfigurator.setFileName(Environment.getExternalStorageDirectory() + File.separator + "egigeozone" + File.separator + "egigeozone.log");
+        logConfigurator.setFileName(context.getFilesDir() + File.separator + "egigeozone" + File.separator + "egigeozone.log");
         logConfigurator.setUseFileAppender(true);
         logConfigurator.setRootLevel(Level.ERROR);
         // Set log level of a specific logger

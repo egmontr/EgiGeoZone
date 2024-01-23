@@ -58,7 +58,6 @@ public class SSLContextFactory {
      * @param clientCertPassword Password for the client certificate
      * @param caCertString A String containing the server certificate
      * @return An initialized SSLContext
-     * @throws Exception
      */
     public SSLContext makeContext(File clientCertFile, String clientCertPassword, String caCertString) throws Exception {
         final KeyStore keyStore = loadPKCS12KeyStore(clientCertFile, clientCertPassword == null ? "" : clientCertPassword);
@@ -89,7 +88,6 @@ public class SSLContextFactory {
      * Produces a KeyStore from a String containing a PEM certificate (typically, the server's CA certificate)
      * @param certificateString A String containing the PEM-encoded certificate
      * @return a KeyStore (to be used as a trust store) that contains the certificate
-     * @throws Exception
      */
     private KeyStore loadPEMTrustStore(String certificateString) throws Exception {
 
@@ -113,13 +111,12 @@ public class SSLContextFactory {
      * @param certificateFile A file containing the client certificate
      * @param clientCertPassword Password for the certificate
      * @return A KeyStore containing the certificate from the certificateFile
-     * @throws Exception
      */
     private KeyStore loadPKCS12KeyStore(File certificateFile, String clientCertPassword) throws Exception {
 
     	if (certificateFile == null) return null;
     	
-    	KeyStore keyStore = null;
+    	KeyStore keyStore;
         FileInputStream fis = null;
         try {
             keyStore = KeyStore.getInstance("PKCS12");
@@ -141,11 +138,10 @@ public class SSLContextFactory {
      * Reads and decodes a base-64 encoded DER certificate (a .pem certificate), typically the server's CA cert.
      * @param certificateStream an InputStream from which to read the cert
      * @return a byte[] containing the decoded certificate
-     * @throws IOException
      */
     private byte[] loadPemCertificate(InputStream certificateStream) throws IOException {
 
-        byte[] der = null;
+        byte[] der;
         BufferedReader br = null;
 
         try {

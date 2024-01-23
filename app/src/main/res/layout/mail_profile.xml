@@ -13,7 +13,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,22 +22,21 @@
     android:id="@+id/snackbarPosition"
     tools:context=".profile.MailProfile">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
@@ -54,7 +53,6 @@
                 android:id="@+id/label_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/label_name"
                 android:layout_marginTop="10dp"
@@ -64,7 +62,6 @@
                 android:id="@+id/chk_enter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/label_action"
                 android:text="@string/enter" />
@@ -74,7 +71,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/label_action"
-                android:layout_toRightOf="@+id/chk_enter"
                 android:layout_toEndOf="@+id/chk_enter"
                 android:text="@string/exit" />
 
@@ -92,23 +88,20 @@
                 android:id="@+id/value_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
-                android:layout_alignRight="@+id/label_name"
-                android:layout_toRightOf="@+id/label_name"
                 android:layout_alignEnd="@+id/label_name"
                 android:layout_toEndOf="@+id/label_name"
                 android:inputType="text"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="Autofill" />
 
             <TextView
                 android:id="@+id/label_name"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_name"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/profilName"
                 android:textStyle="bold" />
@@ -118,7 +111,6 @@
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_user"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
                 android:text="@string/mailUser" />
@@ -127,22 +119,19 @@
                 android:id="@+id/value_mail_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_user"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_user"
                 android:layout_below="@+id/chk_enter"
                 android:hint="@string/mailHintUser"
-                android:inputType="text" />
+                android:inputType="text"
+                tools:ignore="Autofill" />
 
             <TextView
                 android:id="@+id/label_mail_user_pw"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_user_pw"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/mailUserPw" />
 
@@ -150,23 +139,20 @@
                 android:id="@+id/value_mail_user_pw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_user_pw"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_user_pw"
                 android:layout_below="@+id/value_mail_user"
                 android:layout_marginTop="10dp"
                 android:hint="@string/mailHintUserPw"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                tools:ignore="Autofill" />
 
             <TextView
                 android:id="@+id/label_mail_smtp_host"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_smtp_host"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/mailSmtpHost" />
 
@@ -174,23 +160,20 @@
                 android:id="@+id/value_mail_smtp_host"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_smtp_host"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_smtp_host"
                 android:layout_below="@+id/value_mail_user_pw"
                 android:layout_marginTop="10dp"
                 android:hint="@string/mailHintSmtpHost"
-                android:inputType="textUri" />
+                android:inputType="textUri"
+                tools:ignore="Autofill" />
 
             <TextView
                 android:id="@+id/label_mail_smtp_port"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_smtp_port"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/mailSmtpPort" />
 
@@ -198,23 +181,19 @@
                 android:id="@+id/value_mail_smtp_port"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_smtp_port"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_smtp_port"
                 android:layout_below="@+id/value_mail_smtp_host"
                 android:layout_marginTop="10dp"
                 android:hint="@string/mailHintSmtpPort"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                tools:ignore="Autofill" />
 
             <CheckBox
                 android:id="@+id/value_mail_ssl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@+id/value_mail_smtp_port"
@@ -225,8 +204,6 @@
                 android:id="@+id/value_mail_starttls"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_below="@+id/value_mail_ssl"
@@ -238,7 +215,6 @@
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_sender"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/mailSender" />
 
@@ -246,23 +222,20 @@
                 android:id="@+id/value_mail_sender"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_sender"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_sender"
                 android:layout_below="@+id/value_mail_starttls"
                 android:layout_marginTop="10dp"
                 android:hint="@string/mailHintSender"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                tools:ignore="Autofill" />
 
             <TextView
                 android:id="@+id/label_mail_empf"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_empf"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/mailEmpf" />
 
@@ -270,23 +243,20 @@
                 android:id="@+id/value_mail_empf"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_empf"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_empf"
                 android:layout_below="@+id/value_mail_sender"
                 android:layout_marginTop="10dp"
                 android:hint="@string/mailHintEmpf"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                tools:ignore="Autofill" />
 
             <TextView
                 android:id="@+id/label_mail_subject"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_subject"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/mailSubject" />
 
@@ -294,23 +264,20 @@
                 android:id="@+id/value_mail_subject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_subject"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_subject"
                 android:layout_below="@+id/value_mail_empf"
                 android:layout_marginTop="10dp"
                 android:hint="@string/mailHintSubject"
-                android:inputType="textEmailSubject" />
+                android:inputType="textEmailSubject"
+                tools:ignore="Autofill" />
 
             <TextView
                 android:id="@+id/label_mail_text"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/value_mail_text"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:text="@string/mailText" />
 
@@ -318,9 +285,6 @@
                 android:id="@+id/value_mail_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/value_name"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/label_mail_text"
                 android:layout_alignStart="@+id/value_name"
                 android:layout_alignParentEnd="true"
                 android:layout_alignEnd="@+id/label_mail_text"
@@ -329,19 +293,20 @@
                 android:hint="@string/mailHintText"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="2000"
-                android:maxLines="4" />
+                android:maxLines="4"
+                tools:ignore="Autofill" />
 
         </RelativeLayout>
 
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_mail_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_save_white_24dp"
-        />
+        tools:ignore="ContentDescription" />
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

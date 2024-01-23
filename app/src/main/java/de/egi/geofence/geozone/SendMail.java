@@ -16,7 +16,6 @@
 
 package de.egi.geofence.geozone;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -39,9 +38,8 @@ import de.egi.geofence.geozone.utils.NotificationUtil;
 
 /**
  * @author Egmont Jars für javaMail from
- *         http://code.google.com/p/javamail-android/downloads/list
+ *
  */
-@SuppressLint("NewApi")
 public class SendMail{
 
 	private final Logger log = Logger.getLogger(SendMail.class);
@@ -82,7 +80,7 @@ public class SendMail{
 			properties.put("mail.smtp.socketFactory.fallback", "false"); 
 
 			if (ssl){
-                if (starttls) {
+				if (starttls) {
                     properties.put("mail.smtp.socketFactory.port", smtpPort);
                     properties.put("mail.smtp.starttls.enable", "true");
                 }else{
@@ -90,7 +88,7 @@ public class SendMail{
                 }
 				properties.put("mail.transport.protocol", "smtps");
 			}
-			
+
 		    Authenticator auth = null;
 			if (!user.equalsIgnoreCase("")) {
 				// Hier wird mit den Properties und dem implements Contructor erzeugten
@@ -131,9 +129,9 @@ public class SendMail{
 			if (test){
 	    		// Broadcast an die Main, damit der Drawer sich refreshed.
 //				GlobalSingleton.getInstance().setTestResultError(true);
-	    		Intent intent = new Intent();
+	    		Intent intent = new Intent(context.getPackageName());
 				intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
-				intent.putExtra("TestResult", "Error sending mail: " + e.toString());
+				intent.putExtra("TestResult", "Error sending mail: " + e);
 				context.sendBroadcast(intent);
 			}
 		}
@@ -149,7 +147,7 @@ public class SendMail{
 				// TestErgebnis 
 				if (test){
 		    		// Broadcats an die Main, damit der Drawer sich refreshed.
-		    		Intent intent = new Intent();
+		    		Intent intent = new Intent(context.getPackageName());
 					intent.setAction(Constants.ACTION_TEST_STATUS_OK);
 					context.sendBroadcast(intent);
 				}
@@ -158,14 +156,14 @@ public class SendMail{
 				String a = e.getMessage();
 				Log.e("SendMail", "Error: " + a);
 				log.error("Error: " + a,e);
-				NotificationUtil.showError(context, "Error (AsynkTask) sending mail: ", e.toString());
+				NotificationUtil.showError(context, "Error (AsyncTask) sending mail: ", e.toString());
 				// TestErgebnis 
 				if (test){
 		    		// Broadcast an die Main, damit der Drawer sich refreshed.
 //					GlobalSingleton.getInstance().setTestResultError(true);
-					Intent intent = new Intent();
+					Intent intent = new Intent(context.getPackageName());
 					intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
-					intent.putExtra("TestResult", "Error (AsynkTask) sending mail: " + e.toString());
+					intent.putExtra("TestResult", "Error (AsyncTask) sending mail: " + e);
 					context.sendBroadcast(intent);
 						
 				}

@@ -1,10 +1,9 @@
 package de.egi.geofence.geozone.geofence;
 
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 
@@ -12,11 +11,11 @@ import org.apache.log4j.Logger;
 
 import de.egi.geofence.geozone.utils.Utils;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+@SuppressLint("SpecifyJobSchedulerIdRange")
 public class RetryJobSchedulerService extends JobService {
     private final Logger log = Logger.getLogger(RetryJobSchedulerService.class.getSimpleName());
     private Context context;
-    private Handler mJobHandler = new Handler(new Handler.Callback() {
+    private final Handler mJobHandler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage( Message msg ) {
             Utils.doRetry(context, log);

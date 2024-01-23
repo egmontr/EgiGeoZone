@@ -1,5 +1,7 @@
 package de.egi.geofence.geozone.utils;
 
+import android.annotation.SuppressLint;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
@@ -15,7 +17,7 @@ public class SimpleCryptoPBKDF2 {
 	// A random value that is generally not a secret, which is used to make some
 	// precomputed attacks harder.
 	// It is added to the string which is to be encrypted.
-	private static String SALT = "some_very_important_salt!";
+	private static final String SALT = "some_very_important_salt!";
 	private final static String HEX = "0123456789ABCDEF";
 
 	public static String encrypt(String seed, String cleartext) throws Exception {
@@ -45,34 +47,22 @@ public class SimpleCryptoPBKDF2 {
 
 		SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 		KeySpec keySpec = new PBEKeySpec(passphraseOrPin, salt, iterations, outputKeyLength);
-		SecretKey secretKey = secretKeyFactory.generateSecret(keySpec);
-		return secretKey;
+		return secretKeyFactory.generateSecret(keySpec);
 	}
 
 	private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
 		SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-		Cipher cipher = Cipher.getInstance("AES");
+		@SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance("AES");
 		cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-		byte[] encrypted = cipher.doFinal(clear);
-		return encrypted;
+		return cipher.doFinal(clear);
 	}
 
 	private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {
 		SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
-		Cipher cipher = Cipher.getInstance("AES");
+		@SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance("AES");
 		cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-		byte[] decrypted = cipher.doFinal(encrypted);
-		return decrypted;
+		return cipher.doFinal(encrypted);
 	}
-
-	public static String toHex(String txt) {
-		return toHex(txt.getBytes());
-	}
-
-	public static String fromHex(String hex) {
-		return new String(toByte(hex));
-	}
-
 	public static byte[] toByte(String hexString) {
 		int len = hexString.length() / 2;
 		byte[] result = new byte[len];
@@ -89,8 +79,8 @@ public class SimpleCryptoPBKDF2 {
 
 		StringBuffer result = new StringBuffer(2 * buf.length);
 
-		for (int i = 0; i < buf.length; i++) {
-			appendHex(result, buf[i]);
+		for (byte b : buf) {
+			appendHex(result, b);
 		}
 
 		return result.toString();

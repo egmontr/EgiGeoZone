@@ -106,8 +106,8 @@ public class DbMailHelper {
     
     // Löschen mit ID
     public void deleteMail(String ind) {
-    	db = dbHelper.getWritableDatabase();
-	    db.delete(DbContract.MailEntry.TN, DbContract.MailEntry._ID + " = " + ind, null);
+        db = dbHelper.getWritableDatabase();
+        db.delete(DbContract.MailEntry.TN, DbContract.MailEntry._ID + " = " + ind, null);
       }
 
     // Update

@@ -63,9 +63,9 @@ public class NavDrawerListAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.drawer_list_item_icon, null);
         }
 
-        ImageView imgIcon = (ImageView) convertView.findViewById(R.id.drawer_item_icon);
-        TextView txtTag = (TextView) convertView.findViewById(R.id.drawer_item_zone);
-        TextView txtDistance = (TextView) convertView.findViewById(R.id.drawer_item_zone_dist);
+        ImageView imgIcon = convertView.findViewById(R.id.drawer_item_icon);
+        TextView txtTag = convertView.findViewById(R.id.drawer_item_zone);
+        TextView txtDistance = convertView.findViewById(R.id.drawer_item_zone_dist);
 
         imgIcon.setImageResource(navDrawerItems.get(position).getIcon());        
         txtTag.setText(navDrawerItems.get(position).getZone());

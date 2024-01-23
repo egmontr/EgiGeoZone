@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,21 +7,21 @@
     android:fitsSystemWindows="true"
     tools:context=".profile.Profiles">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimaryDark"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
@@ -58,33 +58,12 @@
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/button_onServerProfileClicked"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_play_circle_outline_black_24dp"
                     android:drawableEnd="@drawable/ic_play_circle_outline_black_24dp"
                     android:gravity="start|center_vertical"
-                    android:onClick="onServerProfileClicked"
                     android:text="@string/prof_server" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayout2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:background="#F0EEF0">
-
-                <Button
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_play_circle_outline_black_24dp"
-                    android:drawableEnd="@drawable/ic_play_circle_outline_black_24dp"
-                    android:gravity="start|center_vertical"
-                    android:onClick="onSmsProfileClicked"
-                    android:text="@string/prof_sms" />
-
 
             </LinearLayout>
 
@@ -97,12 +76,11 @@
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/button_onMailProfileClicked"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_play_circle_outline_black_24dp"
                     android:drawableEnd="@drawable/ic_play_circle_outline_black_24dp"
                     android:gravity="start|center_vertical"
-                    android:onClick="onMailProfileClicked"
                     android:text="@string/prof_mail" />
 
             </LinearLayout>
@@ -116,12 +94,11 @@
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/button_onMoreProfileClicked"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_play_circle_outline_black_24dp"
                     android:drawableEnd="@drawable/ic_play_circle_outline_black_24dp"
                     android:gravity="start|center_vertical"
-                    android:onClick="onMoreProfileClicked"
                     android:text="@string/prof_other" />
 
             </LinearLayout>
@@ -134,12 +111,11 @@
 
                 <Button
                     style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/button_onConditionsProfileClicked"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/ic_play_circle_outline_black_24dp"
                     android:drawableEnd="@drawable/ic_play_circle_outline_black_24dp"
                     android:gravity="start|center_vertical"
-                    android:onClick="onConditionsProfileClicked"
                     android:text="@string/prof_conditions" />
 
             </LinearLayout>
@@ -150,4 +126,4 @@
 
         </LinearLayout>
     </ScrollView>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

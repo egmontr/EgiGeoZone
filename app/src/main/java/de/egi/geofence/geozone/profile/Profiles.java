@@ -18,28 +18,43 @@ package de.egi.geofence.geozone.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import org.apache.log4j.Logger;
 
 import de.egi.geofence.geozone.R;
 import de.egi.geofence.geozone.utils.Utils;
 
-@SuppressWarnings("deprecation")
 public class Profiles extends AppCompatActivity implements OnClickListener{
 	
 	private final Logger log = Logger.getLogger(Profiles.class);
+    Button buttonServerProfileClicked = null;
+    Button buttonMailProfileClicked = null;
+    Button buttonMoreProfileClicked = null;
+    Button buttonConditionsProfileClicked = null;
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
-		setContentView(R.layout.profiles);
+        setContentView(R.layout.profiles);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        buttonServerProfileClicked = this.findViewById(R.id.button_onServerProfileClicked);
+        buttonMailProfileClicked = this.findViewById(R.id.button_onMailProfileClicked);
+        buttonMoreProfileClicked = this.findViewById(R.id.button_onMoreProfileClicked);
+        buttonConditionsProfileClicked = this.findViewById(R.id.button_onConditionsProfileClicked);
+
+        buttonServerProfileClicked.setOnClickListener(this);
+        buttonMailProfileClicked.setOnClickListener(this);
+        buttonMoreProfileClicked.setOnClickListener(this);
+        buttonConditionsProfileClicked.setOnClickListener(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Utils.changeBackGroundToolbar(this, toolbar);
 
@@ -51,7 +66,22 @@ public class Profiles extends AppCompatActivity implements OnClickListener{
     }
 	@Override
 	public void onClick(View v) {
-	}
+        int id = v.getId();
+        if (id == R.id.button_onServerProfileClicked) {
+            log.debug("onOptionsItemSelected: button_onServerProfileClicked");
+            onServerProfileClicked(buttonServerProfileClicked);
+        } else if (id == R.id.button_onMailProfileClicked) {
+            log.debug("onOptionsItemSelected: button_onMailProfileClicked");
+            onMailProfileClicked(buttonMailProfileClicked);
+        } else if (id == R.id.button_onMoreProfileClicked) {
+            log.debug("onOptionsItemSelected: button_onMoreProfileClicked");
+            onMoreProfileClicked(buttonMoreProfileClicked);
+        } else if (id == R.id.button_onConditionsProfileClicked) {
+            log.debug("onOptionsItemSelected: button_onConditionsProfileClicked");
+            onConditionsProfileClicked(buttonConditionsProfileClicked);
+        }
+
+    }
 	
     /**
      * Server Einstellungen aufrufen
@@ -78,17 +108,6 @@ public class Profiles extends AppCompatActivity implements OnClickListener{
     }
 
     /**
-     * SMS-Einstellungen aufrufen
-     *
-     * @param view The view that triggered this callback
-     */
-    public void onSmsProfileClicked(View view) {
-        log.debug("onSmsProfileClicked");
-		Intent iSms = new Intent(this, SmsProfiles.class);
-		startActivity(iSms);
-    }
-
-    /**
      * More-Einstellungen aufrufen
      *
      * @param view The view that triggered this callback
@@ -96,7 +115,7 @@ public class Profiles extends AppCompatActivity implements OnClickListener{
     public void onMoreProfileClicked(View view) {
         log.debug("onMoreProfileClicked");
 		Intent iMore = new Intent(this, MoreProfiles.class);
-		startActivityForResult(iMore, 4711);
+		startActivity(iMore);
 
     }
 
@@ -108,6 +127,6 @@ public class Profiles extends AppCompatActivity implements OnClickListener{
     public void onConditionsProfileClicked(View view) {
         log.debug("onConditionsProfileClicked");
 		Intent iCond = new Intent(this, RequirementsProfiles.class);
-		startActivityForResult(iCond, 4712);
+		startActivity(iCond);
     }
 }

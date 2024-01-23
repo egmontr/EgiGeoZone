@@ -78,11 +78,4 @@ public class AuthenticationParameters {
 		this.user = user;
 	}
 
-//	public String getAcceptAllCerts() {
-//		return acceptAllCerts;
-//	}
-//
-//	public void setAcceptAllCerts(String acceptAllCerts) {
-//		this.acceptAllCerts = acceptAllCerts;
-//	}
 }

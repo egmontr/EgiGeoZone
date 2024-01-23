@@ -16,7 +16,7 @@ package de.egi.geofence.geozone.utils;
 */
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,14 +25,13 @@ import de.egi.geofence.geozone.GlobalSingleton;
 import de.egi.geofence.geozone.R;
 
 public class NotificationError extends AppCompatActivity implements View.OnClickListener{
-    private Button b = null;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.notification_error);
 
-        TextView titel = ((TextView) this.findViewById(R.id.notification_titel));
-        TextView text = ((TextView) this.findViewById(R.id.notification_text));
-        b = (Button) this.findViewById(R.id.button);
+        TextView titel = this.findViewById(R.id.notification_titel);
+        TextView text = this.findViewById(R.id.notification_text);
+        Button b = this.findViewById(R.id.button);
         b.setOnClickListener(this);
 
         titel.setText(GlobalSingleton.getInstance().getNotificationTitel());

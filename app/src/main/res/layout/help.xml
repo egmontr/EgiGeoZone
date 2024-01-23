@@ -11,11 +11,10 @@
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content">
 	
-	   <android.support.v7.widget.AppCompatImageView android:id="@+id/icon"
+	   <androidx.appcompat.widget.AppCompatImageView android:id="@+id/icon"
 	       android:contentDescription="@string/leer"
 	       android:layout_width="wrap_content"
 	       android:layout_height="wrap_content"
-		   android:layout_marginRight="10dip"
 		   android:layout_marginEnd="10dip"
 		   app:srcCompat="@drawable/ic_launcher_green"
 	        />

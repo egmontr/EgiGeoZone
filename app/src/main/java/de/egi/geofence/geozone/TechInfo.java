@@ -1,15 +1,13 @@
 package de.egi.geofence.geozone;
 
-import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.widget.EditText;
 
-import java.io.UnsupportedEncodingException;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.UUID;
 
 import de.egi.geofence.geozone.db.DbGlobalsHelper;
@@ -23,35 +21,17 @@ public class TechInfo extends AppCompatActivity {
         setContentView(R.layout.tech_info);
         try {
             PackageInfo pi = getPackageManager().getPackageInfo("de.egi.geofence.geozone", PackageManager.GET_CONFIGURATIONS);
-            ((EditText) this.findViewById(R.id.editEGZVersion)).setText("EgiGeoZone: " + pi.versionName);
+            ((EditText) this.findViewById(R.id.editEGZVersion)).setText(String.format("EgiGeoZone: %s", pi.versionName));
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         ((EditText) this.findViewById(R.id.editDeviceName)).setText(getDeviceName());
         ((EditText) this.findViewById(R.id.editDeviceBrand)).setText(Build.BRAND);
-        ((EditText) this.findViewById(R.id.editAndroidVersion)).setText(Build.VERSION.RELEASE + " ("  + Build.VERSION.CODENAME + ")");
+        ((EditText) this.findViewById(R.id.editAndroidVersion)).setText(String.format("%s (%s)", Build.VERSION.RELEASE, Build.VERSION.CODENAME));
 
-        final String androidId = android.provider.Settings.Secure.getString(this.getContentResolver(), android.provider.Settings.Secure.ANDROID_ID);
-        // Use the Android ID unless it's broken, in which case fallback on deviceId,
-        // unless it's not available, then fallback on a random number which we store
-        // to a prefs file
-        UUID uuidAndroidId = null;
-        UUID uuidDeviceId = null;
-        try{
-            uuidAndroidId = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
-            final String deviceId = ((TelephonyManager) this.getSystemService( Context.TELEPHONY_SERVICE )).getDeviceId();
-            try {
-                uuidDeviceId = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")) : UUID.randomUUID();
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (SecurityException e) {
-            // Permission read phone state is missing
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        UUID uuidAndroidId = Utils.getGuid(getApplicationContext());
 
-        ((EditText) this.findViewById(R.id.editDeviceId)).setText(uuidDeviceId != null ? uuidDeviceId.toString() : "0");
+        ((EditText) this.findViewById(R.id.editDeviceId)).setText(uuidAndroidId != null ? uuidAndroidId.toString() : "0");
         ((EditText) this.findViewById(R.id.editAndroidId)).setText(uuidAndroidId != null ? uuidAndroidId.toString() : "0");
 
         DbGlobalsHelper dbGlobalsHelper = new DbGlobalsHelper(this);

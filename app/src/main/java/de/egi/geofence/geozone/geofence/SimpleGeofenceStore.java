@@ -36,7 +36,7 @@ import de.egi.geofence.geozone.utils.Utils;
 public class SimpleGeofenceStore {
     private final Context context;
     private DbZoneHelper dbZoneHelper;
-    private DbGlobalsHelper dbGlobalsHelper;
+    private final DbGlobalsHelper dbGlobalsHelper;
 
     // Create the SharedPreferences storage with private access only
     public SimpleGeofenceStore(Context context) {
@@ -92,7 +92,7 @@ public class SimpleGeofenceStore {
         /*
          * Get the transition type for the geofence
          */
-        int transitionType = 0;
+        int transitionType;
         if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
             transitionType = Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT;
         }else {

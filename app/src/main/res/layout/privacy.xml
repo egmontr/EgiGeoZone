@@ -14,11 +14,11 @@
         <ImageView android:id="@+id/icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dip"
             android:layout_marginEnd="10dip"
             android:src="@drawable/ic_launcher_green"
             android:clickable="true"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"
+            android:focusable="true" />
         <TextView
             android:text="@string/privacy_short" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
         <LinearLayout
@@ -31,24 +31,6 @@
             <TextView android:id="@+id/text2" android:text="@string/privacy_title" android:layout_height="wrap_content" android:layout_width="wrap_content"
                 android:textStyle="bold"/>
         </LinearLayout>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/pt_1" android:textStyle="bold"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/put_1"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/usage"  android:textStyle="bold"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/p_1"/>
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/pt_2" android:textStyle="bold" android:layout_marginTop="10dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/put_2"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/usage"  android:textStyle="bold"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/p_2"/>
-
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="@string/pt_3" android:textStyle="bold" android:layout_marginTop="10dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

@@ -17,12 +17,11 @@
 package de.egi.geofence.geozone;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import de.egi.geofence.geozone.utils.Utils;
 
-@SuppressWarnings("deprecation")
 public class Help extends AppCompatActivity {
 
     static {

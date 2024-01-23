@@ -14,11 +14,11 @@
 	   <ImageView android:id="@+id/icon"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_marginRight="10dip" 
-	        android:layout_marginEnd="10dip" 
+		   android:layout_marginEnd="10dip"
 	        android:src="@drawable/ic_launcher_green"
 	        android:clickable="true"
-		   tools:ignore="ContentDescription" />
+		   tools:ignore="ContentDescription"
+		   android:focusable="true" />
 	<LinearLayout 
 	    android:orientation="vertical"
 	    android:baselineAligned="false"

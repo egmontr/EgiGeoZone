@@ -59,8 +59,8 @@
     <string name="menu_item_help">Help</string>
     <string name="menu_item_settings">Settins</string>
     <string name="admin">Administration</string>
-    <string name="menu_item_log">Show last log file</string>
-    <string name="menu_item_send_log">Send last log file</string>
+    <string name="menu_item_log">Show log file</string>
+    <string name="menu_item_send_log">Send log file</string>
     <string name="menu_item_configuration">Configuration</string>
 	<string name="menu_item_debug">Log level</string>
     <string name="menu_item_export">Export to:</string>
@@ -94,8 +94,6 @@
     <string name="add_geofences_already_requested_error">
         Can\'t add geofences, previous request hasn\'t finished.
     </string>
-    <string name="connected">Client connected</string>
-    <string name="disconnected">Client disconnected</string>
     <string name="geofence_input_error_missing">Missing value</string>
     <string name="geofence_input_error_comma">Comma not allowed in name.</string>
     <string name="geofence_input_error_latitude_invalid">
@@ -103,9 +101,6 @@
     </string>
     <string name="geofence_input_error_longitude_invalid">
         Invalid longitude(s). Must be in the range -180 to 180 degrees
-    </string>
-    <string name="bt_input_error_radius_invalid">
-        Invalid radius(s). Must be 1 meter or greater.
     </string>
     <string name="geofence_input_error_radius_invalid">
         Invalid radius(s). Must be 50 meter or greater.
@@ -155,7 +150,7 @@
     <string name="disclaimer">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
     
     <string name="rinfo_title">Description</string>
-    <string name="rinfo">In the subject and body of mails, in body of the SMS and in the server URL you can use variables, which will be replaced on runtime.</string>
+    <string name="rinfo">In the subject and body of mails and in the server URL you can use variables, which will be replaced on runtime.</string>
     <string name="rdesc_title">Variables</string>
     <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n 1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
         \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
@@ -200,12 +195,6 @@
     <string name="mailHintSubject">Enter subject</string>
     <string name="mailHintText">Enter body</string>
     
-    <string name="sms_opt_title">SMS options</string>
-    <string name="smsTo">SMS receiver</string>
-    <string name="smsText">Body</string>
-    <string name="smsHintTo">Enter number</string>
-    <string name="smsHintText">Enter text</string>
-
     <string name="other_opt_title">More actions</string>
 
     <string name="other_conditions_title">Conditions</string>
@@ -216,9 +205,9 @@
     <string name="gcm">Receive GCM notifications</string>
     <string name="gcm_logging">Log GCM notifications</string>
     <string name="menu_item_show_gcm_log">Show GCM logging</string>
-    <string name="gcm_sender_id">GCM project number</string>
+    <string name="gcm_sender_id">GCM</string>
     <string name="gcm_sender_id_clipboard">Copied API client key to clipboard</string>
-    <string name="menu_item_delete_gcm_log">Delete GCM log file</string>
+    <string name="menu_item_delete_gcm_log">Delete file</string>
     
     <string name="app_settings">Administration</string>
     <string name="app_locationTrackerActivity">Location Tracker Settings</string>
@@ -230,9 +219,9 @@
     <string name="vibration">vibrate</string>
     <string name="none">do nothing</string>
 
-    <string name="moreWlan">Wifi</string>
+    <string name="moreWlan">Wifi (For Android smaller or equal Version 9)</string>
     <string name="moreSound">Sound</string>
-    <string name="moreBluetooth">Bluetooth</string>
+    <string name="moreBluetooth">Bluetooth (For Android smaller Version 12)</string>
     <string name="moreEnter">Entering zone</string>
     <string name="moreExit">Exiting zone</string>
     
@@ -267,12 +256,14 @@
     
     <string name="hp_help">You can find the EgiGeoZone manual here:\n <a href="http://www.egigeozone.de/manual/default_en.html">http://www.egigeozone.de/manual/default_en.html</a></string>
     <string name="hp">EgiGeoZone website:\n <a href="http://www.egigeozone.de">http://www.egigeozone.de</a></string>
-    <string name="forum">EgiGeoZone forum:\n <a href="http://rpi.spdns.eu/egigeozone/">http://rpi.spdns.eu/egigeozone/</a></string>
+    <string name="forum">EgiGeoZone forum:\n <a href="https://www.egigeozone.de/forum">https://www.egigeozone.de/forum</a></string>
 
     <string name="spinner_local">Folder \"egigeozone\"</string>
     <string name="spinner_extern">GDrive, Dropbox, &#8230;</string>
     <string name="spinner_titel_exp">Export configuration</string>
     <string name="accuracy">Location accuracy: Consider only locations below the specified meters. \nOnly required for special cases. At the beginning, leave the value to 0. If not, it can happen, that no actions are executed! </string>
     <string name="accuracy_hint">Accuracy in meters</string>
+    <string name="menu_item_scroll_bottom_gcm_log">Scroll to bottom log file</string>
+    <string name="menu_item_scroll_top_gcm_log">Scroll to top log file</string>
 
 </resources>

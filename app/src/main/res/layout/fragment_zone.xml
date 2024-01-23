@@ -35,11 +35,9 @@
             android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_toLeftOf="@+id/value_latitude"
             android:layout_toStartOf="@+id/value_latitude"
             android:text="@string/geofence"
             android:textStyle="bold"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             />
 
@@ -50,7 +48,6 @@
             android:text="@string/alias"
             android:layout_alignBaseline="@+id/value_alias"
             android:layout_alignBottom="@+id/value_alias"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
         <TextView
@@ -59,7 +56,6 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/value_latitude"
             android:layout_alignBaseline="@+id/value_latitude"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:text="@string/latitude" />
 
@@ -69,10 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/value_longitude"
             android:layout_alignBottom="@+id/value_longitude"
-            android:layout_toLeftOf="@+id/value_radius"
             android:layout_toStartOf="@+id/value_radius"
             android:text="@string/longitude"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
         <TextView
@@ -81,10 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/value_radius"
             android:layout_alignBottom="@+id/value_radius"
-            android:layout_toLeftOf="@+id/value_latitude"
             android:layout_toStartOf="@+id/value_latitude"
             android:text="@string/radius"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
 
@@ -93,14 +85,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/label_geofence"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="2dp"
             android:inputType="text"
             android:hint="@string/geofenceHint"
             android:textStyle="bold"
-            android:layout_alignLeft="@+id/value_alias"
-            android:layout_alignStart="@+id/value_alias" />
+            android:layout_alignStart="@+id/value_alias"
+            tools:ignore="Autofill" />
 
         <EditText
             android:id="@+id/value_alias"
@@ -108,14 +99,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/label_geofence"
             android:layout_marginBottom="2dp"
-            android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:layout_toRightOf="@id/label_alias"
             android:layout_toEndOf="@id/label_alias"
             android:hint="@string/aliasHint"
             android:inputType="text"
-            android:layout_alignRight="@+id/karte"
-            android:layout_alignEnd="@+id/karte" />
+            android:layout_alignEnd="@+id/karte"
+            tools:ignore="Autofill" />
 
 
         <EditText
@@ -125,10 +114,9 @@
             android:hint="@string/latitudeHint"
             android:inputType="numberDecimal|numberSigned"
             android:layout_below="@+id/value_alias"
-            android:layout_alignLeft="@+id/value_alias"
             android:layout_alignStart="@+id/value_alias"
-            android:layout_toLeftOf="@+id/karte"
-            android:layout_toStartOf="@+id/karte" />
+            android:layout_toStartOf="@+id/karte"
+            tools:ignore="Autofill" />
 
         <EditText
             android:id="@+id/value_longitude"
@@ -136,25 +124,23 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/value_latitude"
             android:layout_marginBottom="2dp"
-            android:layout_toLeftOf="@+id/karte"
             android:layout_toStartOf="@+id/karte"
             android:hint="@string/longitudeHint"
             android:inputType="numberDecimal|numberSigned"
-            android:layout_alignLeft="@+id/value_latitude"
-            android:layout_alignStart="@+id/value_latitude" />
+            android:layout_alignStart="@+id/value_latitude"
+            tools:ignore="Autofill" />
 
         <EditText
             android:id="@+id/value_radius"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/value_latitude"
             android:layout_alignEnd="@+id/value_latitude"
             android:layout_below="@id/value_longitude"
             android:layout_marginBottom="2dp"
             android:hint="@string/radiusHint"
             android:inputType="numberDecimal"
-            android:layout_alignLeft="@+id/value_longitude"
-            android:layout_alignStart="@+id/value_longitude" />
+            android:layout_alignStart="@+id/value_longitude"
+            tools:ignore="Autofill" />
 
         <ImageButton
             android:id="@+id/karte"
@@ -162,17 +148,14 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/label_longitude"
             android:layout_alignBottom="@+id/label_longitude"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:onClick="onKarteClicked"
             android:src="@drawable/map_location"
             tools:ignore="ContentDescription" />
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/tracking"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableRight="@drawable/ic_play_circle_outline_black_24dp"
             android:drawableEnd="@drawable/ic_play_circle_outline_black_24dp"
             android:gravity="start|center_vertical"
             android:background="@drawable/box_lt"
@@ -186,9 +169,7 @@
             android:id="@+id/linearLayout1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/tracking"
             android:background="#F0EEF0"
@@ -220,7 +201,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_add_black_24dp"
-                android:onClick="onAddServerClicked"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>
@@ -229,9 +209,7 @@
             android:id="@+id/linearLayout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/linearLayout1"
             android:background="#F0EEF0"
@@ -265,7 +243,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_add_black_24dp"
-            android:onClick="onAddMailClicked"
             tools:ignore="ContentDescription" />
 
         </LinearLayout>
@@ -274,8 +251,6 @@
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/linearLayout3"
@@ -308,7 +283,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_add_black_24dp"
-                android:onClick="onAddMoreClicked"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>
@@ -317,8 +291,6 @@
             android:id="@+id/linearLayout5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/linearLayout4"
@@ -350,7 +322,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_add_black_24dp"
-                android:onClick="onAddRequClicked"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
 
