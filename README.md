@@ -1,19 +1,3 @@
-This is the source code for **EgiGeoZone** in its last published version 2.8.0.
+EgiGeoZone is an Android Geofencing app which uses satellite position hardware in your phone or tablet to 'trigger' different actions when entering or leaving predefined zones that you can choose. It can trigger many actions directly, or simply display a notification on screen to do so. In other words, the app works in a similar way to apps like Tasker, which allows certain events to initiate an action on your smartphone or even a remote server. 
 
-I have developed this app as a hobby and therefore ask for leniency regarding the code.
-I'm not an expert in Android.
-
-I will not continue this app as I am tired of incorporating the Google changes from version to version in the app!
-
-Also, I'm not the youngest to continue.
-
-Maybe someone can fork/branch the project and continue with it. It is expressly desired.
-I can help with any questions.
-
-Thanks to all my loyal users worldwide.
-
-**TODO:**
-- Migrate to Android 8+ changes like
-  - Broadcasts, alarms ...
-- Migrate GCM to Firebase
-  
+For more info see https://www.egigeozone.de/default_en.html 
