@@ -1,11 +1,15 @@
-apply plugin: 'com.android.application'
+
+plugins{
+    id 'com.android.application'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
 
 android {
     compileSdk 34
     defaultConfig {
         applicationId "de.egi.geofence.geozone"
-        minSdkVersion(26) // Android 8.0
-        targetSdkVersion(34) // Android 14
+        minSdkVersion 26 // Android 8.0
+        targetSdkVersion 34 // Android 14
         multiDexEnabled true
         packagingOptions {
             exclude 'META-INF/AL2.0'
@@ -26,9 +30,22 @@ android {
         }
     }
 
-
 }
 
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.properties"
+
+    // Configure which keys should be ignored by the plugin by providing regular expressions.
+    // "sdk.dir" is ignored by default.
+    ignoreList.add("keyToIgnore") // Ignore the key "keyToIgnore"
+    ignoreList.add("sdk.*")       // Ignore all keys matching the regexp "sdk.*"
+}
 dependencies {
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
@@ -45,8 +62,8 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation "androidx.work:work-runtime:2.9.0"
-    implementation 'com.google.android.material:material:1.11.0'
-    implementation 'com.google.gms:google-services:4.4.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.gms:google-services:4.4.1'
     implementation 'com.google.android.gms:play-services-location:20.0.0' // 20.0.0 is required by Pathsense 4.3.0.0 and greater
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
@@ -58,7 +75,7 @@ dependencies {
     implementation 'it.sephiroth.android.library.targettooltip:target-tooltip-library:1.3.15'
 
     implementation 'com.google.firebase:firebase-core:21.1.1'
-    implementation 'com.google.firebase:firebase-messaging:23.4.0'
+    implementation 'com.google.firebase:firebase-messaging:24.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

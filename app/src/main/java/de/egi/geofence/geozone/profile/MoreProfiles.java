@@ -73,7 +73,7 @@ public class MoreProfiles extends AppCompatActivity implements OnItemClickListen
 			public void onClick(View view) {
 				Intent i = new Intent(MoreProfiles.this, MoreProfile.class);
 				i.putExtra("action", "new");
-				activityResultLaunch.launch(i); // 4711
+				activityResultLaunch.launch(i); // 4814
 			}
 		});
 
@@ -116,7 +116,7 @@ public class MoreProfiles extends AppCompatActivity implements OnItemClickListen
 		Intent is = new Intent(this, MoreProfile.class);
 		is.putExtra("action", "update");
 		is.putExtra("ind", ind);
-		activityResultLaunch.launch(is); // 4711
+		activityResultLaunch.launch(is); // 4814
 	}
 
 	ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
@@ -126,7 +126,7 @@ public class MoreProfiles extends AppCompatActivity implements OnItemClickListen
 				@Override
 				public void onActivityResult(ActivityResult result) {
 					// Add Requ
-					if (result.getResultCode() == 4711) {
+					if (result.getResultCode() == 4814) {
 						MoreEntity me = GlobalSingleton.getInstance().getMoreEntity();
 						DbMoreHelper dbMoreHelper = new DbMoreHelper(getApplicationContext());
 						if (me.getName() != null && !me.getName().equalsIgnoreCase("")) {

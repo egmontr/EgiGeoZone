@@ -338,10 +338,8 @@ public class RequirementsProfile extends RuntimePermissionsActivity implements O
 
 	@Override
 	public void onBackPressed() {
+		setResult(4815);
 		super.onBackPressed();
-//		super.onBackPressed(); if not it gives back result_canceled
-		setResult(4711);
-		finish();
 	}
 
 	@Override

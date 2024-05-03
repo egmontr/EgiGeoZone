@@ -207,7 +207,7 @@ public class ServerProfile  extends AppCompatActivity implements View.OnClickLis
 
 		datasource.storeServer(srvEntity);
 
-		setResult(RESULT_OK);
+		setResult(4811);
 		finish();
 	}
 

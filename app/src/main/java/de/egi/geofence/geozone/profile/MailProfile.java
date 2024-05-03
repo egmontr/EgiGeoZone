@@ -182,7 +182,7 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
 
         datasource.storeMail(mailEntity);
 
-        setResult(RESULT_OK);
+        setResult(4813);
         finish();
     }
 
@@ -457,10 +457,8 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
 
     @Override
     public void onBackPressed() {
+        setResult(4813);
         super.onBackPressed();
-//		super.onBackPressed(); if not it gives back result_canceled
-        setResult(4711);
-        finish();
     }
 
     @Override

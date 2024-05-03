@@ -69,7 +69,7 @@ public class MailProfiles extends AppCompatActivity implements OnItemClickListen
 			public void onClick(View view) {
 				Intent i = new Intent(MailProfiles.this, MailProfile.class);
 				i.putExtra("action", "new");
-				activityResultLaunch.launch(i); // 4711
+				activityResultLaunch.launch(i); // 4815
 			}
 		});
 
@@ -111,7 +111,7 @@ public class MailProfiles extends AppCompatActivity implements OnItemClickListen
 		Intent is = new Intent(this, MailProfile.class);
 		is.putExtra("action", "update");
 		is.putExtra("ind", ind);
-		activityResultLaunch.launch(is); // 4711
+		activityResultLaunch.launch(is);
 	}
 
 	ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(

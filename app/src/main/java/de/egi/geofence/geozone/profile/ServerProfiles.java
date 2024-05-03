@@ -69,7 +69,7 @@ public class ServerProfiles extends AppCompatActivity implements OnItemClickList
 			public void onClick(View view) {
 				Intent i = new Intent(ServerProfiles.this, ServerProfile.class);
 				i.putExtra("action", "new");
-				activityResultLaunch.launch(i); // 4711
+				activityResultLaunch.launch(i);
 			}
 		});
 

@@ -73,7 +73,7 @@ public class RequirementsProfiles extends AppCompatActivity implements OnItemCli
 			public void onClick(View view) {
 				Intent i = new Intent(RequirementsProfiles.this, RequirementsProfile.class);
 				i.putExtra("action", "new");
-				activityResultLaunch.launch(i); // 4711
+				activityResultLaunch.launch(i); // 4815
 			}
 		});
 
@@ -116,7 +116,7 @@ public class RequirementsProfiles extends AppCompatActivity implements OnItemCli
 		Intent is = new Intent(this, RequirementsProfile.class);
 		is.putExtra("action", "update");
 		is.putExtra("ind", ind);
-		activityResultLaunch.launch(is); // 4711
+		activityResultLaunch.launch(is); // 4815
 	}
 
 	ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
@@ -126,7 +126,7 @@ public class RequirementsProfiles extends AppCompatActivity implements OnItemCli
 				@Override
 				public void onActivityResult(ActivityResult result) {
 					// Add Requ
-					if (result.getResultCode() == 4711) {
+					if (result.getResultCode() == 4815) {
 						RequirementsEntity re = GlobalSingleton.getInstance().getRequirementsEntity();
 						DbRequirementsHelper dbRequirementsHelper = new DbRequirementsHelper(getApplicationContext());
 						if (re.getName() != null && !re.getName().equalsIgnoreCase("")) {

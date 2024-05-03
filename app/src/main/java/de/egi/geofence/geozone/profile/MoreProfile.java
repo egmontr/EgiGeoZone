@@ -401,9 +401,8 @@ public class MoreProfile extends RuntimePermissionsActivity implements OnChecked
 
 	@Override
 	public void onBackPressed() {
+		setResult(4814);
 		super.onBackPressed();
-		setResult(4711);
-		finish();
 	}
 
 	@Override
