@@ -202,9 +202,6 @@
         <!-- Produktion -->
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="${MAPS_API_KEY}"/>
 
-        <!-- Debug PC Karlsfeld -->
-        <!--meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAlUaCuXTbebpAfQlxtB3TAS_-1Pf7-hIY"/-->
-
         <!-- Register for Pathsense and enter your CLIENT_ID here -->
         <meta-data
             android:name="com.pathsense.android.sdk.CLIENT_ID"
