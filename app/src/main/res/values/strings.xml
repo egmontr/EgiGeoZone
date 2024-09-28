@@ -396,7 +396,7 @@
 
     <string name="doNotDisturbPermissionsTitle">Do not disturb permission</string>
     <string name="doNotDisturbPermissionsMessage">
-        To allow the app to mute the device (sound off or vibrate), you have to set \"Do not disturb\" permission in the following dialog.
+        To allow the app to set the device sound, you have to allow the \"Do not disturb\" permission for the app.
     </string>
 
     <string name="search">Search</string>

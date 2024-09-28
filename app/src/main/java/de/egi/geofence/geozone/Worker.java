@@ -108,20 +108,20 @@ public class Worker {
 	private FusedLocationProviderClient mLocationClient;
 	private LocationCallback locationCallback = null;
 
-	final BroadcastReceiver myReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String action_name = intent.getAction();
-			if (action_name.equals(Constants.ACTION_DONOTDISTURB_OK)) {
-				context.startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-
-			}
-			// Get an instance of the Notification manager
-			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-			notificationManager.cancel(222);
-			context.unregisterReceiver(myReceiver);
-		}
-	};
+//	final BroadcastReceiver myReceiver = new BroadcastReceiver() {
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			String action_name = intent.getAction();
+//			if (action_name.equals(Constants.ACTION_DONOTDISTURB_OK)) {
+//				context.startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+//
+//			}
+//			// Get an instance of the Notification manager
+//			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//			notificationManager.cancel(222);
+//			context.unregisterReceiver(myReceiver);
+//		}
+//	};
 
 
 	public Worker(Context context){
@@ -664,14 +664,15 @@ public class Worker {
 			if (zone.getMoreEntity().getEnter_sound() != null){
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 				if (!notificationManager.isNotificationPolicyAccessGranted() && zone.getMoreEntity().getEnter_sound() != 2) {
-					NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
-					}else{
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
-						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
-					}
+					NotificationUtil.showError(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+//					NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+//					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+//						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+//					}else{
+//						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
+//						context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+//					}
 					return;
 				}
 				if (zone.getMoreEntity().getEnter_sound() == 1) {
@@ -693,14 +694,16 @@ public class Worker {
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 				if (zone.getMoreEntity().getEnter_sound() != 2) {
 					if (!notificationManager.isNotificationPolicyAccessGranted()) {
-						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
-						}else{
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
-						}
+						NotificationUtil.showError(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+
+						//						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+//						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+//						}else{
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+//						}
 						return;
 					}
 				}
@@ -730,14 +733,16 @@ public class Worker {
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 				if (zone.getMoreEntity().getEnter_sound() != 2) {
 					if (!notificationManager.isNotificationPolicyAccessGranted()) {
-						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
-						}else{
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
-						}
+						NotificationUtil.showError(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+//						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+//						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+//						}else{
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+//						}
+						return;
 					}
 				}
 				if (zone.getMoreEntity().getEnter_soundMM() == 1) {
@@ -756,14 +761,16 @@ public class Worker {
 				final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 				if (zone.getMoreEntity().getEnter_sound() != 2) {
 					if (!notificationManager.isNotificationPolicyAccessGranted()) {
-						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
-						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
-						}else{
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
-							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
-						}
+						NotificationUtil.showError(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+//						NotificationUtil.sendErrorNotificationWithButtons(context, context.getString(R.string.doNotDisturbPermissionsTitle), context.getString(R.string.doNotDisturbPermissionsMessage));
+//						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK), Context.RECEIVER_EXPORTED);
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK), Context.RECEIVER_EXPORTED);
+//						}else{
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_OK));
+//							context.registerReceiver(myReceiver, new IntentFilter(Constants.ACTION_DONOTDISTURB_NOK));
+//						}
+						return;
 					}
 				}
 				if (zone.getMoreEntity().getExit_soundMM() == 1) {

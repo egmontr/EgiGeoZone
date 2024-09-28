@@ -387,7 +387,7 @@
 
     <string name="doNotDisturbPermissionsTitle">\"Nicht stören\" Berechtigung</string>
     <string name="doNotDisturbPermissionsMessage">
-        Damit die App das Gerät auf lautlos stellen dürfen soll, geben Sie bitte im nächsten Dialog der App die \"Nicht stören\"-Berechtigung.
+        Damit die App die Töne auf ein/aus/Vibration setzen dürfen soll, erteilen Sie die \"Nicht stören\"-Berechtigung für die App.
     </string>
     <string name="ignoreFalseReports">Falschmeldungen ignorieren</string>
 

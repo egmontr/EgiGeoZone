@@ -17,11 +17,14 @@
 package de.egi.geofence.geozone.profile;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,6 +40,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.gms.location.Geofence;
 
@@ -274,25 +278,25 @@ public class MoreProfile extends RuntimePermissionsActivity implements OnChecked
 
 		if (radioGroup.getId() == R.id.radioGroupSoundB){
 			// Android 7: check if notification policy is granted
-//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//				if (!notificationManager.isNotificationPolicyAccessGranted()) {
-//					// Display UI and ask the user to put app to the battery optimization whitelist.
-//					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-//					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
-//
-//					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//						@Override
-//						public void onClick(DialogInterface arg0, int arg1) {
-//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-//						}
-//					});
-//					AlertDialog alertDialog = alertDialogBuilder.create();
-//					alertDialog.show();
-////					return;
-//				}
-//			}
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				if (!notificationManager.isNotificationPolicyAccessGranted()) {
+					// Display UI and ask the user to put app to the battery optimization whitelist.
+					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+
+					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+						}
+					});
+					AlertDialog alertDialog = alertDialogBuilder.create();
+					alertDialog.show();
+//					return;
+				}
+			}
 			if (checkedId == R.id.radioButtonSoundBOn) {
 				me.setEnter_sound(1);
 			} else if (checkedId == R.id.radioButtonSoundBOff) {
@@ -306,25 +310,25 @@ public class MoreProfile extends RuntimePermissionsActivity implements OnChecked
 
 		if (radioGroup.getId() == R.id.radioGroupSoundV){
             // Android 7: check if notification policy is granted
-//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//                if (!notificationManager.isNotificationPolicyAccessGranted()) {
-//                    // Display UI and ask the user to put app to the battery optimization whitelist.
-//                    AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//                    alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-//                    alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
-//
-//                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface arg0, int arg1) {
-//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-//						}
-//                    });
-//                    AlertDialog alertDialog = alertDialogBuilder.create();
-//                    alertDialog.show();
-////                    return;
-//                }
-//            }
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (!notificationManager.isNotificationPolicyAccessGranted()) {
+                    // Display UI and ask the user to put app to the battery optimization whitelist.
+                    AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+                    alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+                    alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+
+                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface arg0, int arg1) {
+							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+						}
+                    });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+//                    return;
+                }
+            }
 
 			if (checkedId == R.id.radioButtonSoundVOn) {
 				me.setExit_sound(1);
@@ -339,25 +343,25 @@ public class MoreProfile extends RuntimePermissionsActivity implements OnChecked
 		// Multimedia sound
 		if (radioGroup.getId() == R.id.radioGroupMmB){
 			// Android 7: check if notification policy is granted
-//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//				if (!notificationManager.isNotificationPolicyAccessGranted()) {
-//					// Display UI and ask the user to put app to the battery optimization whitelist.
-//					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-//					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
-//
-//					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//						@Override
-//						public void onClick(DialogInterface arg0, int arg1) {
-//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-//						}
-//					});
-//					AlertDialog alertDialog = alertDialogBuilder.create();
-//					alertDialog.show();
-////					return;
-//				}
-//			}
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				if (!notificationManager.isNotificationPolicyAccessGranted()) {
+					// Display UI and ask the user to put app to the battery optimization whitelist.
+					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+
+					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+						}
+					});
+					AlertDialog alertDialog = alertDialogBuilder.create();
+					alertDialog.show();
+//					return;
+				}
+			}
 			if (checkedId == R.id.radioButtonMmBOn) {
 				me.setEnter_soundMM(1);
 			} else if (checkedId == R.id.radioButtonMmBOff) {
@@ -369,25 +373,25 @@ public class MoreProfile extends RuntimePermissionsActivity implements OnChecked
 
 		if (radioGroup.getId() == R.id.radioGroupMmV){
 			// Android 7: check if notification policy is granted
-//			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//				if (!notificationManager.isNotificationPolicyAccessGranted()) {
-//					// Display UI and ask the user to put app to the battery optimization whitelist.
-//					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
-//					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
-//
-//					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//						@Override
-//						public void onClick(DialogInterface arg0, int arg1) {
-//							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
-//						}
-//					});
-//					AlertDialog alertDialog = alertDialogBuilder.create();
-//					alertDialog.show();
-////                    return;
-//				}
-//			}
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+				NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				if (!notificationManager.isNotificationPolicyAccessGranted()) {
+					// Display UI and ask the user to put app to the battery optimization whitelist.
+					AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
+					alertDialogBuilder.setMessage(getString(R.string.doNotDisturbPermissionsMessage));
+					alertDialogBuilder.setTitle(getString(R.string.doNotDisturbPermissionsTitle));
+
+					alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							startActivityForResult(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS), 0);
+						}
+					});
+					AlertDialog alertDialog = alertDialogBuilder.create();
+					alertDialog.show();
+//                    return;
+				}
+			}
 
 			if (checkedId == R.id.radioButtonMmVOn) {
 				me.setExit_soundMM(1);

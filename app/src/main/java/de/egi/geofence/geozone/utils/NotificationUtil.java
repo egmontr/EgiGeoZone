@@ -348,7 +348,7 @@ public class NotificationUtil {
 	 *
 	 */
 	@SuppressLint("UnspecifiedImmutableFlag")
-	public static void sendErrorNotificationWithButtons(Context context, String title, String error) {
+	public static void sendErrorNotificationWithButtonsX(Context context, String title, String error) {
 		datasource = new DbGlobalsHelper(context);
 		boolean doNotification = Utils.isBoolean(datasource.getCursorGlobalsByKey(Constants.DB_KEY_ERROR_NOTIFICATION));
 
@@ -400,6 +400,67 @@ public class NotificationUtil {
 
 		// Issue the notification
 		mNotificationManager.notify(222, builder.build());
+	}
+	/**
+	 * Posts a notification in the notification bar when a transition is detected.
+	 * If the user clicks the notification, control goes to the main Activity.
+	 *
+	 */
+	public static void sendErrorNotificationWithButtons(Context context, String title, String error) {
+		datasource = new DbGlobalsHelper(context);
+		boolean doNotification = Utils.isBoolean(datasource.getCursorGlobalsByKey(Constants.DB_KEY_ERROR_NOTIFICATION));
+
+		if (!doNotification){
+			return;
+		}
+		// Create an explicit content Intent that starts the NotificationError
+		Intent notificationIntent = new Intent(context,NotificationErrorButtons.class);
+		// Construct a task stack
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+		// Adds the main Activity to the task stack as the pa
+		// rent
+		stackBuilder.addParentStack(MainEgiGeoZone.class);
+		// Push the content Intent onto the stack
+		stackBuilder.addNextIntent(notificationIntent);
+
+		RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.notification);
+		remoteView.setTextViewText(R.id.notification_titel, title);
+		remoteView.setTextViewText(R.id.notification_text, error);
+
+		GlobalSingleton.getInstance().setNotificationTitel(title);
+		GlobalSingleton.getInstance().setNotificationText(error);
+
+		// Get a PendingIntent containing the entire back stack
+		PendingIntent notificationPendingIntent;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_MUTABLE);
+		}else{
+			notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
+
+		// Get an instance of the Notification manager
+		NotificationManager mNotificationManager =
+				(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		String channelId = "channel-error";
+		String channelName = "EgiGeoZone Error";
+
+		NotificationChannel mChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
+		mChannel.setShowBadge(true);
+		mChannel.shouldShowLights();
+		mChannel.setShowBadge(true);
+		mNotificationManager.createNotificationChannel(mChannel);
+
+		// Get a notification builder that's compatible with platform versions >= 4
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId);
+
+		// Set the notification contents
+		builder.setSmallIcon(R.drawable.location_pointer_error).setContentTitle(title)
+				.setContentText(error).setContentIntent(notificationPendingIntent).setSubText("See also log file").setWhen(System.currentTimeMillis())
+				.setDefaults(Notification.DEFAULT_ALL).setContent(remoteView);
+
+		// Issue the notification
+		mNotificationManager.notify(1, builder.build());
 	}
 
 }
