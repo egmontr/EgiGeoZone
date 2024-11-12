@@ -93,7 +93,9 @@ public class SimpleGeofenceStore {
          * Get the transition type for the geofence
          */
         int transitionType;
-        if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+        // FalsePositives deaktivieren und auf false setzen
+//        if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+        if (!Utils.isBoolean("false")) {
             transitionType = Geofence.GEOFENCE_TRANSITION_ENTER | Geofence.GEOFENCE_TRANSITION_EXIT;
         }else {
             transitionType = Geofence.GEOFENCE_TRANSITION_ENTER;

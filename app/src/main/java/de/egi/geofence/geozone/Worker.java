@@ -158,8 +158,9 @@ public class Worker {
 		Log.d("", "Geofe: " + Double.valueOf(location.getLongitude()).toString());
 		log.debug("Geofe: " + Double.valueOf(location.getLatitude()).toString());
 		log.debug("Geofe: " + Double.valueOf(location.getLongitude()).toString());
-
-		if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+// FalsePositives deaktivieren und auf false setzen
+//		if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+			if (Utils.isBoolean("false")) {
 			mLocationClient = LocationServices.getFusedLocationProviderClient(context);
 			try{
 				mLocationClient.getLastLocation()
@@ -230,7 +231,9 @@ public class Worker {
 			}
 
 			// Doublecheck
-			if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+
+//			if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+			if (Utils.isBoolean("false")) {
 
 				mLocationClient.removeLocationUpdates(locationCallback);
 
@@ -319,7 +322,8 @@ public class Worker {
 
 
 			// Doublecheck ##
-			if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+//			if (Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+			if (Utils.isBoolean("false")) {
 				if (checkLocation != null) {
 					Location locationZone = new Location("locationZone");
 					locationZone.setLatitude(Double.parseDouble(ze.getLatitude()));

@@ -42,12 +42,12 @@
                         android:text="@string/pathsense" />
                 </RadioGroup>
 
-                <CheckBox
+                <!--CheckBox
                     android:id="@+id/value_false_positives"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:text="@string/ignoreFalseReports" />
+                    android:text="@string/ignoreFalseReports" /-->
 
             </LinearLayout>
 

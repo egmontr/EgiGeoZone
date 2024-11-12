@@ -96,7 +96,7 @@ import de.egi.geofence.geozone.utils.Utils;
 
 public class Settings extends AppCompatActivity implements OnClickListener, OnCheckedChangeListener, OnItemSelectedListener, RadioGroup.OnCheckedChangeListener {
 	private boolean check = false;
-	private CheckBox falsePositives = null;
+//	private CheckBox falsePositives = null;
 	private CheckBox notification = null;
 	private CheckBox errorNotification = null;
     private CheckBox stickyNotification = null;
@@ -134,7 +134,7 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 		Button showPlugins = this.findViewById(R.id.button_plugin);
 		Button tracking = this.findViewById(R.id.button_tracking);
 		Button themes = this.findViewById(R.id.button_themes);
-		falsePositives = this.findViewById(R.id.value_false_positives);
+//		falsePositives = this.findViewById(R.id.value_false_positives);
 		notification = this.findViewById(R.id.value_notification);
 		errorNotification = this.findViewById(R.id.value_error_notification);
 		stickyNotification = this.findViewById(R.id.value_sticky_notification);
@@ -149,7 +149,7 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 		gcm = this.findViewById(R.id.value_gcm);
 		gcmLog = this.findViewById(R.id.value_gcm_logging);
 		((RadioGroup)findViewById(R.id.radioGroupGeofenceType)).setOnCheckedChangeListener(this);
-		falsePositives.setOnCheckedChangeListener(this);
+//		falsePositives.setOnCheckedChangeListener(this);
 		notification.setOnCheckedChangeListener(this);
 		errorNotification.setOnCheckedChangeListener(this);
 		stickyNotification.setOnCheckedChangeListener(this);
@@ -186,7 +186,7 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 		adapter_imp.setDropDownViewResource(R.layout.spinner_dropdown_item);
 		spinner_import.setAdapter(adapter_imp);
 
-		((CheckBox) this.findViewById(R.id.value_false_positives)).setChecked(Utils.isBoolean(properties.getProperty(Constants.DB_KEY_FALSE_POSITIVES)));
+//		((CheckBox) this.findViewById(R.id.value_false_positives)).setChecked(Utils.isBoolean(properties.getProperty(Constants.DB_KEY_FALSE_POSITIVES)));
 		((CheckBox) this.findViewById(R.id.value_notification)).setChecked(Utils.isBoolean(properties.getProperty(Constants.DB_KEY_NOTIFICATION)));
 		((CheckBox) this.findViewById(R.id.value_error_notification)).setChecked(Utils.isBoolean(properties.getProperty(Constants.DB_KEY_ERROR_NOTIFICATION)));
 		((CheckBox) this.findViewById(R.id.value_sticky_notification)).setChecked(Utils.isBoolean(properties.getProperty(Constants.DB_KEY_STICKY_NOTIFICATION)));
@@ -319,21 +319,21 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if (buttonView == falsePositives){
-			if (isChecked){
-				dbGlobalsHelper.storeGlobals(Constants.DB_KEY_FALSE_POSITIVES, "true");
-			}else{
-				dbGlobalsHelper.storeGlobals(Constants.DB_KEY_FALSE_POSITIVES, "false");
-				// Zurück zur Main und fences registrieren
-				// Wieder Settings aufrufen, damit der User das Verlassen nicht merkt.
-				Intent data = new Intent();
-				data.putExtra("import", true);
-				setResult(5004, data);
-				log.debug("add Google geofences");
-				finish();
-
-			}
-		}
+//		if (buttonView == falsePositives){
+//			if (isChecked){
+//				dbGlobalsHelper.storeGlobals(Constants.DB_KEY_FALSE_POSITIVES, "true");
+//			}else{
+//				dbGlobalsHelper.storeGlobals(Constants.DB_KEY_FALSE_POSITIVES, "false");
+//				// Zurück zur Main und fences registrieren
+//				// Wieder Settings aufrufen, damit der User das Verlassen nicht merkt.
+//				Intent data = new Intent();
+//				data.putExtra("import", true);
+//				setResult(5004, data);
+//				log.debug("add Google geofences");
+//				finish();
+//
+//			}
+//		}
 		if (buttonView == notification){
 			if (isChecked){
 				dbGlobalsHelper.storeGlobals(Constants.DB_KEY_NOTIFICATION, "true");
@@ -574,9 +574,9 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 		properties.put("Globals" + "_notification", getBooleanNotNull("Globals" + "_notification", doNotification));
 		log.info("Globals" + " - "  + getString(R.string.notification) + ": " + doNotification);
 
-		String doFalsePositives = dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES);
-		properties.put("Globals" + "_falsePositives", getBooleanNotNull("Globals" + "_falsePositives", doFalsePositives));
-		log.info("Globals" + " - "  + "falsePositives" + ": " + doFalsePositives);
+//		String doFalsePositives = dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES);
+//		properties.put("Globals" + "_falsePositives", getBooleanNotNull("Globals" + "_falsePositives", doFalsePositives));
+//		log.info("Globals" + " - "  + "falsePositives" + ": " + doFalsePositives);
 
 		String doErrorNotification = dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_ERROR_NOTIFICATION);
 		properties.put("Globals" + "_errorNotification", getBooleanNotNull("Globals" + "_errorNotification", doErrorNotification));
@@ -826,7 +826,7 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 		// Globals
 		DbGlobalsHelper dbGlobalsHelper = new DbGlobalsHelper(this);
 
-		dbGlobalsHelper.createGlobals(Constants.DB_KEY_FALSE_POSITIVES, properties.getProperty("Globals" + "_falsePositives"));
+//		dbGlobalsHelper.createGlobals(Constants.DB_KEY_FALSE_POSITIVES, properties.getProperty("Globals" + "_falsePositives"));
 		dbGlobalsHelper.createGlobals(Constants.DB_KEY_NOTIFICATION, properties.getProperty("Globals" + "_notification"));
 		dbGlobalsHelper.createGlobals(Constants.DB_KEY_ERROR_NOTIFICATION, properties.getProperty("Globals" + "_errorNotification"));
 		dbGlobalsHelper.createGlobals(Constants.DB_KEY_STICKY_NOTIFICATION, properties.getProperty("Globals" + "_stickyNotification"));

@@ -1,6 +1,7 @@
 package de.egi.geofence.geozone;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -238,6 +239,7 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
     }
 
 //    @SuppressLint("BatteryLife")
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     protected void init() {
         dbGlobalsHelper = new DbGlobalsHelper(this);
         dbZoneHelper = new DbZoneHelper(this);
@@ -685,7 +687,8 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
 
                                 // Old style, without trying to repair
                                 if (mCurrentGeofences.size() > 0) {
-                                    if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+//                                    if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_FALSE_POSITIVES))) {
+                                        if (!Utils.isBoolean("false")) {
                                         if (!Utils.isBoolean(dbGlobalsHelper.getCursorGlobalsByKey(Constants.DB_KEY_NEW_API))) {
                                             mGeofenceRequester.addGeofences(mCurrentGeofences);
                                         } else {
