@@ -141,7 +141,7 @@
         </activity>
         <activity android:name="de.egi.geofence.geozone.profile.RequirementsProfile"  android:label="@string/other_conditions_title" android:theme="@style/AppTheme.NoActionBar" android:windowSoftInputMode="stateHidden"/>
         <activity android:name="de.egi.geofence.geozone.InfoReplace" android:theme="@style/StyledDialog" />
-        <activity android:name="de.egi.geofence.geozone.Settings" android:label="@string/app_settings" android:windowSoftInputMode="stateHidden" >
+        <activity android:name="de.egi.geofence.geozone.Settings" android:label="@string/app_settings" android:windowSoftInputMode="stateHidden" android:fitsSystemWindows="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainEgiGeoZone"/>
@@ -209,7 +209,7 @@
         </service>
         <!-- Register for Google Maps and enter your API_KEY here -->
         <!-- Produktion -->
-        <!-- meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="${MAPS_API_KEY_DEBUG}"/-->
+        <!--meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="${MAPS_API_KEY_DEBUG}"/-->
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="${MAPS_API_KEY}"/>
 
         <!-- Register for Pathsense and enter your CLIENT_ID here -->
