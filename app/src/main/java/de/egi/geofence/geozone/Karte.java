@@ -33,12 +33,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.os.BuildCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -92,6 +94,21 @@ public class Karte extends AppCompatActivity implements OnMapLongClickListener, 
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
 
+		// onBackPressed logic goes here
+		if (BuildCompat.isAtLeastT()) {
+			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+					OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+					() -> {
+						// Speichern
+						Intent data = new Intent();
+						data.putExtra("lat",latx);
+						data.putExtra("lng",lngx);
+						data.putExtra("radius", radx);
+						setResult(RESULT_OK, data);
+						finish();
+					}
+			);
+		}
 		Bundle b = getIntent().getExtras();
 		String slatx = b.getString("de.egi.geofence.geozone.lat");
 		String slngx = b.getString("de.egi.geofence.geozone.lng");
@@ -265,7 +282,8 @@ public class Karte extends AppCompatActivity implements OnMapLongClickListener, 
 		finish();
 	}
 
-	@Override
+	@SuppressLint("GestureBackNavigation")
+    @Override
 	public void onBackPressed() {
 		Intent data = new Intent();
 		data.putExtra("lat",latx);

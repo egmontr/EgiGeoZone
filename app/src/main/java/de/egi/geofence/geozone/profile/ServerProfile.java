@@ -16,6 +16,7 @@
 
 package de.egi.geofence.geozone.profile;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,6 +39,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -46,6 +48,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.os.BuildCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -87,7 +90,8 @@ public class ServerProfile  extends AppCompatActivity implements View.OnClickLis
 
 	private final Logger log = Logger.getLogger(ServerProfile.class);
 
-	public void onCreate(Bundle savedInstanceState) {
+	@SuppressLint("UnspecifiedRegisterReceiverFlag")
+    public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Utils.onActivityCreateSetTheme(this);
 		setContentView(R.layout.server_profile);
@@ -109,7 +113,16 @@ public class ServerProfile  extends AppCompatActivity implements View.OnClickLis
 				saveServer();
 			}
 		});
-
+		// onBackPressed logic goes here
+		if (BuildCompat.isAtLeastT()) {
+			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+					OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+					() -> {
+						// Speichern
+						saveServer();
+					}
+			);
+		}
 		viewMerk = findViewById(R.id.snackbarPosition);
 		datasource = new DbServerHelper(this);
 		datasourceFallbackServer = new DbServerHelper(this);
@@ -527,7 +540,8 @@ public class ServerProfile  extends AppCompatActivity implements View.OnClickLis
 		}
 	}
 
-	@Override
+	@SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @Override
 	protected void onResume() {
 		super.onResume();
 		// Receiver registrieren

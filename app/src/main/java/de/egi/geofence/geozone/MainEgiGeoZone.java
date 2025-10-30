@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -36,6 +37,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.os.BuildCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -205,6 +207,21 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         setSupportActionBar(toolbar);
 
         Utils.changeBackGroundToolbar(this, toolbar);
+
+        // onBackPressed logic goes here
+        if (BuildCompat.isAtLeastT()) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+                        if (drawer.isDrawerOpen(GravityCompat.START)) {
+                            drawer.closeDrawer(GravityCompat.START);
+                        } else {
+                            super.onBackPressed();
+                        }
+                    }
+            );
+        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -382,6 +399,7 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
 
     }
 
+    @SuppressLint("GestureBackNavigation")
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

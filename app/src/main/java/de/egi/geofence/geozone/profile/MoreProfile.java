@@ -17,6 +17,7 @@
 package de.egi.geofence.geozone.profile;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,11 +37,13 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.os.BuildCompat;
 
 import com.google.android.gms.location.Geofence;
 
@@ -75,6 +78,18 @@ public class MoreProfile extends RuntimePermissionsActivity implements OnChecked
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
+
+		// onBackPressed logic goes here
+		if (BuildCompat.isAtLeastT()) {
+			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+					OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+					() -> {
+						// Speichern
+						setResult(4814);
+						finish();
+					}
+			);
+		}
 
 		datasource = new DbMoreHelper(this);
 
@@ -403,7 +418,8 @@ public class MoreProfile extends RuntimePermissionsActivity implements OnChecked
 		}
     }
 
-	@Override
+	@SuppressLint("GestureBackNavigation")
+    @Override
 	public void onBackPressed() {
 		setResult(4814);
 		super.onBackPressed();

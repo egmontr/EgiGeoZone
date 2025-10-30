@@ -44,12 +44,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.os.BuildCompat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +98,17 @@ public class RequirementsProfile extends RuntimePermissionsActivity implements O
 		setSupportActionBar(toolbar);
 		Utils.changeBackGroundToolbar(this, toolbar);
 
+		// onBackPressed logic goes here
+		if (BuildCompat.isAtLeastT()) {
+			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+					OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+					() -> {
+						// Speichern
+						setResult(4815);
+						finish();
+					}
+			);
+		}
 		datasource = new DbRequirementsHelper(this);
 
 		Bundle b = getIntent().getExtras();
@@ -336,7 +349,8 @@ public class RequirementsProfile extends RuntimePermissionsActivity implements O
 		return super.onCreateOptionsMenu(menu);
 	}
 
-	@Override
+	@SuppressLint("GestureBackNavigation")
+    @Override
 	public void onBackPressed() {
 		setResult(4815);
 		super.onBackPressed();

@@ -26,17 +26,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -47,11 +36,22 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedDispatcher;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.os.BuildCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.apache.log4j.Logger;
 
@@ -66,7 +66,7 @@ import de.egi.geofence.geozone.utils.NotificationUtil;
 import de.egi.geofence.geozone.utils.Utils;
 
 @SuppressWarnings("deprecation")
-public class MailProfile extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MailProfile extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private DbMailHelper datasource;
     private String aktion;
     private String ind;
@@ -77,6 +77,7 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
     private GoogleApiClient mLocationClient;
     private final Logger log = Logger.getLogger(MailProfile.class);
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.onActivityCreateSetTheme(this);
@@ -94,6 +95,17 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
                 saveMail();
             }
         });
+
+        // onBackPressed logic goes here
+        if (BuildCompat.isAtLeastT()) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        // Speichern
+                        saveMail();
+                    }
+            );
+        }
 
         viewMerk = findViewById(R.id.snackbarPosition);
 
@@ -149,6 +161,8 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
             exit.setChecked(me.isExit());
 
         }
+
+
     }
 
     private void saveMail() {
@@ -270,9 +284,34 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
             if (checkInputFields()) {
                 return true;
             }
+            FusedLocationProviderClient mLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-            mLocationClient = new GoogleApiClient.Builder(this, this, this).addApi(LocationServices.API).build();
-            mLocationClient.connect();
+            try{
+                mLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                        .addOnSuccessListener(location -> {
+                            if (location != null) {
+                                // Start test
+                                log.debug("onConnected - location: " + (Double.valueOf(location.getLatitude()).toString()) + "##" + (Double.valueOf(location.getLongitude()).toString()));
+                                doTest(location);
+                            } else {
+                                Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
+                                log.error("Could not determine location.");
+                            }
+                        });
+            }catch(SecurityException se){
+                // Display UI and wait for user interaction
+                androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(this);
+                alertDialogBuilder.setMessage(this.getString(R.string.alertPermissions));
+                alertDialogBuilder.setTitle(this.getString(R.string.titleAlertPermissions));
+
+                alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                    }
+                });
+                androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
 
             return true;
             // Pass through any other request
@@ -337,52 +376,6 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
         public void onClick(DialogInterface dialog, int which) {
         }
     };
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        // If Google Play Services is available
-        if (servicesConnected()) {
-            // Get the current location
-            Location currentLocation = null;
-            try {
-                currentLocation = LocationServices.FusedLocationApi.getLastLocation(mLocationClient);
-            } catch (SecurityException se) {
-                // Display UI and wait for user interaction
-                androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-                alertDialogBuilder.setMessage(getString(R.string.alertPermissions));
-                alertDialogBuilder.setTitle(getString(R.string.titleAlertPermissions));
-
-                alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface arg0, int arg1) {
-                    }
-                });
-                androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-
-            if (currentLocation != null) {
-                // Start test
-                log.debug("onConnected - location: " + (Double.valueOf(currentLocation.getLatitude()).toString()) + "##" + (Double.valueOf(currentLocation.getLongitude()).toString()));
-                doTest(currentLocation);
-            } else {
-                Toast.makeText(this, "Could not determine location. ", Toast.LENGTH_LONG).show();
-                log.error("Could not determine location.");
-            }
-        }
-        mLocationClient.disconnect();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
 
     /**
      * Verify that Google Play services is available before making a request.
@@ -455,12 +448,14 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
         }
     }
 
+    @SuppressLint("GestureBackNavigation")
     @Override
     public void onBackPressed() {
         setResult(4813);
         super.onBackPressed();
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onResume() {
         super.onResume();
@@ -474,5 +469,10 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.Co
             this.registerReceiver(mReceiver, testOkStatusFilter);
             this.registerReceiver(mReceiver, testNokStatusFilter);
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
