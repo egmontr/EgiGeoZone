@@ -209,6 +209,7 @@ public class RequirementsProfile extends RuntimePermissionsActivity implements O
 				requestAppPermission(Manifest.permission.BLUETOOTH_CONNECT, R.string.alert2020BT, 2020);
 			} else {
 				onPermissionsGranted(2020);
+                do_bt(bluetoothAdapter);
 			}
 		} else {
 			// Für frühere Versionen < Build.VERSION_CODES.S
