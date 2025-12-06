@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:theapp="http://schemas.android.com/apk/res-auto">
+	<item
+		android:id="@+id/menu_test"
+		android:title="@string/test"
+		theapp:showAsAction="ifRoom"
+		android:icon="@drawable/glass_test"
+		/>
+</menu>

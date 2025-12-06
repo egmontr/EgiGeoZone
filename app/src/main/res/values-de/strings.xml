@@ -55,6 +55,9 @@
     <string name="menu_item_plugins">Registrierte Plugins anzeigen</string>
     <string name="menu_item_track">Standortaufzeichnungen</string>
 
+    <string name="test_send">Die Nachricht wurde an die Plugins gesendet.</string>
+    <string name="test_send_title">Senden OK</string>
+
     <string name="export_ok_text">Datei wurde exportiert.</string>
     <string name="import_ok_text">Konfiguration registriert.</string>
     <string name="settings_tracker">Grundeinstellungen Standortaufzeichnung</string>

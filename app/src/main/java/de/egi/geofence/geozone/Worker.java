@@ -1110,7 +1110,7 @@ public class Worker {
 	}
 
 	// Broadcast only if plugins are installed
-	private void doBroadcastToPlugins(int transition, ZoneEntity ze, String realLat, String realLng, String location_accuracy){
+	public void doBroadcastToPlugins(int transition, ZoneEntity ze, String realLat, String realLng, String location_accuracy){
 
 		PackageManager manager = context.getPackageManager();
 		Intent intent = new Intent(context.getPackageName());

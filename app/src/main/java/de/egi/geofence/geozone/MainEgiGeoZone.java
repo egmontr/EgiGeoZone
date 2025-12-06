@@ -267,8 +267,6 @@ public class MainEgiGeoZone extends RuntimePermissionsActivity
         log = Logger.getLogger(MainEgiGeoZone.class);
         if (logConfigurator.getFileName().equalsIgnoreCase("android-log4j.log")){
 
-//            logConfigurator.setFileName(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + File.separator + "egigeozone" + File.separator + "egigeozone.log");
-
             logConfigurator.setFileName(this.getFilesDir() + File.separator + "egigeozone" + File.separator + "egigeozone.log");
 
             logConfigurator.setUseFileAppender(true);

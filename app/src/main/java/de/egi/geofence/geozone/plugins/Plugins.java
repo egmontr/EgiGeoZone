@@ -15,20 +15,35 @@
  */
 package de.egi.geofence.geozone.plugins;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ListView;
+
+import com.google.android.gms.location.Geofence;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.egi.geofence.geozone.R;
+import de.egi.geofence.geozone.Worker;
+import de.egi.geofence.geozone.db.ZoneEntity;
 import de.egi.geofence.geozone.utils.Constants;
+import de.egi.geofence.geozone.utils.NotificationUtil;
 import de.egi.geofence.geozone.utils.Utils;
 
 public class Plugins extends AppCompatActivity {
@@ -39,6 +54,10 @@ public class Plugins extends AppCompatActivity {
         Utils.onActivityCreateSetTheme(this);
 
         setContentView(R.layout.plugins);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        Utils.changeBackGroundToolbar(this, toolbar);
 
         ListView listViewPlugins = findViewById(R.id.listView_plugins);
 
@@ -66,6 +85,66 @@ public class Plugins extends AppCompatActivity {
         // Übergeben damit der OnClickListener die Werte hat
         adapter.setStartInfo(packages, clazz);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_test, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action buttons
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_test) {
+            doTest();
+            return true;
+            // Pass through any other request
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void doTest(){
+        ZoneEntity ze = Utils.makeTestZone();
+
+        int transition = Geofence.GEOFENCE_TRANSITION_ENTER;
+
+        Worker worker = new Worker(this.getApplicationContext());
+        try {
+
+            worker.doBroadcastToPlugins(transition, ze, "46", "10", "90" );
+
+            showAlert(Constants.ACTION_TEST_STATUS_OK, "");
+        } catch (Exception ex) {
+            Log.e(Constants.APPTAG, "error testing profile", ex);
+            NotificationUtil.showError(this.getApplicationContext(), "TestPlugins" + ": Error testing plugins", ex.toString());
+            showAlert(Constants.ACTION_TEST_STATUS_NOK, "TestPlugins" + ": Error testing plugins. " + ex);
+        }
+    }
+
+    private void showAlert(String action, String result){
+        if (Constants.ACTION_TEST_STATUS_OK.equals(action)) {
+            // Teststatus anzeigen
+            AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
+            ab.setMessage(R.string.test_send).setPositiveButton(R.string.action_ok, testDialogClickListener).setTitle(R.string.test_send_title).setIcon(R.drawable.ic_lens_green_24dp).show();
+        }
+//        if (Constants.ACTION_TEST_STATUS_NOK.equals(action)) {
+//            // Teststatus anzeigen
+//            AlertDialog.Builder ab = Utils.onAlertDialogCreateSetTheme(this);
+//            ab.setMessage(result).setPositiveButton(R.string.action_ok, testDialogClickListener)
+//                    .setTitle(R.string.test_nok_title).setIcon(R.drawable.ic_lens_red_24dp).show();
+//        }
+    }
+
+    // Dialog für TestErgebnis
+    private final DialogInterface.OnClickListener testDialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+        }
+    };
+
+
 }
 
 

@@ -91,6 +91,10 @@
     <string name="test_ok_title">Test OK</string>
     <string name="test_nok_title">Test failed</string>
 
+    <string name="test_send">The message was sent to the plugins.</string>
+    <string name="test_send_title">Send OK</string>
+
+
     <string name="prio_low">Low power accuracy (about 10 km accuracy)</string>
     <string name="prio_balanced">Balanced power accuracy (about 100 meter accuracy)</string>
     <string name="prio_high">High power accuracy (finest location available)</string>
