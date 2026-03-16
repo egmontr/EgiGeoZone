@@ -16,7 +16,9 @@
 
 package de.egi.geofence.geozone.profile;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,16 +27,19 @@ import android.widget.Button;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import org.apache.log4j.Logger;
 
 import de.egi.geofence.geozone.R;
+import de.egi.geofence.geozone.utils.RuntimePermissionsActivity;
 import de.egi.geofence.geozone.utils.Utils;
 
-public class Profiles extends AppCompatActivity implements OnClickListener{
+public class Profiles extends RuntimePermissionsActivity implements OnClickListener{
 	
 	private final Logger log = Logger.getLogger(Profiles.class);
     Button buttonServerProfileClicked = null;
+    Button buttonSmsProfileClicked = null;
     Button buttonMailProfileClicked = null;
     Button buttonMoreProfileClicked = null;
     Button buttonConditionsProfileClicked = null;
@@ -48,8 +53,10 @@ public class Profiles extends AppCompatActivity implements OnClickListener{
         buttonMailProfileClicked = this.findViewById(R.id.button_onMailProfileClicked);
         buttonMoreProfileClicked = this.findViewById(R.id.button_onMoreProfileClicked);
         buttonConditionsProfileClicked = this.findViewById(R.id.button_onConditionsProfileClicked);
+        buttonSmsProfileClicked = this.findViewById(R.id.button_onSmsProfileClicked);
 
         buttonServerProfileClicked.setOnClickListener(this);
+        buttonSmsProfileClicked.setOnClickListener(this);
         buttonMailProfileClicked.setOnClickListener(this);
         buttonMoreProfileClicked.setOnClickListener(this);
         buttonConditionsProfileClicked.setOnClickListener(this);
@@ -64,13 +71,26 @@ public class Profiles extends AppCompatActivity implements OnClickListener{
             actionBar.setHomeButtonEnabled(true);
         }
     }
-	@Override
+
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        onSmsProfileClicked(buttonSmsProfileClicked);
+    }
+
+    @Override
 	public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.button_onServerProfileClicked) {
             log.debug("onOptionsItemSelected: button_onServerProfileClicked");
             onServerProfileClicked(buttonServerProfileClicked);
-        } else if (id == R.id.button_onMailProfileClicked) {
+        }if (id == R.id.button_onSmsProfileClicked) {
+            log.debug("onOptionsItemSelected: button_onSmsProfileClicked");
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+                requestAppPermission(Manifest.permission.SEND_SMS, R.string.alert2070Sms, 2070);
+            }else {
+                onSmsProfileClicked(buttonSmsProfileClicked);
+            }
+        }else if (id == R.id.button_onMailProfileClicked) {
             log.debug("onOptionsItemSelected: button_onMailProfileClicked");
             onMailProfileClicked(buttonMailProfileClicked);
         } else if (id == R.id.button_onMoreProfileClicked) {
@@ -105,6 +125,17 @@ public class Profiles extends AppCompatActivity implements OnClickListener{
 		Intent iMail = new Intent(this, MailProfiles.class);
 		startActivity(iMail);
 
+    }
+
+    /**
+     * SMS-Einstellungen aufrufen
+     *
+     * @param view The view that triggered this callback
+     */
+    public void onSmsProfileClicked(View view) {
+        log.debug("onSmsProfileClicked");
+		Intent iSms = new Intent(this, SmsProfiles.class);
+		startActivity(iSms);
     }
 
     /**

@@ -68,6 +68,26 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="#F0EEF0">
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/button_onSmsProfileClicked"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableEnd="@drawable/ic_play_circle_outline_black_24dp"
+                    android:gravity="start|center_vertical"
+                    android:onClick="onSmsProfileClicked"
+                    android:text="@string/prof_sms" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/linearLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -76,11 +76,13 @@ import de.egi.geofence.geozone.db.DbMailHelper;
 import de.egi.geofence.geozone.db.DbMoreHelper;
 import de.egi.geofence.geozone.db.DbRequirementsHelper;
 import de.egi.geofence.geozone.db.DbServerHelper;
+import de.egi.geofence.geozone.db.DbSmsHelper;
 import de.egi.geofence.geozone.db.DbZoneHelper;
 import de.egi.geofence.geozone.db.MailEntity;
 import de.egi.geofence.geozone.db.MoreEntity;
 import de.egi.geofence.geozone.db.RequirementsEntity;
 import de.egi.geofence.geozone.db.ServerEntity;
+import de.egi.geofence.geozone.db.SmsEntity;
 import de.egi.geofence.geozone.db.ZoneEntity;
 import de.egi.geofence.geozone.gcm.GcmTokenDialog;
 import de.egi.geofence.geozone.geofence.PathsenseGeofence;
@@ -392,6 +394,7 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 				log.info(ze.getName() + " - "  + "type" + ": " + ze.getType());
 				log.info(ze.getName() + " - "  + "beacon" + ": " + ze.getBeacon());
 				log.info(ze.getName() + " - "  + "id_server" + ": " + ze.getId_server());
+				log.info(ze.getName() + " - "  + "id_sms" + ": " + ze.getId_sms());
 				log.info(ze.getName() + " - "  + "id_email" + ": " + ze.getId_email());
 				log.info(ze.getName() + " - "  + "id_more" + ": " + ze.getId_more_actions());
 				log.info(ze.getName() + " - "  + "id_requirements" + ": " + ze.getId_requirements());
@@ -415,6 +418,7 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 				properties.put("zone_" + zname + "_type", getStringNotNull(zname + "_type", ze.getType()));
 				properties.put("zone_" + zname + "_beacon", ze.getBeacon() == null ? "" : getStringNotNull(zname + "_beacon", ze.getBeacon()));
 				properties.put("zone_" + zname + "_id_server", getStringNotNull(zname + "_id_server", ze.getId_server()));
+				properties.put("zone_" + zname + "_id_sms", getStringNotNull(zname + "_id_sms", ze.getId_sms()));
 				properties.put("zone_" + zname + "_id_email", getStringNotNull(zname + "_id_email", ze.getId_email()));
 				properties.put("zone_" + zname + "_id_more", getStringNotNull(zname + "_id_more", ze.getId_more_actions()));
 				properties.put("zone_" + zname + "_id_requirements", getStringNotNull(zname + "_id_requirements", ze.getId_requirements()));
@@ -466,6 +470,27 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 				properties.put("srv_" + srvname + "_timeout", getStringNotNull(srvname + "_timeout", srv.getTimeout()));
 				properties.put("srv_" + srvname + "_urlTracking", getStringNotNull(srvname + "_urlTracking", srv.getUrl_tracking()));
 				properties.put("srv_" + srvname + "_fallbackServer", getStringNotNull(srvname + "_fallbackServer", srv.getId_fallback()));
+			}
+		}
+
+		DbSmsHelper dbSmsHelper = new DbSmsHelper(this);
+		SmsEntity sms;
+		cursor =  dbSmsHelper.getCursorAllSms();
+		while (cursor.moveToNext()) {
+			sms = dbSmsHelper.getCursorSmsByName(cursor.getString(1));
+			if (sms != null){
+				log.info("sms_name: " + sms.getName());
+				log.info(sms.getName() + " - "  + getString(R.string.smsTo) + ": " + sms.getNumber());
+				log.info(sms.getName() + " - "  + getString(R.string.smsText) + ": " + sms.getText());
+				log.info(sms.getName() + " - " +  "SMS enter" + ": " + sms.isEnter());
+				log.info(sms.getName() + " - " +  "SMS exit" + ": " + sms.isExit());
+				log.info("----------------------------------------");
+				String smsname = sms.getName();
+				properties.put("sms_name" + ++z, smsname);
+				properties.put("sms_" + smsname + "_smsNumber", getStringNotNull(smsname + "_smsNumber", sms.getNumber()));
+				properties.put("sms_" + smsname + "_smsText", getStringNotNull(smsname + "_smsText", sms.getText()));
+				properties.put("sms_" + smsname + "_enter", getBooleanString(sms.isEnter()));
+				properties.put("sms_" + smsname + "_exit", getBooleanString(sms.isExit()));
 			}
 		}
 
@@ -646,6 +671,7 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 		Set<Object> keys = properties.keySet();
 		List<String> pZones = new ArrayList<>();
 		List<String> pServer = new ArrayList<>();
+		List<String> pSms = new ArrayList<>();
 		List<String> pMail = new ArrayList<>();
 		List<String> pMore = new ArrayList<>();
 		List<String> pRequ = new ArrayList<>();
@@ -661,6 +687,11 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 				schl = properties.getProperty(key);
 				pServer.add(schl);
 				Log.i("pServer", schl);
+			}
+			if (key.startsWith("sms_name")) {
+				schl = properties.getProperty(key);
+				pSms.add(schl);
+				Log.i("pSms", schl);
 			}
 			if (key.startsWith("mail_name")) {
 				schl = properties.getProperty(key);
@@ -723,6 +754,20 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 			serverEntity.setId_fallback(properties.getProperty("srv_" + srvname + "_fallbackServer"));
 
 			dbServerHelper.createServer(serverEntity);
+		}
+
+		// Sms Profile
+		DbSmsHelper dbSmsHelper = new DbSmsHelper(this);
+		for (String smsname : pSms) {
+			SmsEntity smsEntity = new SmsEntity();
+
+			smsEntity.setName(smsname);
+			smsEntity.setNumber(properties.getProperty("sms_" + smsname + "_smsNumber"));
+			smsEntity.setText(properties.getProperty("sms_" + smsname + "_smsText"));
+			smsEntity.setEnter(getBoolean(properties.getProperty("sms_" + smsname + "_enter")));
+			smsEntity.setExit(getBoolean(properties.getProperty("sms_" + smsname + "_exit")));
+
+			dbSmsHelper.createSms(smsEntity);
 		}
 
 		// Mail Profile
@@ -803,6 +848,8 @@ public class Settings extends AppCompatActivity implements OnClickListener, OnCh
 			zoneEntity.setBeacon(properties.getProperty("zone_" + zonename + "_beacon"));
 			String idServer = properties.getProperty("zone_" + zonename + "_id_server");
 			zoneEntity.setId_server(idServer.equals("") ? null : idServer);
+			String idSms = properties.getProperty("zone_" + zonename + "_id_sms");
+			zoneEntity.setId_sms(idSms.equals("") ? null : idSms);
 			String idEmail = properties.getProperty("zone_" + zonename + "_id_email");
 			zoneEntity.setId_email(idEmail.equals("") ? null : idEmail);
 			String idMore = properties.getProperty("zone_" + zonename + "_id_more");

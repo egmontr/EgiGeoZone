@@ -79,6 +79,8 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
                 alertDialogBuilder.setTitle(R.string.titleAlert2050Notification);
             }else if (requestCode == 2060) {
                 alertDialogBuilder.setTitle(R.string.titleAlert2060Write);
+            }else if (requestCode == 2070) {
+                alertDialogBuilder.setTitle(R.string.titleAlert2070Sms);
             }
             alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override

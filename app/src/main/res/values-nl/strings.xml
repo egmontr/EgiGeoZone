@@ -137,7 +137,7 @@
     <string name="disclaimer">De software en de documentatie wordt \"zoals het is\" en zonder enige garantie voor functionaliteit, correctheid of foutloosheid ter beschikking gesteld. Voor enige directe of indirecte schade - in het bijzonder schade aan andere software, schade aan hardware, schade door gebruiksuitval en schade door het niet juist functioneren van de software - kan de auteur niet aansprakelijk gesteld worden. Uitsluitend de gebruiker is voor de gevolgen van het gebruiken van deze software aansprakelijk. Deze software is met de grootste zorgvuldigheid ontwikkeld, echter kunnen fouten nooit uitgesloten worden. Daarom krijgt u geen garantie voor de zekerheid van uw gegevens.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
 
     <string name="rinfo_title">Beschrijving</string>
-    <string name="rinfo">In het onderwerp en de tekst van de email kunnen variabelen ingevoegd worden, welke tijdens de runtime vervangen worden.</string>
+    <string name="rinfo">In het onderwerp en de tekst van de email en in de tekst van de sms kunnen variabelen ingevoegd worden, welke tijdens de runtime vervangen worden.</string>
     <string name="rdesc_title">Voorbestemde variabelen</string>
     <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n 1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
         \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
@@ -174,6 +174,12 @@
     <string name="mailHintSubject">Onderwerp invoeren</string>
     <string name="mailHintText">Tekst invoeren</string>
     
+    <string name="sms_opt_title">Sms-instellingen</string>
+    <string name="smsTo">Ontvanger</string>
+    <string name="smsText">Inhoud</string>
+    <string name="smsHintTo">Nummer ontvanger invoeren</string>
+    <string name="smsHintText">Tekst invoeren</string>
+
     <string name="other_opt_title">Verdere acties</string>
 
     <string name="other_conditions_title">Voorwaarden</string>
@@ -269,6 +275,7 @@
     <string name="prof_other">Profiel voor verdere acties</string>
     <string name="prof_server">Serverprofiel</string>
     <string name="prof_server_fallback">Backup serverprofiel</string>
+    <string name="prof_sms">SMS profiel</string>
     <string name="profilName">Profielnaam</string>
     <string name="profile">Hier kun je profielen definiëren, die je aan zones kunt koppelen.</string>
     <string name="profile_in_use">Profiel is in gebruik, en kun je dus niet verwijderen.</string>
@@ -291,6 +298,6 @@
     <string name="trackingHint">\"URL voor het tracken\"</string>
     <string name="menu_item_scroll_bottom_gcm_log">Scroll to bottom log file</string>
     <string name="menu_item_scroll_top_gcm_log">Scroll to top log file</string>
-
+    <string name="titleSMS">SMS-rechten</string>
 </resources>
 

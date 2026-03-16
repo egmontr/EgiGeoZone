@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:versionCode="3270"
-    android:versionName="3.2.7">
+    android:versionCode="3280"
+    android:versionName="3.2.8">
 
     <queries>
         <intent>
@@ -39,6 +39,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -128,6 +129,12 @@
                 android:value=".MainEgiGeoZone"/>
         </activity>
         <activity android:name="de.egi.geofence.geozone.profile.MailProfile" android:label="@string/mail_opt_title" android:theme="@style/AppTheme.NoActionBar" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name="de.egi.geofence.geozone.profile.SmsProfiles" android:label="@string/sms_opt_title" android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainEgiGeoZone"/>
+        </activity>
+        <activity android:name="de.egi.geofence.geozone.profile.SmsProfile"  android:label="@string/sms_opt_title" android:theme="@style/AppTheme.NoActionBar" android:windowSoftInputMode="stateHidden"/>
         <activity android:name="de.egi.geofence.geozone.profile.MoreProfiles"  android:label="@string/other_opt_title" android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

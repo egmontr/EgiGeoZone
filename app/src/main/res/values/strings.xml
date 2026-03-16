@@ -187,6 +187,10 @@
     <string name="privacy_hp">The text on the website:\n <a href="https://www.egigeozone.de/privacy/default_en.html">https://www.egigeozone.de/privacy/default_en.html</a></string>
     <string name="privacy_mail">Contact:\n <a href="egmontr@gmail.com">egmontr@gmail.com</a></string>
 
+    <string name="pt_2">Your messages:</string>
+    <string name="put_2">Sends SMS messages.</string>
+    <string name="p_2">Allows the app to send SMS messages. Charges may apply.</string>
+
     <string name="usage">Usage:</string>
 
     <string name="pt_3">Your location:</string>
@@ -226,7 +230,7 @@
     <string name="p_14">The device is only briefly awakened, so that actions can be started in the background.</string>
 
     <string name="rinfo_title">Description</string>
-    <string name="rinfo">In the subject and body of mails and in the server URL you can use variables, which will be replaced on runtime.</string>
+    <string name="rinfo">In the subject and body of mails, in body of the SMS and in the server URL you can use variables, which will be replaced on runtime.</string>
     <string name="rdesc_title">Variables</string>
     <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
         \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
@@ -278,6 +282,13 @@
     <string name="mailHintEmpf">Recipients comma separated</string>
     <string name="mailHintSubject">Enter subject</string>
     <string name="mailHintText">Enter body</string>
+
+    <string name="sms_opt_title">SMS options</string>
+    <string name="prof_sms">SMS profiles</string>
+    <string name="smsTo">SMS receiver</string>
+    <string name="smsText">Body</string>
+    <string name="smsHintTo">Enter number</string>
+    <string name="smsHintText">Enter text</string>
 
     <string name="other_opt_title">More actions</string>
     <string name="prof_other">Profiles for more actions</string>
@@ -389,6 +400,10 @@
     </string>
     <string name="titleAlert2060Write">Allows the app to write to the SD card</string>
 
+    <string name="alert2070Sms">If you want to allow the app to send SMS messages in the background, you must approve this.
+    </string>
+    <string name="titleAlert2070Sms">Allow the app to send SMS-messages in the background</string>
+
     <string name="alertPermissions">You have to enable the following permissions, so the app can run correct.
         \n\n
         Read/Write permission (Storage): This app writes a log file. Likewise, you can export the configuration and re-import it.\n\n
@@ -396,6 +411,9 @@
         It must also be admitted that the location can be queried in the background. \n\n
     </string>
 
+    <string name="checkSMS">From Android 6 to send a SMS (short messages) the SMS permission is a prerequisite. Therefore, you should allow this permission in the next dialog.</string>
+    <string name="descAskSMS">From Android 6 to send a SMS (short messages) the SMS permission is a prerequisite. You have rejected these and will therefore not be able to send SMS.</string>
+    <string name="titleSMS">SMS permission</string>
     <string name="titleAlertPermissions">Base permissions for App</string>
 
     <string name="doNotDisturbPermissionsTitle">Do not disturb permission</string>
