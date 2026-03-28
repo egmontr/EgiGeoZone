@@ -96,31 +96,6 @@ public class SmsProfile extends RuntimePermissionsActivity implements GoogleApiC
 
 		viewMerk = findViewById(R.id.snackbarPosition);
 
-//		if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-//			// Check Permissions Now
-//			if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)) {
-//				// Display UI and wait for user interaction
-//				AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//				alertDialogBuilder.setMessage(getString(R.string.checkSMS));
-//				alertDialogBuilder.setTitle(getString(R.string.titleSMS));
-//
-//				alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//					@Override
-//					public void onClick(DialogInterface arg0, int arg1) {
-//						ActivityCompat.requestPermissions(SmsProfile.this, new String[]{Manifest.permission.SEND_SMS}, MainEgiGeoZone.REQUEST_SMS);
-//					}
-//				});
-//				AlertDialog alertDialog = alertDialogBuilder.create();
-//				alertDialog.show();
-//
-//			} else {
-//				ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, MainEgiGeoZone.REQUEST_SMS);
-//			}
-//		} else {
-//			// permission has been granted, continue as usual
-////			Toast.makeText(this,"permission has been granted, continue as usual",Toast.LENGTH_LONG).show();
-//		}
-
 		datasource = new DbSmsHelper(this);
 
 		enter = (this.findViewById(R.id.chk_enter));

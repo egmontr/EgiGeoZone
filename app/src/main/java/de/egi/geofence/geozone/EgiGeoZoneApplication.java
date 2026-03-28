@@ -1,6 +1,7 @@
 package de.egi.geofence.geozone;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
@@ -15,13 +16,14 @@ import de.egi.geofence.geozone.utils.Constants;
 // http://altbeacon.github.io/android-beacon-library/documentation.html
 public class EgiGeoZoneApplication extends Application{
 	private static final String TAG = "EgiGeoZoneApplication";
-
+	private static EgiGeoZoneApplication myInstance;
 	private DbGlobalsHelper dbGlobalsHelper;
 	private String currentApplicationVersion = "UNKNOWN";
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		myInstance= this;
 		dbGlobalsHelper = new DbGlobalsHelper(this);
 		try {
 			PackageInfo pi = getPackageManager().getPackageInfo(this.getPackageName(), PackageManager.GET_CONFIGURATIONS);
@@ -36,7 +38,9 @@ public class EgiGeoZoneApplication extends Application{
 		// Dann auch Version Exportieren/Importieren
 		makeUpdates();
 	}
-
+	public static Context getAppContext() {
+		return myInstance.getApplicationContext();
+	}
 	/**
 	 * Updates durchführen
 	 */

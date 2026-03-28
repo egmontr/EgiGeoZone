@@ -1,8 +1,12 @@
 package de.egi.geofence.geozone.utils;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,12 +15,17 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.provider.Settings;
 import android.util.SparseIntArray;
 
+import de.egi.geofence.geozone.EgiGeoZoneApplication;
 import de.egi.geofence.geozone.R;
 
 public abstract class RuntimePermissionsActivity extends AppCompatActivity {
     private SparseIntArray mErrorString;
+    private final SharedPreferences prefs;
+    private String title = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,82 +33,74 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
         mErrorString = new SparseIntArray();
     }
 
-    // Register the permissions callback, which handles the user's response to the
-// system permissions dialog. Save the return value, an instance of
-// ActivityResultLauncher, as an instance variable.
+    public RuntimePermissionsActivity() {
+        prefs = EgiGeoZoneApplication.getAppContext().getSharedPreferences("perm_prefs", Context.MODE_PRIVATE);
+    }
 
-    // You can directly ask for the permission.
-    // The registered ActivityResultCallback gets the result of this request.
-//    requestPermissionLauncher.launch(
-//    Manifest.permission.REQUESTED_PERMISSION
-//
-//);
+    public void requestAppPermission(String permission, int messageResId, int requestCode) {
+
+        boolean isFirstTime = prefs.getBoolean(permission, true);
+
+        if (requestCode == 2010) {
+            title = getString(R.string.titleAlert2010Location);
+        }else if (requestCode == 2020) {
+            title = getString(R.string.titleAlert2020BT);
+        }else if (requestCode == 2030) {
+            title = getString(R.string.titleAlert2030BgLocation);
+        }else if (requestCode == 2040) {
+            title = getString(R.string.titleAlert2040Read);
+        }else if (requestCode == 2050) {
+            title = getString(R.string.titleAlert2050Notification);
+        }else if (requestCode == 2060) {
+            title = getString(R.string.titleAlert2060Write);
+        }else if (requestCode == 2070) {
+            title = getString(R.string.titleAlert2070Sms);
+        }
+        if (isFirstTime) {
+            prefs.edit().putBoolean(permission, false).apply();
+
+            // 👉 Erstes Mal → direkt Systemdialog
+            new androidx.appcompat.app.AlertDialog.Builder(RuntimePermissionsActivity.this)
+                    .setTitle(title)
+                    .setMessage(messageResId)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        ActivityCompat.requestPermissions(RuntimePermissionsActivity.this,
+                                new String[]{permission},
+                                requestCode);
+                    })
+                    .setNegativeButton("Abbrechen", null)
+                    .show();
 
 
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(RuntimePermissionsActivity.this, permission)) {
 
-//    private ActivityResultLauncher<String> requestPermissionLauncher =
-//            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-//                if (isGranted) {
-//                    // Permission is granted. Continue the action or workflow in your
-//                    // app.
-//                } else {
-//                    // Explain to the user that the feature is unavailable because the
-//                    // feature requires a permission that the user has denied. At the
-//                    // same time, respect the user's decision. Don't link to system
-//                    // settings in an effort to convince the user to change their
-//                    // decision.
-//                }
-//            });
-//
+            // 👉 Nutzer hat einmal abgelehnt → Erklärung anzeigen
+            new androidx.appcompat.app.AlertDialog.Builder(RuntimePermissionsActivity.this)
+                    .setTitle(title)
+                    .setMessage(messageResId)
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        ActivityCompat.requestPermissions(RuntimePermissionsActivity.this,
+                                new String[]{permission},
+                                requestCode);
+                    })
+                    .setNegativeButton("Abbrechen", null)
+                    .show();
 
-
-
-
-    public void requestAppPermission(final String requestedPermission, final int stringId, final int requestCode) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,requestedPermission)) {
-            // In an educational UI, explain to the user why your app requires this
-            // permission for a specific feature to behave as expected, and what
-            // features are disabled if it's declined. In this UI, include a
-            // "cancel" or "no thanks" button that lets the user continue
-            // using your app without granting the permission.
-//            showInContextUI(...);
-
-            // Display UI and wait for user interaction
-            androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-            alertDialogBuilder.setMessage(stringId);
-            if (requestCode == 2010) {
-                alertDialogBuilder.setTitle(getString(R.string.titleAlert2010Location));
-            }else if (requestCode == 2020) {
-                alertDialogBuilder.setTitle(R.string.titleAlert2020BT);
-            }else if (requestCode == 2030) {
-                alertDialogBuilder.setTitle(R.string.titleAlert2030BgLocation);
-            }else if (requestCode == 2040) {
-                alertDialogBuilder.setTitle(R.string.titleAlert2040Read);
-            }else if (requestCode == 2050) {
-                alertDialogBuilder.setTitle(R.string.titleAlert2050Notification);
-            }else if (requestCode == 2060) {
-                alertDialogBuilder.setTitle(R.string.titleAlert2060Write);
-            }else if (requestCode == 2070) {
-                alertDialogBuilder.setTitle(R.string.titleAlert2070Sms);
-            }
-            alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                    ActivityCompat.requestPermissions(RuntimePermissionsActivity.this, new String[] {requestedPermission}, requestCode);
-                }
-            });
-            alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                }
-            });
-
-            androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
 
         } else {
-            // You can directly ask for the permission.
-            ActivityCompat.requestPermissions(this, new String[] {requestedPermission}, requestCode);
+
+            // 👉 Dauerhaft abgelehnt → Settings öffnen
+            new androidx.appcompat.app.AlertDialog.Builder(RuntimePermissionsActivity.this)
+                    .setTitle(title)
+                    .setMessage(getString(messageResId))
+                    .setPositiveButton("Einstellungen öffnen", (dialog, which) -> {
+                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                        Uri uri = Uri.fromParts("package", RuntimePermissionsActivity.this.getPackageName(), null);
+                        intent.setData(uri);
+                        RuntimePermissionsActivity.this.startActivity(intent);
+                    })
+                    .setNegativeButton("Abbrechen", null)
+                    .show();
         }
     }
 
@@ -116,34 +117,6 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
                 // At the same time, respect the user's decision. Don't link to
                 // system settings in an effort to convince the user to change
                 // their decision.
-
-                // The base permissions are needed for the app to work properly
-//                androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder = Utils.onAlertDialogCreateSetTheme(this);
-//
-////                if (requestCode == 2000) {
-//                    alertDialogBuilder.setTitle(getString(R.string.titleAlertPermissions));
-//                    alertDialogBuilder.setMessage(getString(R.string.descAskAll));
-//                    alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface arg0, int arg1) {
-//                            Intent intent = new Intent();
-////                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-////                            intent.addCategory(Intent.CATEGORY_DEFAULT);
-////                            intent.setData(Uri.parse("package:" + getPackageName()));
-////                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-////                            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-////                            startActivity(intent);
-//                        }
-//                    });
-//
-////                }
-//
-//                // Other 'case' lines to check for other
-//                // permissions this app might request
-//
-//                androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
-//                alertDialog.show();
             }
         }
 
