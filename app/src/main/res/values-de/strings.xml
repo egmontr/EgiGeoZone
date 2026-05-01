@@ -221,7 +221,7 @@
 
 
     <string name="rinfo_title">Beschreibung</string>
-    <string name="rinfo">Im Betreff und Text der E-Mail, einer SMS und in der Server-URL können Variablen eingefügt werden, welche zur Laufzeit ersetzt werden.</string>
+    <string name="rinfo">Im Betreff und Text der EMail und in der Server-URL können Variablen eingefügt werden, welche zur Laufzeit ersetzt werden.</string>
     <string name="rdesc_title">Vordefinierte Variablen</string>
     <string name="rdesc">GeoZone = ${zone}\nBetreten/Verlassen = ${transition}\n 1 für Betreten und 0 für Verlassen = ${transitionType}\nBreitengrad = ${latitude}\nLängengrad = ${longitude}
         \nGemeldetere Breitengrad = ${realLatitude}\nGemeldeter Längengrad = ${realLongitude}\nStandortgenauigkeit = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
@@ -423,14 +423,6 @@
     <string name="alert2050Notification">Wenn Sie Benachrichtigungen erhalten möchten, müssen Sie die Erlaubnis aktivieren. Zum Beispiel, wenn Sie einen Geofence Zaun betreten oder verlassen.
     </string>
     <string name="titleAlert2050Notification">Benachrichtigungsgenehmigung für die App</string>
-
-    <string name="alert2060Write">Lesen und schreiben der Export-/Importdateien. Verschiedene Protokolldateien schreiben, lesen und löschen. Deshalb sollten Sie diese Berechtigung zulassen.
-    </string>
-    <string name="titleAlert2060Write">Ermöglicht der App, auf die SD-Karte zu schreiben</string>
-
-    <string name="titleAlert2070Sms">Erlauben Sie der App, SMS-Nachrichten im Hintergrund zu senden</string>
-    <string name="alert2070Sms">Wenn Sie der App erlauben wollen, dass diese SMS-Nachrichten im Hintergrund versenden soll, dann müssen Sie das genehmigen.
-    </string>
 
     <string name="menu_item_scroll_bottom_gcm_log">Zum Ende scrollen</string>
     <string name="menu_item_scroll_top_gcm_log">Zum Anfang scrollen</string>

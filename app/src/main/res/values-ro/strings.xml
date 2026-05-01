@@ -203,12 +203,6 @@
     <string name="mailHintSubject">Introduce subiectul</string>
     <string name="mailHintText">Introduce mesajul</string>
     
-    <string name="sms_opt_title">Opțiuni SMS</string>
-    <string name="smsTo">Receptor SMS</string>
-    <string name="smsText">Mesaj</string>
-    <string name="smsHintTo">Introduce numărul</string>
-    <string name="smsHintText">Introduce mesajul</string>
-
     <string name="other_opt_title">Alte acțiuni</string>
 
     <string name="other_conditions_title">Condiții</string>

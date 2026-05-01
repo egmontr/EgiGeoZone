@@ -114,15 +114,15 @@ public class ServerProfile  extends AppCompatActivity implements View.OnClickLis
 			}
 		});
 		// onBackPressed logic goes here
-//		if (BuildCompat.isAtLeastT()) {
-//			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-//					OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-//					() -> {
-//						// Speichern
-////						saveServer();
-//					}
-//			);
-//		}
+		if (BuildCompat.isAtLeastT()) {
+			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+					OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+					() -> {
+						// Speichern
+						saveServer();
+					}
+			);
+		}
 		viewMerk = findViewById(R.id.snackbarPosition);
 		datasource = new DbServerHelper(this);
 		datasourceFallbackServer = new DbServerHelper(this);
@@ -383,7 +383,7 @@ public class ServerProfile  extends AppCompatActivity implements View.OnClickLis
 	// Load private certificate and copy it to apps private space
 	ActivityResultLauncher<Intent> activityResultLaunch = registerForActivityResult(
 			new ActivityResultContracts.StartActivityForResult(),
-			new ActivityResultCallback<>() {
+			new ActivityResultCallback<ActivityResult>() {
 				@Override
 				public void onActivityResult(ActivityResult result) {
 					// Load private certificate and copy it to apps private space
@@ -434,7 +434,7 @@ public class ServerProfile  extends AppCompatActivity implements View.OnClickLis
 	// Load CA certificate and copy it to apps private space
 	ActivityResultLauncher<Intent> activityResultLaunch2 = registerForActivityResult(
 			new ActivityResultContracts.StartActivityForResult(),
-			new ActivityResultCallback<>() {
+			new ActivityResultCallback<ActivityResult>() {
 				@Override
 				public void onActivityResult(ActivityResult result) {
 					// Load CA certificate and copy it to apps private space

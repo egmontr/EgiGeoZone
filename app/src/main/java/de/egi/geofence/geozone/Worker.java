@@ -39,7 +39,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
-import android.telephony.SmsManager;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -483,18 +483,6 @@ public class Worker {
 							ze.getMailEntity().getSmtp_port(), ze.getMailEntity().getFrom(), ze.getMailEntity().getTo(), ze.getMailEntity().isSsl(), ze.getMailEntity().isStarttls(), false);
 				}
 			}
-			if (ze.getSmsEntity() != null){
-				log.info("Send sms...");
-				if ((transition == Geofence.GEOFENCE_TRANSITION_ENTER && ze.getSmsEntity().isEnter()) ||
-						(transition == Geofence.GEOFENCE_TRANSITION_EXIT && ze.getSmsEntity().isExit())){
-
-					String textReplace = Utils.replaceAll(context, ze.getSmsEntity().getText(), ze.getName(), ze.getAlias(), transition, ze.getRadius(),
-							ze.getLatitude(), ze.getLongitude(), realLat, realLng, locationDate, localLocationDate, location_accuracy);
-					String text = textReplace.length() > 155 ? textReplace.substring(0,155) : textReplace;
-
-					doSendSms(context, ze.getName(), ze.getSmsEntity().getNumber(), text, false);
-				}
-			}
 
 			if (ze.getMoreEntity() != null){
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
@@ -901,47 +889,6 @@ public class Worker {
 			Log.e(Constants.APPTAG, "error calling Tasker", ex);
 			log.error(zone.getId() + ": Error calling Tasker", ex);
 			NotificationUtil.showError(context, zone.getId() + ": Error calling Tasker", ex.toString());
-		}
-	}
-
-	// SMS senden
-	public void doSendSms(Context context, String zone, String to, String text, boolean test) {
-		PackageManager packageManager = context.getPackageManager();
-		if (!packageManager.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)){
-			log.error("No Telephony on device!");
-			Toast.makeText(context, "No Telephony on device!", Toast.LENGTH_LONG).show();
-			return;
-		}
-
-		try {
-			log.info("doSendSms");
-			log.debug("zone: " + zone);
-			log.debug("sms to: " + to);
-			log.debug("sms text: " + text);
-
-			// SMS senden
-			SmsManager sms = SmsManager.getDefault();
-			sms.sendTextMessage(to, null, text, null, null);
-
-			// TestErgebnis
-			if (test){
-				// Broadcats damit der Test-Dialog angezeigt wird
-				Intent intent = new Intent();
-				intent.setAction(Constants.ACTION_TEST_STATUS_OK);
-				context.sendBroadcast(intent);
-			}
-
-		} catch (Exception ex) {
-			Log.e(Constants.APPTAG, "error sending sms", ex);
-			log.error(zone + ": Error sending sms", ex);
-			NotificationUtil.showError(context, zone + ": Error sending sms", ex.toString());
-			// TestErgebnis
-			if (test){
-				// Broadcats damit der Test-Dialog angezeigt wird
-				Intent intent = new Intent();
-				intent.setAction(Constants.ACTION_TEST_STATUS_NOK);
-				context.sendBroadcast(intent);
-			}
 		}
 	}
 

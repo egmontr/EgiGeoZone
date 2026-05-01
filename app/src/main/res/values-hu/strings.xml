@@ -150,7 +150,7 @@
     <string name="disclaimer">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\nA few of the icons are made by Freepik from www.flaticon.com</string>
     
     <string name="rinfo_title">Description</string>
-    <string name="rinfo">In the subject and body of mails, in body of the SMS and in the server URL you can use variables, which will be replaced on runtime.</string>
+    <string name="rinfo">In the subject and body of mails and in the server URL you can use variables, which will be replaced on runtime.</string>
     <string name="rdesc_title">Variables</string>
     <string name="rdesc">GeoZone = ${zone}\nEnter/Exit = ${transition}\n 1 for enter and 0 for exit = ${transitionType}\nLatitude = ${latitude}\nLongitude = ${longitude}
         \nReal latitude = ${realLatitude}\nReal longitude = ${realLongitude}\nAccuracy = ${accuracy}\nRadius = ${radius}\nDeviceId = ${deviceId}\nAndroidId = ${androidId}\n
@@ -195,12 +195,6 @@
     <string name="mailHintSubject">Enter subject</string>
     <string name="mailHintText">Enter body</string>
     
-    <string name="sms_opt_title">SMS options</string>
-    <string name="smsTo">SMS receiver</string>
-    <string name="smsText">Body</string>
-    <string name="smsHintTo">Enter number</string>
-    <string name="smsHintText">Enter text</string>
-
     <string name="other_opt_title">More actions</string>
 
     <string name="other_conditions_title">Conditions</string>

@@ -97,15 +97,15 @@ public class MailProfile extends AppCompatActivity implements GoogleApiClient.On
         });
 
         // onBackPressed logic goes here
-//        if (BuildCompat.isAtLeastT()) {
-//            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-//                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-//                    () -> {
-//                        // Speichern
-//                       //  saveMail();
-//                    }
-//            );
-//        }
+        if (BuildCompat.isAtLeastT()) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        // Speichern
+                        saveMail();
+                    }
+            );
+        }
 
         viewMerk = findViewById(R.id.snackbarPosition);
 
