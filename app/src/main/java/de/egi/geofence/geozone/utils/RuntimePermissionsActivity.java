@@ -53,8 +53,6 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
             title = getString(R.string.titleAlert2050Notification);
         }else if (requestCode == 2060) {
             title = getString(R.string.titleAlert2060Write);
-        }else if (requestCode == 2070) {
-            title = getString(R.string.titleAlert2070Sms);
         }
         if (isFirstTime) {
             prefs.edit().putBoolean(permission, false).apply();

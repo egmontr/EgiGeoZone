@@ -6,7 +6,7 @@ plugins{
 }
 
 android {
-    compileSdk 36
+    compileSdk 37
     defaultConfig {
         applicationId "de.egi.geofence.geozone"
         minSdkVersion 26 // Android 8.0
@@ -50,10 +50,10 @@ secrets {
 }
 dependencies {
     constraints {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.21") {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.3.10") {
             because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
         }
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.21") {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.3.10") {
             because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
         }
     }
@@ -73,7 +73,7 @@ dependencies {
     implementation 'de.mindpipe.android:android-logging-log4j:1.0.3'
     implementation 'com.sun.mail:android-mail:1.6.8'
     implementation 'com.sun.mail:android-activation:1.6.8'
-    implementation 'com.google.maps.android:android-maps-utils:4.1.1'
+    implementation 'com.google.maps.android:android-maps-utils:4.2.0'
     implementation 'it.sephiroth.android.library.targettooltip:target-tooltip-library:1.3.15'
 //    implementation 'it.sephiroth.android.library.targettooltip:target-tooltip-library:2.0.3'
 
